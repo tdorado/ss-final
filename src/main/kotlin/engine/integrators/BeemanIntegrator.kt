@@ -1,8 +1,8 @@
 package engine.integrators
 
 import engine.ForcesCalculator
-import engine.Particle
-import engine.Vector
+import engine.model.Particle
+import engine.model.Vector
 
 
 class BeemanIntegrator(
