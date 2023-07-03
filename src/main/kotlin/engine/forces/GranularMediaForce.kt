@@ -28,12 +28,12 @@ class GranularMediaForce(
 
         for (neighbour in neighbours) {
             val distance = neighbour.getDistance(particle)
-            val direction = particle.getPosition().subtract(neighbour.getPosition()).normalize()
+            val direction = particle.position.subtract(neighbour.position).normalize()
 
             val overlapSize = overlapSize(particle, neighbour)
             if (overlapSize <= 0) continue  // Not colliding
 
-            val relativeVelocity = particle.getVelocity().subtract(neighbour.getVelocity()).dotProduct(direction)
+            val relativeVelocity = particle.velocity.subtract(neighbour.velocity).dotProduct(direction)
             val normalForceValue = -kn * overlapSize
             val tangentialForceValue = -kt * overlapSize * relativeVelocity
 
@@ -45,7 +45,7 @@ class GranularMediaForce(
             pressure += normalForceValue
         }
 
-        particle.setPressure(Math.abs(pressure) / (4 * Math.PI * particle.getRadius().pow(2)))
+        particle.pressure = (Math.abs(pressure) / (4 * Math.PI * particle.radius.pow(2)))
         return force
     }
 
@@ -55,7 +55,7 @@ class GranularMediaForce(
             val overlapSize = overlapSize(particle, wall)
             if (overlapSize <= 0) continue  // Not touching the wall
 
-            val relativeVelocity = particle.getVelocity().dotProduct(wall.getNormal())
+            val relativeVelocity = particle.velocity.dotProduct(wall.getNormal())
             val forceNormalAndTan = wall.getNormal().multiply(-kn * overlapSize).add(
                 wall.getTangent().multiply(-kt * overlapSize * relativeVelocity)
             )
@@ -66,15 +66,15 @@ class GranularMediaForce(
     }
 
     private fun applyGravity(particle: Particle, force: Vector): Vector {
-        return force.add(Vector(0.0, -Input.getGravity() * particle.getMass(), 0.0))
+        return force.add(Vector(0.0, -Input.getGravity() * particle.mass, 0.0))
     }
 
     private fun overlapSize(one: Particle, another: Particle): Double {
-        val overlapSize = one.getRadius() + another.getRadius() - one.getDistance(another)
+        val overlapSize = one.radius + another.radius - one.getDistance(another)
         return maxOf(overlapSize, 0.0)
     }
 
     private fun overlapSize(p: Particle, wall: Wall): Double {
-        return maxOf(p.getRadius() - p.getPosition().subtract(wall.getPoint()).dotProduct(wall.getNormal()), 0.0)
+        return maxOf(p.radius - p.position.subtract(wall.getPoint()).dotProduct(wall.getNormal()), 0.0)
     }
 }
