@@ -1,6 +1,7 @@
 package engine
 
 import engine.integrators.Integrator
+import engine.model.Particle
 
 class TimeStepSimulator(
     private val timeDelta: Double,

@@ -1,8 +1,8 @@
 package engine.integrators
 
 import engine.ForcesCalculator
-import engine.Particle
-import engine.Vector
+import engine.model.Particle
+import engine.model.Vector
 
 abstract class Integrator(private val forcesCalculator: ForcesCalculator) {
     fun getForces(particle: Particle, position: Vector, velocity: Vector, particles: List<Particle>): Vector {
