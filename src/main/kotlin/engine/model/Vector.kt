@@ -1,7 +1,6 @@
 package engine.model
 
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 data class Vector(val x: Double, val y: Double, val z: Double) {
     fun dotProduct(other: Vector): Double {
@@ -42,5 +41,14 @@ data class Vector(val x: Double, val y: Double, val z: Double) {
         return Vector(newX, newY, newZ)
     }
 
-
+    fun rotate(angle: Double): Vector {
+        val newX = x * cos(angle) + z * sin(angle)
+        val newZ = -x * sin(angle) + z * cos(angle)
+        return Vector(newX, y, newZ)
+    }
+    fun angle(other: Vector): Double {
+        val dotProduct = this.dotProduct(other)
+        val magnitudes = this.length() * other.length()
+        return acos(dotProduct / magnitudes)
+    }
 }
