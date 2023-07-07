@@ -5,8 +5,8 @@ import kotlin.math.absoluteValue
 class Wall(
     private val point: Vector,
     private val normal: Vector,
-    val width: Double,    // El ancho de la pared (en la dirección perpendicular a la normal)
-    val height: Double    // La altura de la pared (en la dirección perpendicular a la normal)
+    private val width: Double,    // El ancho de la pared (en la dirección perpendicular a la normal)
+    private val height: Double    // La altura de la pared (en la dirección perpendicular a la normal)
 ) {
     private val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 

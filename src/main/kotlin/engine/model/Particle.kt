@@ -1,12 +1,12 @@
 package engine.model
 
 data class Particle(
+    val id: Int,
     var position: Vector,
     var velocity: Vector,
     val radius: Double,
     val mass: Double,
-    val isFixed: Boolean = true, // FIXME hardcode,
-    var pressure: Double = 0.0
+    var pressure: Double
 ) {
     fun getDistance(other: Particle): Double {
         return this.position.subtract(other.position).length()
@@ -14,5 +14,20 @@ data class Particle(
 
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Particle
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id
     }
 }

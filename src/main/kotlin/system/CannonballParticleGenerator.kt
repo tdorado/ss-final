@@ -1,4 +1,4 @@
-package engine
+package system
 
 import engine.model.Particle
 import engine.model.Vector
@@ -6,9 +6,8 @@ import engine.model.Wall
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
-import kotlin.system.measureTimeMillis
 
-class ParticleGenerator(
+class CannonballParticleGenerator(
     private val minRadius: Double,
     private val maxRadius: Double,
     private val boxSize: Vector,
@@ -18,13 +17,14 @@ class ParticleGenerator(
 ) {
     private val particles = mutableListOf<Particle>()
     private val random = Random
-    private val logger: Logger = LoggerFactory.getLogger(ParticleGenerator::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
     private var progress = 0
     private var startTime = System.currentTimeMillis()
 
-    fun generateParticles(shouldLog : Boolean = false): List<Particle> {
+    fun generateParticles(shouldLog: Boolean = false): List<Particle> {
         startTime = System.currentTimeMillis()
 
+        var particleCount = 1 // empieza en 1 asi la bala de cañon es la 0
         while (particles.size < numberOfParticles) {
             val radius = random.nextDouble(minRadius, maxRadius)
             val position = Vector(
@@ -33,13 +33,18 @@ class ParticleGenerator(
                 random.nextDouble(radius, boxSize.z - radius)
             )
 
-            if (particles.none { it.overlapsWith(position, radius) } && walls.none { it.overlapsWith(position, radius) }) {
+            if (particles.none { it.overlapsWith(position, radius) } && walls.none {
+                    it.overlapsWith(
+                        position,
+                        radius
+                    )
+                }) {
                 val velocity = Vector(
                     random.nextDouble(-maxVelocity, maxVelocity),
                     random.nextDouble(-maxVelocity, maxVelocity),
                     random.nextDouble(-maxVelocity, maxVelocity)
                 )
-                particles.add(Particle(position, velocity, radius, 1.0, isFixed = false))
+                particles.add(Particle(particleCount++, position, velocity, radius, 1.0, 0.0))
 
                 if (shouldLog) {
                     logger.info("Added particle with position: $position, velocity: $velocity, radius: $radius")
@@ -70,7 +75,14 @@ class ParticleGenerator(
         val estimatedTotal = elapsed / percent * 100
         val remaining = estimatedTotal - elapsed
 
-        progressBar.append(" ${String.format("%.2f", percent)}% complete, estimated remaining time: ${remaining / 1000}s")
+        progressBar.append(
+            " ${
+                String.format(
+                    "%.2f",
+                    percent
+                )
+            }% complete, estimated remaining time: ${remaining / 1000}s"
+        )
 
         logger.info(progressBar.toString())
     }
