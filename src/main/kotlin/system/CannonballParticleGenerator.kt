@@ -14,6 +14,9 @@ class CannonballParticleGenerator(
     private val numberOfParticles: Int,
     private val maxVelocity: Double,
     private val walls: List<Wall>,
+    private val particlesMassGenerator: ParticleMassGenerator,
+    private val pressure: Double,
+    private val frictionCoefficient: Double
 ) {
     private val particles = mutableListOf<Particle>()
     private val random = Random
@@ -44,7 +47,17 @@ class CannonballParticleGenerator(
                     random.nextDouble(-maxVelocity, maxVelocity),
                     random.nextDouble(-maxVelocity, maxVelocity)
                 )
-                particles.add(Particle(particleCount++, position, velocity, radius, 1.0, 0.0))
+                particles.add(
+                    Particle(
+                        particleCount++,
+                        position,
+                        velocity,
+                        radius,
+                        particlesMassGenerator.getParticleMass(),
+                        frictionCoefficient,
+                        pressure
+                    )
+                )
 
                 if (shouldLog) {
                     logger.info("Added particle with position: $position, velocity: $velocity, radius: $radius")
