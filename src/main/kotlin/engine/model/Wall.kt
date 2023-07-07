@@ -23,14 +23,14 @@ class Wall(
     }
 
     fun overlapsWith(particlePosition: Vector, particleRadius: Double): Boolean {
-        val relativePosition = particlePosition.subtract(point)
-        val distance = relativePosition.dotProduct(normal)
+        val relativePosition = particlePosition - (point)
+        val distance = relativePosition.dot(normal)
 
         // Check if the particle is beyond the plane defined by the wall
         if (distance > particleRadius) return false
 
         // Check if the particle is within the wall's boundaries
-        val relativePositionOnPlane = relativePosition.subtract(normal.multiply(distance))
+        val relativePositionOnPlane = relativePosition - (normal * (distance))
         val halfWidth = width / 2.0
         val halfHeight = height / 2.0
 

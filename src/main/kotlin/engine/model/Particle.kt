@@ -6,10 +6,11 @@ data class Particle(
     var velocity: Vector,
     val radius: Double,
     val mass: Double,
-    var pressure: Double
+    val frictionCoefficient: Double,
+    var pressure: Double,
 ) {
-    fun getDistance(other: Particle): Double {
-        return this.position.subtract(other.position).length()
+    fun distance(other: Particle): Double {
+        return position.distance(other.position)
     }
 
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
