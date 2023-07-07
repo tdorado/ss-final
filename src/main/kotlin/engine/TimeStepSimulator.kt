@@ -2,6 +2,7 @@ package engine
 
 import engine.integrators.Integrator
 import engine.model.Particle
+import engine.model.Wall
 
 class TimeStepSimulator(
     private val timeDelta: Double,
@@ -9,7 +10,8 @@ class TimeStepSimulator(
     private val cutCondition: CutCondition,
     private val integrator: Integrator,
     private val fileGenerator: FileGenerator,
-    private val particles: List<Particle>
+    private val particles: List<Particle>,
+    private val walls: List<Wall>
 ) {
     private var time: Double
     private var timeToSave: Double
@@ -23,9 +25,7 @@ class TimeStepSimulator(
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             for (particle in particles) {
-                if (!particle.isFixed) {
-                    integrator.applyIntegrator(timeDelta, particle, particles)
-                }
+                integrator.applyIntegrator(timeDelta, particle, particles, walls)
             }
             time += timeDelta
             if (time >= timeToSave) {

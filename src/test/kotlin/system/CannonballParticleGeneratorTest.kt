@@ -1,11 +1,11 @@
-package engine
+package system
 
 import engine.model.Vector
 import engine.model.Wall
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-class ParticleGeneratorTest {
+class CannonballParticleGeneratorTest {
 
     // Este test tarda en correr en mi pc 2min 16segundos (generacion + chequeo, la generacion tarda mucho menos)
     @Test
@@ -24,7 +24,7 @@ class ParticleGeneratorTest {
             Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), boxSizeInMeters, boxSizeInMeters)
         )
 
-        val generator = ParticleGenerator(minRadius, maxRadius, boxVector, numberOfParticles, maxVelocity, walls)
+        val generator = CannonballParticleGenerator(minRadius, maxRadius, boxVector, numberOfParticles, maxVelocity, walls)
 
         // Genera las partículas
         val particles = generator.generateParticles()
@@ -56,7 +56,7 @@ class ParticleGeneratorTest {
             Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), boxSizeInMeters, boxSizeInMeters)
         )
 
-        val generator = ParticleGenerator(minRadius, maxRadius, boxVector, numberOfParticles, maxVelocity, walls)
+        val generator = CannonballParticleGenerator(minRadius, maxRadius, boxVector, numberOfParticles, maxVelocity, walls)
 
         // Genera las partículas
         val particles = generator.generateParticles()
