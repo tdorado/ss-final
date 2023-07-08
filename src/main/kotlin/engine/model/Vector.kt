@@ -2,8 +2,8 @@ package engine.model
 
 import kotlin.math.sqrt
 
-class Vector(val x: Double = 0.0, val y: Double = 0.0, val z: Double = 0.0) {
-    private val magnitude: Double
+class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
+    val magnitude: Double
         get() = sqrt(x * x + y * y + z * z)
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
     operator fun minus(v: Vector) = Vector(x - v.x, y - v.y, z - v.z)

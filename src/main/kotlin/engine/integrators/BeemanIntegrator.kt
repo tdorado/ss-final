@@ -45,12 +45,12 @@ class BeemanIntegrator(
         val previousAcceleration = previousAccelerations[particle]!!
         particle.position = particle.position +
                 (particle.velocity * timeDelta) +
-                (acceleration * ((2 / 3) * timeDelta.pow(2))) -
-                (previousAcceleration * (1 / 6 * timeDelta.pow(2)))
+                (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
+                (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
         //predict velocity with position
         val velocityPrediction = particle.velocity +
-                (acceleration * (3 / 2 * timeDelta)) -
-                (previousAcceleration * (1 / 2 * timeDelta))
+                (acceleration * (3.0 / 2.0 * timeDelta)) -
+                (previousAcceleration * (1.0 / 2.0 * timeDelta))
         val nextParticlePrediction = Particle(
             particle.id,
             particle.position,
@@ -61,11 +61,20 @@ class BeemanIntegrator(
             particle.pressure
         )
         val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
+
         //correct velocity
         particle.velocity = particle.velocity +
-                (nextAcceleration * (1 / 3 * timeDelta)) +
-                (acceleration * (5 / 6 * timeDelta)) -
-                (previousAcceleration * (1 / 6 * timeDelta))
+                (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
+                (acceleration * (5.0 / 6.0 * timeDelta)) -
+                (previousAcceleration * (1.0 / 6.0 * timeDelta))
+
+
+        if (particle.id == 0 && particle.isOnTheGround) {
+            if (particle.position.z <= 0 && particle.velocity.z < 0) {
+                particle.velocity.z = -particle.velocity.z
+            }
+        }
+
         previousAccelerations[particle] = acceleration
     }
 }

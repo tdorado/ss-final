@@ -23,20 +23,22 @@ class CannonballParticleGenerator(
     private var progress = 0
     private var startTime = System.currentTimeMillis()
 
-    fun generateParticles(shouldLog: Boolean = false): List<Particle> {
+    fun generateParticles(shouldLog: Boolean = true): List<Particle> {
         startTime = System.currentTimeMillis()
 
-        var particleCount = 1 // empieza en 1 asi la bala de cañon es la 0
+        var particleCount = 1 // Empieza en 1 para que la bala de cañón sea la 0
         while (particles.size < numberOfParticles) {
-            val radius = particleDiameterGenerator.getParticleDiameter() / 2 // radio = diametro/2
+            val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
             val position = Vector(
                 random.nextDouble(radius, boxSize.x - radius),
                 random.nextDouble(radius, boxSize.y - radius),
                 random.nextDouble(radius, boxSize.z - radius)
             )
 
-            if (particles.none { it.overlapsWith(position, radius) } &&
-                walls.none { it.overlapsWith(position, radius) }) {
+            val overlappingParticle = particles.find { it.overlapsWith(position, radius) }
+            val overlappingWall = walls.find { it.overlapsWith(position, radius) }
+
+            if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()
                 particles.add(
                     Particle(
@@ -55,13 +57,19 @@ class CannonballParticleGenerator(
                 }
                 updateProgress()
             } else {
-                if (shouldLog)
-                    logger.info("Failed to add particle with position: $position, radius: $radius, overlapped with existing particle or wall")
+                if (shouldLog) {
+                    if (overlappingParticle != null) {
+                        logger.info("Failed to add particle with position: $position, radius: $radius, overlapped with existing particle: $overlappingParticle")
+                    } else {
+                        logger.info("Failed to add particle with position: $position, radius: $radius, overlapped with wall: $overlappingWall")
+                    }
+                }
             }
         }
 
         return particles
     }
+
 
     private fun updateProgress() {
         progress += 1

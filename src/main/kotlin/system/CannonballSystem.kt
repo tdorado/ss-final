@@ -5,7 +5,6 @@ import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
 import engine.model.Particle
 import engine.model.Vector
-import kotlin.math.cos
 import kotlin.math.sin
 
 
@@ -14,15 +13,15 @@ class CannonballSystem {
         const val particleMass = 0.01
         const val timeDelta = 0.01
         const val saveTimeDelta = 0.02
-        const val cutoffTime = 10.0
+        const val cutoffTime = 3.0
         const val particlesMinRadius = 0.02
         const val particlesMaxRadius = 0.05
-        val boxSize = Vector(1.0, 1.0, 1.0)
-        const val numberOfParticles = 100
-        const val boxSizeInMeters = 1.0
-        private const val minParticleMass = 0.01
-        private const val maxParticleMass = 0.05
-        val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleMass, maxParticleMass)
+        const val boxSizeInMeters = 0.5
+        val boxSize = Vector(boxSizeInMeters, boxSizeInMeters, boxSizeInMeters)
+        const val numberOfParticles = 1
+        private const val minParticleDiameter = 0.01
+        private const val maxParticleDiameter = 0.05
+        val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
         const val boxParticlesFrictionCoefficient = 0.55
     }
 
@@ -41,10 +40,10 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 450.0
-        val angle = Math.PI / 4
-        val velocity = Vector(velocityMagnitude * cos(angle), velocityMagnitude * sin(angle), 0.0)
-        val position = Vector(0.0, 0.0, 0.0)
+        val velocityMagnitude = 1.0
+        val angle = Math.PI / 2
+        val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
+        val position = Vector(boxSizeInMeters / 2.0, boxSizeInMeters / 2.0, 2 * boxSizeInMeters)
         val radius = 175e-3 / 2
         val mass = 17.5
         val frictionCoefficient = 0.15
@@ -68,11 +67,20 @@ class CannonballSystem {
 
     private fun createBoxWalls(): List<Wall> {
         return listOf(
-            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters),
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), boxSizeInMeters, boxSizeInMeters),
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), boxSizeInMeters, boxSizeInMeters),
-            Wall(Vector(boxSizeInMeters, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters),
-            Wall(Vector(0.0, boxSizeInMeters, 0.0), Vector(0.0, 1.0, 0.0), boxSizeInMeters, boxSizeInMeters),
+            // Left wall: se sitúa en el punto (0,0,0) y su normal apunta hacia la derecha (1,0,0).
+            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "LEFT"),
+
+            // Right wall: se sitúa en el punto (boxSizeInMeters, 0, 0) y su normal apunta hacia la izquierda (-1,0,0).
+            Wall(Vector(boxSizeInMeters, 0.0, 0.0), Vector(-1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "RIGHT"),
+
+            // Front wall: se sitúa en el punto (0,0,0) y su normal apunta hacia atrás (0,1,0).
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), boxSizeInMeters, boxSizeInMeters, "FRONT"),
+
+            // Back wall: se sitúa en el punto (0, boxSizeInMeters, 0) y su normal apunta hacia adelante (0,-1,0).
+            Wall(Vector(0.0, boxSizeInMeters, 0.0), Vector(0.0, -1.0, 0.0), boxSizeInMeters, boxSizeInMeters, "BACK"),
+
+            // Bottom wall: se sitúa en el punto (0,0,0) y su normal apunta hacia arriba (0,0,1). Esta es la base de la caja.
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), boxSizeInMeters, boxSizeInMeters, "BOTTOM"),
         )
     }
 }
