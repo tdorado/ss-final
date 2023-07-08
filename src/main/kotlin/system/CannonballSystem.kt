@@ -13,7 +13,7 @@ class CannonballSystem {
         const val particleMass = 0.5
         const val timeDelta = 0.01
         const val saveTimeDelta = 0.02
-        const val cutoffTime = 3.0
+        const val cutoffTime = 1.0
         const val particlesMinRadius = 0.02
         const val particlesMaxRadius = 0.05
         const val boxSizeInMeters = 0.5
@@ -31,7 +31,7 @@ class CannonballSystem {
         val boxParticles = createBoxParticles(boxWalls)
         val particles = listOf(cannonballParticle) + boxParticles
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxSizeInMeters)
-        val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
+        val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
         val cutCondition = TimeCutCondition(cutoffTime)
         val simulator =
@@ -40,7 +40,7 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 2.0
+        val velocityMagnitude = 3.0
         val angle = Math.PI / 2
         val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
         val position = Vector(boxSizeInMeters / 2.0, boxSizeInMeters / 2.0, 2 * boxSizeInMeters)
