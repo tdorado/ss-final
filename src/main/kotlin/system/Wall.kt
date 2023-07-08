@@ -1,5 +1,6 @@
-package engine.model
+package system
 
+import engine.model.Vector
 import kotlin.math.absoluteValue
 
 class Wall(

@@ -3,9 +3,9 @@ package system
 import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
-import engine.model.Wall
+import kotlin.math.pow
 
-class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator {
+class CannonballForcesCalculator(private val walls: List<Wall>, private val boxHeight: Double = 1.0) : ForcesCalculator {
 
     private fun calculateGravityForce(particle: Particle): Vector {
         val g = 9.81  // Acceleration due to gravity (in m/s^2)
@@ -18,7 +18,7 @@ class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator
         // divided by the surface area of the particle.
         val weight = particle.mass * 9.81 // Weight = mass * g
         val heightRatio = (boxHeight - particle.position.z) / boxHeight
-        return weight * heightRatio / (2 * Math.PI * Math.pow(particle.radius, 2.0))
+        return weight * heightRatio / (2 * Math.PI * particle.radius.pow(2.0))
     }
 
     private fun calculateParticleInteractionForce(particle: Particle, neighbours: List<Particle>): Vector {
@@ -55,7 +55,7 @@ class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator
         return wallForce
     }
 
-    override fun getForces(particle: Particle, neighbours: List<Particle>, walls: List<Wall>): Vector {
+    override fun getForces(particle: Particle, neighbours: List<Particle>): Vector {
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)

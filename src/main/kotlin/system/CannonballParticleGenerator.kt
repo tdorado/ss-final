@@ -2,7 +2,6 @@ package system
 
 import engine.model.Particle
 import engine.model.Vector
-import engine.model.Wall
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.random.Random
@@ -12,7 +11,6 @@ class CannonballParticleGenerator(
     private val maxRadius: Double,
     private val boxSize: Vector,
     private val numberOfParticles: Int,
-    private val maxVelocity: Double,
     private val walls: List<Wall>,
     private val particlesMassGenerator: ParticleMassGenerator,
     private val pressure: Double,
@@ -36,17 +34,9 @@ class CannonballParticleGenerator(
                 random.nextDouble(radius, boxSize.z - radius)
             )
 
-            if (particles.none { it.overlapsWith(position, radius) } && walls.none {
-                    it.overlapsWith(
-                        position,
-                        radius
-                    )
-                }) {
-                val velocity = Vector(
-                    random.nextDouble(-maxVelocity, maxVelocity),
-                    random.nextDouble(-maxVelocity, maxVelocity),
-                    random.nextDouble(-maxVelocity, maxVelocity)
-                )
+            if (particles.none { it.overlapsWith(position, radius) } &&
+                walls.none { it.overlapsWith(position, radius) }) {
+                val velocity = Vector()
                 particles.add(
                     Particle(
                         particleCount++,

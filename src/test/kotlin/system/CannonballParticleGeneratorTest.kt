@@ -1,7 +1,6 @@
 package system
 
 import engine.model.Vector
-import engine.model.Wall
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -16,7 +15,6 @@ class CannonballParticleGeneratorTest {
         val boxSizeInMeters = 1.0
         val boxVector = Vector(1.0, 1.0, 1.0)
         val numberOfParticles = 100000
-        val maxVelocity = 1.0
 
         val walls = listOf(
             Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters),
@@ -29,7 +27,6 @@ class CannonballParticleGeneratorTest {
             maxRadius,
             boxVector,
             numberOfParticles,
-            maxVelocity,
             walls,
             ParticleMassGenerator(0.0, 0.01),
             1.0,
@@ -58,7 +55,6 @@ class CannonballParticleGeneratorTest {
         val boxSizeInMeters = 1.0
         val boxVector = Vector(1.0, 1.0, 1.0)
         val numberOfParticles = 200000
-        val maxVelocity = 1.0
 
         val walls = listOf(
             Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters),
@@ -72,7 +68,6 @@ class CannonballParticleGeneratorTest {
                 maxRadius,
                 boxVector,
                 numberOfParticles,
-                maxVelocity,
                 walls,
                 ParticleMassGenerator(0.0, 0.01),
                 1.0,
