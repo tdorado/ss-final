@@ -2,11 +2,18 @@ import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import system.CannonballSystem
+import system.EfficientParticleGenerator
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = ["1.0"])
 class Main : Runnable {
-    @Option(names = ["-n"], description = ["Number of particles"], required = true)
-    var nParticles: Int = 0
+    @Option(names = ["-n"], description = ["Number of particles"], required = false)
+    var nParticles: Int = 1000
+
+    @Option(names = ["-pGen"], description = ["True to run only generating particles"], required = false)
+    var pGen: Boolean = false
+
+    @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
+    var particleFile: String = ""
 
     @Option(names = ["-o"], description = ["Output file name"], required = false)
     var outputFileName: String = "output.xyz"
@@ -66,14 +73,37 @@ class Main : Runnable {
         println("boxSideLength: $boxSideLength")
         println("boxHeight: $boxHeight")
         println("frictionCoefficient: $frictionCoefficient")
+        val cannonballSystem = CannonballSystem()
+
+        if (pGen) {
+
+            val particleGenerator = EfficientParticleGenerator(
+                CannonballSystem.particleMass,
+                CannonballSystem.particlesMinRadius,
+                CannonballSystem.particlesMaxRadius,
+                CannonballSystem.boxSize,
+                nParticles,
+                cannonballSystem.createBoxWalls(),
+                CannonballSystem.particlesDiameterGenerator,
+                0.0,
+                CannonballSystem.boxParticlesFrictionCoefficient
+            )
+            particleGenerator.generateParticles(true)
+            particleGenerator.exportParticlesToFile("particles_test")
+        } else {
+            if (particleFile.isEmpty()) {
+                cannonballSystem.run()
+            } else {
+                val particles = EfficientParticleGenerator.importParticlesFromFile(particleFile)
+                cannonballSystem.run(particles)
+            }
+        }
     }
+
+
 }
 
 fun main(args: Array<String>) {
-    //val commandLine = CommandLine(Main())
-    //commandLine.execute(*args)
-    // Cannonball System tiene todo hardcodeado, hasta no lograr que funcione no se lo mandaria igual
-    // dejo comentado el command line
-    val cannonballSystem = CannonballSystem()
-    cannonballSystem.run()
+    val commandLine = CommandLine(Main())
+    commandLine.execute(*args)
 }

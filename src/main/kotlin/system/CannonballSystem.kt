@@ -25,11 +25,17 @@ class CannonballSystem {
         const val boxParticlesFrictionCoefficient = 100.0
     }
 
-    fun run() {
+    fun run(particlesFromFile: List<Particle> = emptyList()) {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
-        val boxParticles = createBoxParticles(boxWalls)
-        val particles = listOf(cannonballParticle) + boxParticles
+
+        val particles: List<Particle> = if (particlesFromFile.isEmpty()) {
+            val boxParticles = createBoxParticles(boxWalls)
+            listOf(cannonballParticle) + boxParticles
+        } else {
+            listOf(cannonballParticle) + particlesFromFile
+        }
+
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxSizeInMeters)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
@@ -65,7 +71,7 @@ class CannonballSystem {
         return particleGenerator.generateParticles()
     }
 
-    private fun createBoxWalls(): List<Wall> {
+    public fun createBoxWalls(): List<Wall> {
         return listOf(
             // Left wall: se sitúa en el punto (0,0,0) y su normal apunta hacia la derecha (1,0,0).
             Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "LEFT"),

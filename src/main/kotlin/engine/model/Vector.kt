@@ -3,6 +3,13 @@ package engine.model
 import kotlin.math.sqrt
 
 class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
+
+    companion object {
+        fun fromString(str: String): Vector {
+            val parts = str.trimStart('(').trimEnd(')').split(',')
+            return Vector(parts[0].toDouble(), parts[1].toDouble(), parts[2].toDouble())
+        }
+    }
     val magnitude: Double
         get() = sqrt(x * x + y * y + z * z)
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
