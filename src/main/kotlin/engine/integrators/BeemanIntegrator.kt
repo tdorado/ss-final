@@ -52,12 +52,6 @@ class BeemanIntegrator(
     override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: List<Particle>) {
         var acceleration = getForces(particle, particles) / particle.mass
 
-        // check collision with walls
-        if (particle.id == 0 && particle.isOnTheGround) {
-            if (particle.position.z <= 0 && particle.velocity.z < 0) {
-                particle.velocity.z = -particle.velocity.z
-            }
-        }
         // FIXME
         if (particle.collideWithWall) {
             particle.velocity = particle.velocity * (-1.0)

@@ -4,6 +4,7 @@ import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
 import kotlin.math.pow
+
 class CannonballForcesCalculator(private val walls: List<Wall>, private val boxHeight: Double = 1.0) : ForcesCalculator {
 
     private fun calculateGravityForce(particle: Particle): Vector {
@@ -24,10 +25,10 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
             if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
                 val normalDirection = (otherParticle.position - particle.position).normalize()
                 val relativeVelocity = particle.velocity - otherParticle.velocity
-                val normalVelocity = normalDirection * (relativeVelocity.dotProduct(normalDirection))
-                val tangentialVelocity = relativeVelocity - normalVelocity
+                val normalVelocity = normalDirection.dotProduct(relativeVelocity)
+                val tangentialVelocity = relativeVelocity - normalDirection * normalVelocity
 
-                interactionForce += tangentialVelocity * -particle.frictionCoefficient
+                interactionForce += tangentialVelocity * (-particle.radius * particle.frictionCoefficient)
             }
         }
 
@@ -57,7 +58,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
 
-        // Prevent the particle from passing through the floor (z = 0) FIXME extract to another place
+        // Prevent the particle from passing through the floor (z = 0)
         if (particle.position.z < 0.0 && particle.id == 0) {
             particle.isOnTheGround = true
             val normalForce = Vector(0.0, 0.0, -gravityForce.z)

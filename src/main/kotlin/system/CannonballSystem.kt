@@ -10,7 +10,7 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
-        const val particleMass = 0.01
+        const val particleMass = 0.5
         const val timeDelta = 0.01
         const val saveTimeDelta = 0.02
         const val cutoffTime = 3.0
@@ -18,11 +18,11 @@ class CannonballSystem {
         const val particlesMaxRadius = 0.05
         const val boxSizeInMeters = 0.5
         val boxSize = Vector(boxSizeInMeters, boxSizeInMeters, boxSizeInMeters)
-        const val numberOfParticles = 1000
+        const val numberOfParticles = 5000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.05
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
-        const val boxParticlesFrictionCoefficient = 0.55
+        const val boxParticlesFrictionCoefficient = 100.0
     }
 
     fun run() {
@@ -40,7 +40,7 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 1.0
+        val velocityMagnitude = 2.0
         val angle = Math.PI / 2
         val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
         val position = Vector(boxSizeInMeters / 2.0, boxSizeInMeters / 2.0, 2 * boxSizeInMeters)
