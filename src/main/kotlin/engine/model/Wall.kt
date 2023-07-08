@@ -3,28 +3,16 @@ package engine.model
 import kotlin.math.absoluteValue
 
 class Wall(
-    private val point: Vector,
-    private val normal: Vector,
-    private val width: Double,    // El ancho de la pared (en la dirección perpendicular a la normal)
-    private val height: Double    // La altura de la pared (en la dirección perpendicular a la normal)
+    val point: Vector,
+    val normal: Vector,
+    val width: Double,    // El ancho de la pared (en la dirección perpendicular a la normal)
+    val height: Double    // La altura de la pared (en la dirección perpendicular a la normal)
 ) {
-    private val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
-
-    fun getPoint(): Vector {
-        return this.point
-    }
-
-    fun getNormal(): Vector {
-        return this.normal
-    }
-
-    fun getTangent(): Vector {
-        return this.tangent
-    }
+    val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
     fun overlapsWith(particlePosition: Vector, particleRadius: Double): Boolean {
         val relativePosition = particlePosition - (point)
-        val distance = relativePosition.dot(normal)
+        val distance = relativePosition.dotProduct(normal)
 
         // Check if the particle is beyond the plane defined by the wall
         if (distance > particleRadius) return false

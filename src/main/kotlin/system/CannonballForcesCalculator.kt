@@ -4,7 +4,6 @@ import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
 import engine.model.Wall
-import kotlin.math.pow
 
 class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator {
 
@@ -29,7 +28,7 @@ class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator
             if (particle != otherParticle) {
                 val normalDirection = (otherParticle.position - particle.position).normalize()
                 val relativeVelocity = particle.velocity - otherParticle.velocity
-                val normalVelocity = normalDirection * (relativeVelocity dot normalDirection)
+                val normalVelocity = normalDirection * (relativeVelocity.dotProduct(normalDirection))
                 val tangentialVelocity = relativeVelocity - normalVelocity
 
                 // Friction force is proportional to the relative velocity in the tangential direction
@@ -45,8 +44,8 @@ class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator
 
         for (wall in walls) {
             if (wall.overlapsWith(particle.position, particle.radius)) {
-                val normalDirection = wall.getNormal()
-                val normalVelocity = normalDirection * (particle.velocity dot normalDirection)
+                val normalDirection = wall.normal
+                val normalVelocity = normalDirection * (particle.velocity.dotProduct(normalDirection))
 
                 // The wall applies a force that is proportional to the particle's velocity in the direction of the wall's normal, also the -2 is used to simulate a rebound, -1 if we only want to invert sign
                 wallForce += normalVelocity.times(-2.0) * particle.frictionCoefficient
