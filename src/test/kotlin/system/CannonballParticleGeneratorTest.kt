@@ -25,6 +25,7 @@ class CannonballParticleGeneratorTest {
         )
 
         val generator = CannonballParticleGenerator(
+            0.01,
             minRadius,
             maxRadius,
             boxVector,
@@ -68,6 +69,7 @@ class CannonballParticleGeneratorTest {
 
         val generator =
             CannonballParticleGenerator(
+                0.01,
                 minRadius,
                 maxRadius,
                 boxVector,

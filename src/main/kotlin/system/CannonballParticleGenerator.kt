@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory
 import kotlin.random.Random
 
 class CannonballParticleGenerator(
+    private val mass: Double,
     private val minRadius: Double,
     private val maxRadius: Double,
     private val boxSize: Vector,
     private val numberOfParticles: Int,
     private val maxVelocity: Double,
     private val walls: List<Wall>,
-    private val particlesMassGenerator: ParticleDiameterGenerator,
+    private val particleDiameterGenerator: ParticleDiameterGenerator,
     private val pressure: Double,
     private val frictionCoefficient: Double
 ) {
@@ -29,7 +30,7 @@ class CannonballParticleGenerator(
 
         var particleCount = 1 // empieza en 1 asi la bala de cañon es la 0
         while (particles.size < numberOfParticles) {
-            val radius = random.nextDouble(minRadius, maxRadius)
+            val radius = particleDiameterGenerator.getParticleDiameter() / 2 // radio = diametro/2
             val position = Vector(
                 random.nextDouble(radius, boxSize.x - radius),
                 random.nextDouble(radius, boxSize.y - radius),
@@ -53,7 +54,7 @@ class CannonballParticleGenerator(
                         position,
                         velocity,
                         radius,
-                        particlesMassGenerator.getParticleDiameter(),
+                        mass,
                         frictionCoefficient,
                         pressure
                     )
