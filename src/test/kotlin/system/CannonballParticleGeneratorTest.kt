@@ -31,7 +31,7 @@ class CannonballParticleGeneratorTest {
             numberOfParticles,
             maxVelocity,
             walls,
-            ParticleMassGenerator(0.0, 0.01),
+            ParticleDiameterGenerator(0.0, 0.01),
             1.0,
             1.0
         )
@@ -74,7 +74,7 @@ class CannonballParticleGeneratorTest {
                 numberOfParticles,
                 maxVelocity,
                 walls,
-                ParticleMassGenerator(0.0, 0.01),
+                ParticleDiameterGenerator(0.0, 0.01),
                 1.0,
                 0.4
             )

@@ -14,7 +14,7 @@ class CannonballParticleGenerator(
     private val numberOfParticles: Int,
     private val maxVelocity: Double,
     private val walls: List<Wall>,
-    private val particlesMassGenerator: ParticleMassGenerator,
+    private val particlesMassGenerator: ParticleDiameterGenerator,
     private val pressure: Double,
     private val frictionCoefficient: Double
 ) {
@@ -53,7 +53,7 @@ class CannonballParticleGenerator(
                         position,
                         velocity,
                         radius,
-                        particlesMassGenerator.getParticleMass(),
+                        particlesMassGenerator.getParticleDiameter(),
                         frictionCoefficient,
                         pressure
                     )
