@@ -6,11 +6,20 @@ import engine.model.Vector
 import engine.model.Wall
 import kotlin.math.pow
 
-class CannonballForcesCalculator() : ForcesCalculator {
+class CannonballForcesCalculator(val boxHeight: Double = 1.0) : ForcesCalculator {
 
     private fun calculateGravityForce(particle: Particle): Vector {
         val g = 9.81  // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
+    }
+
+    // Ojo con esto, calcula la presion teniendo en cuenta la posicion de la particula en el cajon que deberia ser lo correcto
+    private fun calculatePressure(particle: Particle, boxHeight: Double): Double {
+        // We calculate the pressure as the weight of the particle times the height in the box
+        // divided by the surface area of the particle.
+        val weight = particle.mass * 9.81 // Weight = mass * g
+        val heightRatio = (boxHeight - particle.position.z) / boxHeight
+        return weight * heightRatio / (2 * Math.PI * Math.pow(particle.radius, 2.0))
     }
 
     private fun calculateParticleInteractionForce(particle: Particle, neighbours: List<Particle>): Vector {
@@ -51,6 +60,9 @@ class CannonballForcesCalculator() : ForcesCalculator {
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
+
+        // Calculate and set the pressure for the particle
+        particle.pressure = calculatePressure(particle, boxHeight)
 
         return gravityForce + interactionForce + wallForce
     }
