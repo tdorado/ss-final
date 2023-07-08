@@ -4,6 +4,9 @@ import engine.model.Particle
 import engine.model.Vector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.log
 import kotlin.random.Random
 
 class CannonballParticleGenerator(
@@ -23,9 +26,12 @@ class CannonballParticleGenerator(
     private var progress = 0
     private var startTime = System.currentTimeMillis()
 
-    fun generateParticles(shouldLog: Boolean = true): List<Particle> {
+    fun generateParticles(shouldLog: Boolean = false): List<Particle> {
         startTime = System.currentTimeMillis()
 
+        val currentDateTime = LocalDateTime.now()
+        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        logger.info("[$formattedDateTime] Generating particles")
         var particleCount = 1 // Empieza en 1 para que la bala de cañón sea la 0
         while (particles.size < numberOfParticles) {
             val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2

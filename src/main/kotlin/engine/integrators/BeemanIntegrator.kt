@@ -3,6 +3,11 @@ package engine.integrators
 import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import system.CannonballParticleGenerator
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.pow
 
 
@@ -12,11 +17,15 @@ class BeemanIntegrator(
     particles: List<Particle>,
 ) : Integrator(forcesCalculator) {
     private val previousAccelerations: MutableMap<Particle, Vector>
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     init {
         previousAccelerations = HashMap()
         val zeroV = Vector()
         for (p in particles) {
+            val currentDateTime = LocalDateTime.now()
+            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            logger.info("[$formattedDateTime] Performing simulation for particle " + p.id)
             if (p.velocity == zeroV) {
                 previousAccelerations[p] = zeroV
             } else {
@@ -41,7 +50,20 @@ class BeemanIntegrator(
     }
 
     override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: List<Particle>) {
-        val acceleration = getForces(particle, particles) / particle.mass
+        var acceleration = getForces(particle, particles) / particle.mass
+
+        // check collision with walls
+        if (particle.id == 0 && particle.isOnTheGround) {
+            if (particle.position.z <= 0 && particle.velocity.z < 0) {
+                particle.velocity.z = -particle.velocity.z
+            }
+        }
+        // FIXME
+        if (particle.collideWithWall) {
+            particle.velocity = particle.velocity * (-1.0)
+            acceleration = acceleration * (-1.0)
+        }
+
         val previousAcceleration = previousAccelerations[particle]!!
         particle.position = particle.position +
                 (particle.velocity * timeDelta) +
@@ -69,11 +91,7 @@ class BeemanIntegrator(
                 (previousAcceleration * (1.0 / 6.0 * timeDelta))
 
 
-        if (particle.id == 0 && particle.isOnTheGround) {
-            if (particle.position.z <= 0 && particle.velocity.z < 0) {
-                particle.velocity.z = -particle.velocity.z
-            }
-        }
+
 
         previousAccelerations[particle] = acceleration
     }

@@ -36,6 +36,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
 
     private fun calculateWallForce(particle: Particle, walls: List<Wall>): Vector {
         var wallForce = Vector()
+        particle.collideWithWall = false
 
         for (wall in walls) {
             if (wall.overlapsWith(particle.position, particle.radius)) {
@@ -44,6 +45,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
 
                 wallForce += wall.normal * -2.0 * normalVelocity * particle.frictionCoefficient
                 wallForce += wall.tangent * -2.0 * tangentVelocity * particle.frictionCoefficient
+                particle.collideWithWall = true
             }
         }
 
@@ -55,7 +57,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
 
-        // Prevent the particle from passing through the floor (z = 0)
+        // Prevent the particle from passing through the floor (z = 0) FIXME extract to another place
         if (particle.position.z < 0.0 && particle.id == 0) {
             particle.isOnTheGround = true
             val normalForce = Vector(0.0, 0.0, -gravityForce.z)
@@ -63,9 +65,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         } else if (particle.id == 0) {
             particle.isOnTheGround = false
         }
-        if (particle.id == 0) {
-            System.out.println("")
-        }
+
         return gravityForce + interactionForce + wallForce
     }
 }

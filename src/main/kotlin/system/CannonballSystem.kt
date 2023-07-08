@@ -18,7 +18,7 @@ class CannonballSystem {
         const val particlesMaxRadius = 0.05
         const val boxSizeInMeters = 0.5
         val boxSize = Vector(boxSizeInMeters, boxSizeInMeters, boxSizeInMeters)
-        const val numberOfParticles = 1
+        const val numberOfParticles = 1000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.05
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
@@ -29,7 +29,7 @@ class CannonballSystem {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
         val boxParticles = createBoxParticles(boxWalls)
-        val particles = boxParticles + cannonballParticle
+        val particles = listOf(cannonballParticle) + boxParticles
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxSizeInMeters)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
