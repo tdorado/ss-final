@@ -23,12 +23,13 @@ class CannonballParticleGeneratorTest {
         )
 
         val generator = CannonballParticleGenerator(
+            0.01,
             minRadius,
             maxRadius,
             boxVector,
             numberOfParticles,
             walls,
-            ParticleMassGenerator(0.0, 0.01),
+            ParticleDiameterGenerator(0.0, 0.01),
             1.0,
             1.0
         )
@@ -64,12 +65,13 @@ class CannonballParticleGeneratorTest {
 
         val generator =
             CannonballParticleGenerator(
+                0.01,
                 minRadius,
                 maxRadius,
                 boxVector,
                 numberOfParticles,
                 walls,
-                ParticleMassGenerator(0.0, 0.01),
+                ParticleDiameterGenerator(0.0, 0.01),
                 1.0,
                 0.4
             )

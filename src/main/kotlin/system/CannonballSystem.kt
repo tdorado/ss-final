@@ -11,6 +11,7 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
+        const val particleMass = 0.01
         const val timeDelta = 0.01
         const val saveTimeDelta = 0.02
         const val cutoffTime = 10.0
@@ -21,7 +22,7 @@ class CannonballSystem {
         const val boxSizeInMeters = 1.0
         private const val minParticleMass = 0.01
         private const val maxParticleMass = 0.05
-        val particlesMassGenerator = ParticleMassGenerator(minParticleMass, maxParticleMass)
+        val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleMass, maxParticleMass)
         const val boxParticlesFrictionCoefficient = 0.55
     }
 
@@ -52,12 +53,13 @@ class CannonballSystem {
 
     private fun createBoxParticles(boxWalls: List<Wall>): List<Particle> {
         val particleGenerator = CannonballParticleGenerator(
+            particleMass,
             particlesMinRadius,
             particlesMaxRadius,
             boxSize,
             numberOfParticles,
             boxWalls,
-            particlesMassGenerator,
+            particlesDiameterGenerator,
             0.0,
             boxParticlesFrictionCoefficient,
         )
