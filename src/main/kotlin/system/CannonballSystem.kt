@@ -15,31 +15,31 @@ class CannonballSystem {
         const val particleMass = 0.05
         const val timeDelta = 0.00001
         const val saveTimeDelta = 0.00001
-        const val cutoffTime = 0.01
+        const val cutoffTime = 0.1
         private const val boxHeight = 0.5
         private const val boxWidth = 0.5
         val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
-        const val numberOfParticles = 2000
+        const val numberOfParticles = 3000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.03
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
 
         // Coeficientes de fricción y restitución para la bala de cañón
-        const val cannonballGammaN = 0.8
-        const val cannonballGammaT = 0.8
-        const val cannonballKt = 2E6
+        const val cannonballGammaN = 0.9
+        const val cannonballGammaT = 0.9
+        const val cannonballKt = 2.0
         const val cannonballKn = cannonballKt / 25
 
         // Coeficientes de fricción y restitución para las partículas del lecho
-        const val pGammaN = 0.5
-        const val pGammaT = 0.5
-        const val pKt = 5E6
+        const val pGammaN = 0.9
+        const val pGammaT = 0.9
+        const val pKt = 5E2
         const val pKn = pKt / 25
 
         // Coeficientes de fricción y restitución para las paredes
         const val wGammaN = 0.5
         const val wGammaT = 0.5
-        const val wKt = 5E6
+        const val wKt = 5E1
         const val wKn = wKt / 25
 
     }

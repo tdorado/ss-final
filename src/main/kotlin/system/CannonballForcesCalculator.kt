@@ -74,12 +74,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
 
                 wallForce += normalForceValue + tangentialForceValue
 
-                // Invertir la velocidad y aceleración si hay colisión con la pared
-//                particle.velocity -= wall.normal.times(2 * normalVelocity)
+                // Invertir la velocidad si hay colisión con la pared y darle empuje
                 val normalVelocityComponent = particle.velocity.dotProduct(wall.normal)
                 particle.velocity -= wall.normal * (2 * normalVelocityComponent)
-
-//                particle.velocity -= Vector(0.0, 0.0, 2 * normalVelocity) * wall.normal.z
             }
         }
 
