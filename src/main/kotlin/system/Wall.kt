@@ -7,7 +7,10 @@ import kotlin.math.absoluteValue
 class Wall(
     val position: Vector,
     val normal: Vector,
-    val frictionCoefficient: Double,
+    val Kn: Double,
+    val Kt: Double,
+    val gammaN: Double,
+    val gammaT: Double,
     val id: String
 ) {
     val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
@@ -18,6 +21,10 @@ class Wall(
         return distanceFromWall <= radius
     }
 
+    fun isOutsideBox(position: Vector): Boolean {
+        val wallToPosition = position - this.position
+        return wallToPosition.dotProduct(this.normal) < 0
+    }
     override fun toString(): String {
         return "Wall(identifier='$id')"
     }

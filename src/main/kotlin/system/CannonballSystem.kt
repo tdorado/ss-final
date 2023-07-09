@@ -14,19 +14,36 @@ class CannonballSystem {
     companion object {
         const val particleMass = 0.05
         const val timeDelta = 0.00001
-        const val saveTimeDelta = 0.00005
-        const val cutoffTime = 0.02
-        private const val boxHeight = 1.0
-        private const val boxWidth = 1.0
+        const val saveTimeDelta = 0.00001
+        const val cutoffTime = 0.01
+        private const val boxHeight = 0.5
+        private const val boxWidth = 0.5
         val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
-        const val numberOfParticles = 3000
+        const val numberOfParticles = 2000
         private const val minParticleDiameter = 0.01
-        private const val maxParticleDiameter = 0.05
+        private const val maxParticleDiameter = 0.03
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
-        const val Kt = 2.2E6
-        const val Kn = Kt / 25
-        const val wallsFrictionCoefficient = 1.0
+
+        // Coeficientes de fricción y restitución para la bala de cañón
+        const val cannonballGammaN = 0.8
+        const val cannonballGammaT = 0.8
+        const val cannonballKt = 2E6
+        const val cannonballKn = cannonballKt / 25
+
+        // Coeficientes de fricción y restitución para las partículas del lecho
+        const val pGammaN = 0.5
+        const val pGammaT = 0.5
+        const val pKt = 5E6
+        const val pKn = pKt / 25
+
+        // Coeficientes de fricción y restitución para las paredes
+        const val wGammaN = 0.5
+        const val wGammaT = 0.5
+        const val wKt = 5E6
+        const val wKn = wKt / 25
+
     }
+
 
     fun run(particlesFromFile: Set<Particle> = emptySet()) {
         val cannonballParticle = createCannonBall()
@@ -55,8 +72,17 @@ class CannonballSystem {
         val position = Vector(boxWidth / 2.0, boxWidth / 2.0, 2 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
-        val frictionCoefficient = 0.15
-        return Particle(0, position, velocity, radius, mass, Kn, Kt)
+        return Particle(
+            0,
+            position,
+            velocity,
+            radius,
+            mass,
+            cannonballKn,
+            cannonballKt,
+            cannonballGammaT,
+            cannonballGammaN
+        )
     }
 
 
@@ -67,8 +93,10 @@ class CannonballSystem {
             numberOfParticles,
             boxWalls,
             particlesDiameterGenerator,
-            Kn,
-            Kt,
+            pKn,
+            pKt,
+            pGammaN,
+            pGammaT
         )
         return particleGenerator.generateParticles()
     }
@@ -76,19 +104,19 @@ class CannonballSystem {
     fun createBoxWalls(): Set<Wall> {
         return setOf(
             // Left wall: se sitúa en el punto (0,0,0) y su normal apunta hacia la derecha (1,0,0).
-            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), wallsFrictionCoefficient, "LEFT"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), wKn, wKt, wGammaN, wGammaT, "LEFT"),
 
             // Right wall: se sitúa en el punto (boxWidth, 0, 0) y su normal apunta hacia la izquierda (-1,0,0).
-            Wall(Vector(boxWidth, 0.0, 0.0), Vector(-1.0, 0.0, 0.0), wallsFrictionCoefficient, "RIGHT"),
+            Wall(Vector(boxWidth, 0.0, 0.0), Vector(-1.0, 0.0, 0.0), wKn, wKt, wGammaN, wGammaT, "RIGHT"),
 
             // Front wall: se sitúa en el punto (0,0,0) y su normal apunta hacia atrás (0,1,0).
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), wallsFrictionCoefficient, "FRONT"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), wKn, wKt, wGammaN, wGammaT, "FRONT"),
 
             // Back wall: se sitúa en el punto (0, boxWidth, 0) y su normal apunta hacia adelante (0,-1,0).
-            Wall(Vector(0.0, boxWidth, 0.0), Vector(0.0, -1.0, 0.0), wallsFrictionCoefficient, "BACK"),
+            Wall(Vector(0.0, boxWidth, 0.0), Vector(0.0, -1.0, 0.0), wKn, wKt, wGammaN, wGammaT, "BACK"),
 
             // Bottom wall: se sitúa en el punto (0,0,0) y su normal apunta hacia arriba (0,0,1). Esta es la base de la caja.
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), wallsFrictionCoefficient, "BOTTOM"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), wKn, wKt, wGammaN, wGammaT, "BOTTOM"),
         )
     }
 }

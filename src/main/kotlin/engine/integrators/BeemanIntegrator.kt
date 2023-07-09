@@ -41,8 +41,10 @@ class BeemanIntegrator(
                         previousVelocity,
                         p.radius,
                         p.mass,
-                        p.Kn,
                         p.Kt,
+                        p.Kn,
+                        p.gammaT,
+                        p.gammaN,
                         p.pressure
                     )
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
@@ -54,12 +56,20 @@ class BeemanIntegrator(
     override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) {
         var acceleration = getForces(particle, particles) / particle.mass
 
+
+
+
         val previousAcceleration = previousAccelerations[particle]!!
         particle.position = particle.position +
                 (particle.velocity * timeDelta) +
                 (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
 
+//        if (particle.id == 0) {
+//            val currentDateTime = LocalDateTime.now()
+//            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+//            logger.info("[$formattedDateTime] Acceleration for cannonBall: $acceleration, new position for cannonball: ${particle.position}")
+//        }
         //predict velocity with position
         val velocityPrediction = particle.velocity +
                 (acceleration * (3.0 / 2.0 * timeDelta)) -
@@ -70,8 +80,10 @@ class BeemanIntegrator(
             velocityPrediction,
             particle.radius,
             particle.mass,
-            particle.Kn,
             particle.Kt,
+            particle.Kn,
+            particle.gammaT,
+            particle.gammaN,
             particle.pressure
         )
         val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
@@ -81,6 +93,10 @@ class BeemanIntegrator(
                 (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
                 (acceleration * (5.0 / 6.0 * timeDelta)) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta))
+
+        if (particle.id == 0 && particle.position.z < 0.1) {
+            System.out.println("")
+        }
 
         previousAccelerations[particle] = acceleration
     }

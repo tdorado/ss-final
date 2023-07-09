@@ -4,8 +4,6 @@ import engine.model.Particle
 import engine.model.Vector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import system.CannonballSystem.Companion.Kn
-import system.CannonballSystem.Companion.Kt
 import system.Wall
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -17,8 +15,11 @@ class CannonballParticleGenerator(
     private val numberOfParticles: Int,
     private val walls: Set<Wall>,
     private val particleDiameterGenerator: ParticleDiameterGenerator,
-    private val pressure: Double,
-    private val frictionCoefficient: Double
+    private val Kn: Double,
+    private val Kt: Double,
+    private val gammaN: Double,
+    private val gammaT: Double,
+    private val pressure: Double = 0.0
 ) {
     private val particles = mutableSetOf<Particle>()
     private val random = Random
@@ -57,8 +58,10 @@ class CannonballParticleGenerator(
                         velocity,
                         radius,
                         mass,
-                        Kn,
                         Kt,
+                        Kn,
+                        gammaT,
+                        gammaN,
                         pressure
                     )
                 )
@@ -87,7 +90,6 @@ class CannonballParticleGenerator(
 
         return particles
     }
-
 
 
     private fun updateProgress() {

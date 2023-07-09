@@ -10,15 +10,23 @@ class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
             return Vector(parts[0].toDouble(), parts[1].toDouble(), parts[2].toDouble())
         }
     }
+
     val magnitude: Double
         get() = sqrt(x * x + y * y + z * z)
+
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
     operator fun minus(v: Vector) = Vector(x - v.x, y - v.y, z - v.z)
     operator fun times(scalar: Double) = Vector(x * scalar, y * scalar, z * scalar)
 
     operator fun div(scalar: Double) = Vector(x / scalar, y / scalar, z / scalar)
     operator fun unaryMinus() = Vector(-x, -y, -z)
-
+    fun projectOnPlane(planeNormal: Vector): Vector {
+        val normalizedPlaneNormal = planeNormal.normalize()
+        return this - (normalizedPlaneNormal.times(this.dotProduct(normalizedPlaneNormal)))
+    }
+    fun squaredMagnitude(): Double {
+        return this.dotProduct(this)
+    }
     fun dotProduct(v: Vector) = x * v.x + y * v.y + z * v.z
 
     fun crossProduct(v: Vector) = Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x)

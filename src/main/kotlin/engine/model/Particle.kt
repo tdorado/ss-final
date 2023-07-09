@@ -10,8 +10,9 @@ data class Particle(
     val mass: Double,
     val Kt: Double,
     val Kn: Double,
-    var pressure: Double = 0.0,
-    var gamma: Double = 0.8
+    var gammaT: Double,
+    var gammaN: Double,
+    var pressure: Double = 0.0
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
@@ -29,7 +30,7 @@ data class Particle(
     }
 
     fun serialize(): String {
-        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$pressure"
+        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gammaT,$gammaN,$pressure"
     }
 
     companion object {
@@ -43,10 +44,13 @@ data class Particle(
                 parts[4].toDouble(),
                 parts[5].toDouble(),
                 parts[6].toDouble(),
-                parts[7].toDouble()
+                parts[7].toDouble(),
+                parts[8].toDouble(),
+                parts[9].toDouble()
             )
         }
     }
+
     override fun hashCode(): Int {
         return id
     }

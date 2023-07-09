@@ -86,8 +86,10 @@ class Main : Runnable {
                 cannonballSystem.createBoxWalls(),
                 CannonballSystem.particlesDiameterGenerator,
                 0.0,
-                CannonballSystem.Kn,
-                CannonballSystem.Kt
+                CannonballSystem.pKn,
+                CannonballSystem.pKt,
+                CannonballSystem.pGammaN,
+                CannonballSystem.pGammaT
             )
             particleGenerator.generateParticles(true)
             particleGenerator.exportParticlesToFile("particles/particles_50k")

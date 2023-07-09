@@ -21,7 +21,9 @@ class EfficientParticleGenerator(
     private val particleDiameterGenerator: ParticleDiameterGenerator,
     private val pressure: Double,
     private val Kn: Double,
-    private val Kt: Double
+    private val Kt: Double,
+    private val gammaN: Double,
+    private val gammaT: Double
 ) {
     companion object {
         fun importParticlesFromFile(filePath: String): Set<Particle> {
@@ -33,6 +35,7 @@ class EfficientParticleGenerator(
             return particles
         }
     }
+
     private val particles = mutableListOf<Particle>()
     private val random = Random
     private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
@@ -72,8 +75,10 @@ class EfficientParticleGenerator(
                     velocity,
                     radius,
                     mass,
-                    Kn,
                     Kt,
+                    Kn,
+                    gammaT,
+                    gammaN,
                     pressure
                 )
                 particles.add(newParticle)
