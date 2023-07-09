@@ -1,15 +1,17 @@
 package engine.model
 
+import kotlin.math.abs
+
 data class Particle(
     val id: Int,
     var position: Vector,
     var velocity: Vector,
     val radius: Double,
     val mass: Double,
-    val frictionCoefficient: Double,
-    var pressure: Double,
-    var isOnTheGround: Boolean = false,
-    var collideWithWall: Boolean = false
+    val Kt: Double,
+    val Kn: Double,
+    var pressure: Double = 0.0,
+    var gamma: Double = 0.8
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
@@ -27,7 +29,7 @@ data class Particle(
     }
 
     fun serialize(): String {
-        return "$id,$position,$velocity,$radius,$mass,$frictionCoefficient,$pressure"
+        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$pressure"
     }
 
     companion object {
@@ -40,11 +42,11 @@ data class Particle(
                 parts[3].toDouble(),
                 parts[4].toDouble(),
                 parts[5].toDouble(),
-                parts[6].toDouble()
+                parts[6].toDouble(),
+                parts[7].toDouble()
             )
         }
     }
-
     override fun hashCode(): Int {
         return id
     }

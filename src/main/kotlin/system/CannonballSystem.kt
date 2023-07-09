@@ -12,33 +12,34 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
-        const val particleMass = 0.5
-        const val timeDelta = 0.05
-        const val saveTimeDelta = 0.02
-        const val cutoffTime = 1.0
-        const val particlesMinRadius = 0.02
-        const val particlesMaxRadius = 0.05
-        const val boxSizeInMeters = 0.5
-        val boxSize = Vector(boxSizeInMeters, boxSizeInMeters, boxSizeInMeters)
-        const val numberOfParticles = 5000
+        const val particleMass = 0.05
+        const val timeDelta = 0.00001
+        const val saveTimeDelta = 0.00005
+        const val cutoffTime = 0.02
+        private const val boxHeight = 1.0
+        private const val boxWidth = 1.0
+        val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
+        const val numberOfParticles = 3000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.05
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
-        const val boxParticlesFrictionCoefficient = 100.0
+        const val Kt = 2.2E6
+        const val Kn = Kt / 25
+        const val wallsFrictionCoefficient = 1.0
     }
 
-    fun run(particlesFromFile: List<Particle> = emptyList()) {
+    fun run(particlesFromFile: Set<Particle> = emptySet()) {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
 
-        val particles: List<Particle> = if (particlesFromFile.isEmpty()) {
+        val particles: Set<Particle> = if (particlesFromFile.isEmpty()) {
             val boxParticles = createBoxParticles(boxWalls)
-            listOf(cannonballParticle) + boxParticles
+            setOf(cannonballParticle) + boxParticles
         } else {
-            listOf(cannonballParticle) + particlesFromFile
+            setOf(cannonballParticle) + particlesFromFile
         }
 
-        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxSizeInMeters)
+        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
         val cutCondition = TimeCutCondition(cutoffTime)
@@ -48,47 +49,46 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 3.0
+        val velocityMagnitude = 450.0
         val angle = Math.PI / 2
         val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
-        val position = Vector(boxSizeInMeters / 2.0, boxSizeInMeters / 2.0, 2 * boxSizeInMeters)
+        val position = Vector(boxWidth / 2.0, boxWidth / 2.0, 2 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         val frictionCoefficient = 0.15
-        return Particle(0, position, velocity, radius, mass, frictionCoefficient, 0.0)
+        return Particle(0, position, velocity, radius, mass, Kn, Kt)
     }
 
-    private fun createBoxParticles(boxWalls: List<Wall>): List<Particle> {
+
+    private fun createBoxParticles(boxWalls: Set<Wall>): Set<Particle> {
         val particleGenerator = CannonballParticleGenerator(
             particleMass,
-            particlesMinRadius,
-            particlesMaxRadius,
-            boxSize,
+            boxSizeInMeters,
             numberOfParticles,
             boxWalls,
             particlesDiameterGenerator,
-            0.0,
-            boxParticlesFrictionCoefficient,
+            Kn,
+            Kt,
         )
         return particleGenerator.generateParticles()
     }
 
-    public fun createBoxWalls(): List<Wall> {
-        return listOf(
+    fun createBoxWalls(): Set<Wall> {
+        return setOf(
             // Left wall: se sitúa en el punto (0,0,0) y su normal apunta hacia la derecha (1,0,0).
-            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "LEFT"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), wallsFrictionCoefficient, "LEFT"),
 
-            // Right wall: se sitúa en el punto (boxSizeInMeters, 0, 0) y su normal apunta hacia la izquierda (-1,0,0).
-            Wall(Vector(boxSizeInMeters, 0.0, 0.0), Vector(-1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "RIGHT"),
+            // Right wall: se sitúa en el punto (boxWidth, 0, 0) y su normal apunta hacia la izquierda (-1,0,0).
+            Wall(Vector(boxWidth, 0.0, 0.0), Vector(-1.0, 0.0, 0.0), wallsFrictionCoefficient, "RIGHT"),
 
             // Front wall: se sitúa en el punto (0,0,0) y su normal apunta hacia atrás (0,1,0).
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), boxSizeInMeters, boxSizeInMeters, "FRONT"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 1.0, 0.0), wallsFrictionCoefficient, "FRONT"),
 
-            // Back wall: se sitúa en el punto (0, boxSizeInMeters, 0) y su normal apunta hacia adelante (0,-1,0).
-            Wall(Vector(0.0, boxSizeInMeters, 0.0), Vector(0.0, -1.0, 0.0), boxSizeInMeters, boxSizeInMeters, "BACK"),
+            // Back wall: se sitúa en el punto (0, boxWidth, 0) y su normal apunta hacia adelante (0,-1,0).
+            Wall(Vector(0.0, boxWidth, 0.0), Vector(0.0, -1.0, 0.0), wallsFrictionCoefficient, "BACK"),
 
             // Bottom wall: se sitúa en el punto (0,0,0) y su normal apunta hacia arriba (0,0,1). Esta es la base de la caja.
-            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), boxSizeInMeters, boxSizeInMeters, "BOTTOM"),
+            Wall(Vector(0.0, 0.0, 0.0), Vector(0.0, 0.0, 1.0), wallsFrictionCoefficient, "BOTTOM"),
         )
     }
 }

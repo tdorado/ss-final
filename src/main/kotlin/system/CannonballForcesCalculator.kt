@@ -5,7 +5,7 @@ import engine.model.Particle
 import engine.model.Vector
 import kotlin.math.pow
 
-class CannonballForcesCalculator(private val walls: List<Wall>, private val boxHeight: Double = 1.0) :
+class CannonballForcesCalculator(private val walls: Set<Wall>) :
     ForcesCalculator {
 
     private fun calculateGravityForce(particle: Particle): Vector {
@@ -13,7 +13,7 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
     }
 
-    private fun calculateParticleInteractionForce(particle: Particle, neighbours: List<Particle>): Vector {
+    private fun calculateParticleInteractionForce(particle: Particle, neighbours: Set<Particle>): Vector {
         var interactionForce = Vector()
 
         for (otherParticle in neighbours) {
@@ -24,8 +24,8 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
                 if (overlapSize < 0) continue
 
                 val relativeVelocity = particle.velocity - otherParticle.velocity
-                val normalForceValue = -normalVector.times(particle.frictionCoefficient * overlapSize)
-                val tangentialForceValue = -relativeVelocity.times(particle.frictionCoefficient * overlapSize)
+                val normalForceValue = -normalVector.times(particle.Kn * overlapSize)
+                val tangentialForceValue = -relativeVelocity.times(particle.Kt * overlapSize)
 
                 interactionForce += normalForceValue + tangentialForceValue
             }
@@ -34,20 +34,20 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         return interactionForce
     }
 
-    private fun calculateWallForce(particle: Particle, walls: List<Wall>): Vector {
+    private fun calculateWallForce(particle: Particle, walls: Set<Wall>): Vector {
         var wallForce = Vector()
 
         for (wall in walls) {
-            if (wall.overlapsWith(particle.position, particle.radius)) {
-                val relativePosition = particle.position - wall.point
+            if (wall.overlapsWithParticle(particle.position, particle.radius)) {
+                val relativePosition = particle.position - wall.position
                 val overlapSize = particle.radius - relativePosition.dotProduct(wall.normal)
                 if (overlapSize < 0) continue
 
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
                 val tangentialVelocity = particle.velocity - wall.normal * normalVelocity
 
-                val normalForceValue = -wall.normal.times(particle.frictionCoefficient * overlapSize)
-                val tangentialForceValue = -tangentialVelocity.times(particle.frictionCoefficient * overlapSize)
+                val normalForceValue = wall.normal.times(particle.Kn * overlapSize)
+                val tangentialForceValue = -tangentialVelocity.times(particle.Kt * overlapSize)
 
                 wallForce += normalForceValue + tangentialForceValue
             }
@@ -56,15 +56,13 @@ class CannonballForcesCalculator(private val walls: List<Wall>, private val boxH
         // Add an upward force if the particle falls below the floor (z < 0)
         if (particle.position.z < 0) {
             val overlapSize = particle.radius - particle.position.z
-            val normalForceValue = Vector(0.0, 0.0, particle.frictionCoefficient * overlapSize)
+            val normalForceValue = Vector(0.0, 0.0, particle.Kn * overlapSize)
             wallForce += normalForceValue
         }
 
         return wallForce
     }
-
-
-    override fun getForces(particle: Particle, neighbours: List<Particle>): Vector {
+    override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)

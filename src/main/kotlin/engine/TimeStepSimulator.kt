@@ -14,7 +14,7 @@ class TimeStepSimulator(
     private val cutCondition: CutCondition,
     private val integrator: Integrator,
     private val fileGenerator: FileGenerator,
-    private val particles: List<Particle>,
+    private val particles: Set<Particle>,
 ) {
     private var time: Double
     private var timeToSave: Double

@@ -4,6 +4,8 @@ import engine.model.Particle
 import engine.model.Vector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import system.CannonballSystem.Companion.Kn
+import system.CannonballSystem.Companion.Kt
 import system.Wall
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -11,22 +13,20 @@ import kotlin.random.Random
 
 class CannonballParticleGenerator(
     private val mass: Double,
-    private val minRadius: Double,
-    private val maxRadius: Double,
     private val boxSize: Vector,
     private val numberOfParticles: Int,
-    private val walls: List<Wall>,
+    private val walls: Set<Wall>,
     private val particleDiameterGenerator: ParticleDiameterGenerator,
     private val pressure: Double,
     private val frictionCoefficient: Double
 ) {
-    private val particles = mutableListOf<Particle>()
+    private val particles = mutableSetOf<Particle>()
     private val random = Random
     private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
     private var progress = 0
     private var startTime = System.currentTimeMillis()
 
-    fun generateParticles(shouldLog: Boolean = false): List<Particle> {
+    fun generateParticles(shouldLog: Boolean = false): Set<Particle> {
         startTime = System.currentTimeMillis()
 
         val currentDateTime = LocalDateTime.now()
@@ -46,7 +46,7 @@ class CannonballParticleGenerator(
             )
 
             val overlappingParticle = particles.find { it.overlapsWith(position, radius) }
-            val overlappingWall = walls.find { it.overlapsWith(position, radius) }
+            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius) }
 
             if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()
@@ -57,7 +57,8 @@ class CannonballParticleGenerator(
                         velocity,
                         radius,
                         mass,
-                        frictionCoefficient,
+                        Kn,
+                        Kt,
                         pressure
                     )
                 )

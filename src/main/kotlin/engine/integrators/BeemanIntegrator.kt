@@ -14,8 +14,8 @@ import kotlin.math.pow
 class BeemanIntegrator(
     forcesCalculator: ForcesCalculator,
     timeDelta: Double,
-    particles: List<Particle>,
-    val walls: List<Wall>
+    particles: Set<Particle>,
+    val walls: Set<Wall>
 ) : Integrator(forcesCalculator) {
     private val previousAccelerations: MutableMap<Particle, Vector>
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
@@ -41,7 +41,8 @@ class BeemanIntegrator(
                         previousVelocity,
                         p.radius,
                         p.mass,
-                        p.frictionCoefficient,
+                        p.Kn,
+                        p.Kt,
                         p.pressure
                     )
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
@@ -50,7 +51,7 @@ class BeemanIntegrator(
         }
     }
 
-    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: List<Particle>) {
+    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) {
         var acceleration = getForces(particle, particles) / particle.mass
 
         val previousAcceleration = previousAccelerations[particle]!!
@@ -59,18 +60,6 @@ class BeemanIntegrator(
                 (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
 
-        // Check each wall for collision
-        for (wall in walls) {
-            if (wall.overlapsWith(particle.position, particle.radius)) {
-                // The particle has collided with this wall, so we reflect its position and velocity along the normal of the wall
-                val relativePosition = particle.position - wall.point
-                val distanceFromWall = relativePosition.dotProduct(wall.normal)
-                if (distanceFromWall < 0) {
-                    particle.position = particle.position - (wall.normal.times(2 * distanceFromWall))
-                    particle.velocity = particle.velocity - (wall.normal.times(2 * particle.velocity.dotProduct(wall.normal)))
-                }
-            }
-        }
         //predict velocity with position
         val velocityPrediction = particle.velocity +
                 (acceleration * (3.0 / 2.0 * timeDelta)) -
@@ -81,7 +70,8 @@ class BeemanIntegrator(
             velocityPrediction,
             particle.radius,
             particle.mass,
-            particle.frictionCoefficient,
+            particle.Kn,
+            particle.Kt,
             particle.pressure
         )
         val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
@@ -91,9 +81,6 @@ class BeemanIntegrator(
                 (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
                 (acceleration * (5.0 / 6.0 * timeDelta)) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta))
-
-
-
 
         previousAccelerations[particle] = acceleration
     }

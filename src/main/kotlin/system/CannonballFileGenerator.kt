@@ -31,7 +31,7 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
         bw = BufferedWriter(fw)
     }
 
-    override fun addToFile(particles: List<Particle>, time: Double) {
+    override fun addToFile(particles: Set<Particle>, time: Double) {
         try {
             bw.write(particles.size.toString() + "\n")
             bw.write("id xPosition yPosition zPosition xVelocity yVelocity zVelocity radius mass pressure time\n")

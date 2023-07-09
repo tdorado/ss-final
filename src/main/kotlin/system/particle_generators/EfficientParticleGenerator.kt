@@ -17,14 +17,15 @@ class EfficientParticleGenerator(
     private val maxRadius: Double,
     private val boxSize: Vector,
     private val numberOfParticles: Int,
-    private val walls: List<Wall>,
+    private val walls: Set<Wall>,
     private val particleDiameterGenerator: ParticleDiameterGenerator,
     private val pressure: Double,
-    private val frictionCoefficient: Double
+    private val Kn: Double,
+    private val Kt: Double
 ) {
     companion object {
-        fun importParticlesFromFile(filePath: String): List<Particle> {
-            val particles = mutableListOf<Particle>()
+        fun importParticlesFromFile(filePath: String): Set<Particle> {
+            val particles = mutableSetOf<Particle>()
             val inputStream: InputStream = File(filePath).inputStream()
             inputStream.bufferedReader().forEachLine { line ->
                 particles.add(Particle.deserialize(line))
@@ -61,7 +62,7 @@ class EfficientParticleGenerator(
 
             // find overlapping particle using the grid
             val overlappingParticle = grid.findOverlappingParticle(position, radius)
-            val overlappingWall = walls.find { it.overlapsWith(position, radius) }
+            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius) }
 
             if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()
@@ -71,7 +72,8 @@ class EfficientParticleGenerator(
                     velocity,
                     radius,
                     mass,
-                    frictionCoefficient,
+                    Kn,
+                    Kt,
                     pressure
                 )
                 particles.add(newParticle)

@@ -79,14 +79,15 @@ class Main : Runnable {
 
             val particleGenerator = EfficientParticleGenerator(
                 CannonballSystem.particleMass,
-                CannonballSystem.particlesMinRadius,
-                CannonballSystem.particlesMaxRadius,
-                CannonballSystem.boxSize,
+                lowDiam,
+                upperDiam,
+                CannonballSystem.boxSizeInMeters,
                 nParticles,
                 cannonballSystem.createBoxWalls(),
                 CannonballSystem.particlesDiameterGenerator,
                 0.0,
-                CannonballSystem.boxParticlesFrictionCoefficient
+                CannonballSystem.Kn,
+                CannonballSystem.Kt
             )
             particleGenerator.generateParticles(true)
             particleGenerator.exportParticlesToFile("particles/particles_50k")
