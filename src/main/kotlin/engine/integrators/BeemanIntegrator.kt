@@ -68,7 +68,7 @@ class BeemanIntegrator(
         if (particle.id == 0) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Acceleration for cannonBall: $acceleration, new position for cannonball: ${particle.position}")
+            logger.info("[$formattedDateTime] Velocity for cannonBall: ${particle.velocity}, new position for cannonball: ${particle.position}")
         }
         //predict velocity with position
         val velocityPrediction = particle.velocity +

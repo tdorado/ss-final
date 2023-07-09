@@ -12,29 +12,29 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
-        const val particleMass = 3.0
+        const val particleMass = 0.5
         const val timeDelta = 0.0002
         const val saveTimeDelta = 0.0002
         const val cutoffTime = 10.0
         private const val boxHeight = 0.5
         private const val boxWidth = 0.5
         val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
-        const val numberOfParticles = 3000
+        const val numberOfParticles = 5000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.03
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
 
         // Coeficientes de fricción y restitución para la bala de cañón
-        const val cannonballGammaN = 0.95
-        const val cannonballGammaT = 0.95
-        const val cannonballKt = 2E2
-        const val cannonballKn = cannonballKt / 15
+        const val cannonballGammaN = 0.2
+        const val cannonballGammaT = 0.2
+        const val cannonballKt = 2.0
+        const val cannonballKn = cannonballKt/25
 
         // Coeficientes de fricción y restitución para las partículas del lecho
-        const val pGammaN = 0.95
-        const val pGammaT = 0.95
-        const val pKt = 5E6
-        const val pKn = pKt / 15
+        const val pGammaN = 0.45
+        const val pGammaT = 0.45
+        const val pKt = 1E6
+        const val pKn = pKt/25
 
         // Coeficientes de fricción y restitución para las paredes
         const val wGammaN = 0.5
