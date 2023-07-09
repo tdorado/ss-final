@@ -5,13 +5,15 @@ import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
 import engine.model.Particle
 import engine.model.Vector
+import system.particle_generators.CannonballParticleGenerator
+import system.particle_generators.ParticleDiameterGenerator
 import kotlin.math.sin
 
 
 class CannonballSystem {
     companion object {
         const val particleMass = 0.5
-        const val timeDelta = 0.01
+        const val timeDelta = 0.05
         const val saveTimeDelta = 0.02
         const val cutoffTime = 1.0
         const val particlesMinRadius = 0.02
@@ -25,11 +27,17 @@ class CannonballSystem {
         const val boxParticlesFrictionCoefficient = 100.0
     }
 
-    fun run() {
+    fun run(particlesFromFile: List<Particle> = emptyList()) {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
-        val boxParticles = createBoxParticles(boxWalls)
-        val particles = listOf(cannonballParticle) + boxParticles
+
+        val particles: List<Particle> = if (particlesFromFile.isEmpty()) {
+            val boxParticles = createBoxParticles(boxWalls)
+            listOf(cannonballParticle) + boxParticles
+        } else {
+            listOf(cannonballParticle) + particlesFromFile
+        }
+
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxSizeInMeters)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
@@ -65,7 +73,7 @@ class CannonballSystem {
         return particleGenerator.generateParticles()
     }
 
-    private fun createBoxWalls(): List<Wall> {
+    public fun createBoxWalls(): List<Wall> {
         return listOf(
             // Left wall: se sitúa en el punto (0,0,0) y su normal apunta hacia la derecha (1,0,0).
             Wall(Vector(0.0, 0.0, 0.0), Vector(1.0, 0.0, 0.0), boxSizeInMeters, boxSizeInMeters, "LEFT"),

@@ -26,6 +26,25 @@ data class Particle(
         return true
     }
 
+    fun serialize(): String {
+        return "$id,$position,$velocity,$radius,$mass,$frictionCoefficient,$pressure"
+    }
+
+    companion object {
+        fun deserialize(line: String): Particle {
+            val parts = line.split(",")
+            return Particle(
+                parts[0].toInt(),
+                Vector.fromString(parts[1]),
+                Vector.fromString(parts[2]),
+                parts[3].toDouble(),
+                parts[4].toDouble(),
+                parts[5].toDouble(),
+                parts[6].toDouble()
+            )
+        }
+    }
+
     override fun hashCode(): Int {
         return id
     }
