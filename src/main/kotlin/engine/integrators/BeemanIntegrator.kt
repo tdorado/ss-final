@@ -5,7 +5,6 @@ import engine.model.Particle
 import engine.model.Vector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import system.CannonballParticleGenerator
 import system.Wall
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

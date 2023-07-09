@@ -1,15 +1,17 @@
-package system
+package system.particle_generators
 
 import engine.model.Particle
 import engine.model.Vector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import system.Wall
+import java.io.File
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.math.log
 import kotlin.random.Random
 
-class CannonballParticleGenerator(
+class EfficientParticleGenerator(
     private val mass: Double,
     private val minRadius: Double,
     private val maxRadius: Double,
@@ -20,11 +22,23 @@ class CannonballParticleGenerator(
     private val pressure: Double,
     private val frictionCoefficient: Double
 ) {
+    companion object {
+        fun importParticlesFromFile(filePath: String): List<Particle> {
+            val particles = mutableListOf<Particle>()
+            val inputStream: InputStream = File(filePath).inputStream()
+            inputStream.bufferedReader().forEachLine { line ->
+                particles.add(Particle.deserialize(line))
+            }
+            return particles
+        }
+    }
     private val particles = mutableListOf<Particle>()
     private val random = Random
     private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
     private var progress = 0
     private var startTime = System.currentTimeMillis()
+    private val grid: SpatialGrid = SpatialGrid(boxSize, maxRadius * 2) // assuming max diameter is twice the radius
+    private val epsilon = 1e-10
 
     fun generateParticles(shouldLog: Boolean = false): List<Particle> {
         startTime = System.currentTimeMillis()
@@ -40,30 +54,31 @@ class CannonballParticleGenerator(
             val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
 
             val position = Vector(
-                random.nextDouble(radius, boxSize.x - radius),
-                random.nextDouble(radius, boxSize.y - radius),
+                random.nextDouble(radius, boxSize.x - radius - epsilon),
+                random.nextDouble(radius, boxSize.y - radius - epsilon),
                 zPosition + radius
             )
 
-            val overlappingParticle = particles.find { it.overlapsWith(position, radius) }
+            // find overlapping particle using the grid
+            val overlappingParticle = grid.findOverlappingParticle(position, radius)
             val overlappingWall = walls.find { it.overlapsWith(position, radius) }
 
             if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()
-                particles.add(
-                    Particle(
-                        particleCount++,
-                        position,
-                        velocity,
-                        radius,
-                        mass,
-                        frictionCoefficient,
-                        pressure
-                    )
+                val newParticle = Particle(
+                    particleCount++,
+                    position,
+                    velocity,
+                    radius,
+                    mass,
+                    frictionCoefficient,
+                    pressure
                 )
+                particles.add(newParticle)
+                grid.addParticle(newParticle) // add particle to grid
 
                 if (shouldLog) {
-                    logger.info("Added particle with position: $position, velocity: $velocity, radius: $radius")
+                    logger.info("Added particle with id: ${newParticle.id}, position: $position, velocity: $velocity, radius: $radius")
                 }
                 updateProgress()
                 overlapCount = 0
@@ -87,7 +102,14 @@ class CannonballParticleGenerator(
         return particles
     }
 
-
+    fun exportParticlesToFile(filePath: String) {
+        val file = File(filePath)
+        file.printWriter().use { out ->
+            particles.forEach { particle ->
+                out.println(particle.serialize())
+            }
+        }
+    }
 
     private fun updateProgress() {
         progress += 1

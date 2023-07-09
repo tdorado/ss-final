@@ -5,6 +5,8 @@ import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
 import engine.model.Particle
 import engine.model.Vector
+import system.particle_generators.CannonballParticleGenerator
+import system.particle_generators.ParticleDiameterGenerator
 import kotlin.math.sin
 
 

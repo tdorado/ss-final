@@ -3,6 +3,8 @@ package system
 import engine.model.Vector
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import system.particle_generators.CannonballParticleGenerator
+import system.particle_generators.ParticleDiameterGenerator
 
 class CannonballParticleGeneratorTest {
 

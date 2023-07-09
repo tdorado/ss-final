@@ -1,4 +1,4 @@
-package system
+package system.particle_generators
 
 import engine.model.Particle
 import engine.model.Vector

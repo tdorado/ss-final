@@ -2,7 +2,7 @@ import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import system.CannonballSystem
-import system.EfficientParticleGenerator
+import system.particle_generators.EfficientParticleGenerator
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = ["1.0"])
 class Main : Runnable {
