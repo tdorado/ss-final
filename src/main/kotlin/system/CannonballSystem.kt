@@ -12,10 +12,10 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
-        const val particleMass = 0.05
-        const val timeDelta = 0.00001
-        const val saveTimeDelta = 0.00001
-        const val cutoffTime = 0.1
+        const val particleMass = 3.0
+        const val timeDelta = 0.0002
+        const val saveTimeDelta = 0.0002
+        const val cutoffTime = 10.0
         private const val boxHeight = 0.5
         private const val boxWidth = 0.5
         val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
@@ -25,23 +25,22 @@ class CannonballSystem {
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
 
         // Coeficientes de fricción y restitución para la bala de cañón
-        const val cannonballGammaN = 0.9
-        const val cannonballGammaT = 0.9
-        const val cannonballKt = 2.0
-        const val cannonballKn = cannonballKt / 25
+        const val cannonballGammaN = 0.95
+        const val cannonballGammaT = 0.95
+        const val cannonballKt = 2E2
+        const val cannonballKn = cannonballKt / 15
 
         // Coeficientes de fricción y restitución para las partículas del lecho
-        const val pGammaN = 0.9
-        const val pGammaT = 0.9
-        const val pKt = 5E2
-        const val pKn = pKt / 25
+        const val pGammaN = 0.95
+        const val pGammaT = 0.95
+        const val pKt = 5E6
+        const val pKn = pKt / 15
 
         // Coeficientes de fricción y restitución para las paredes
         const val wGammaN = 0.5
         const val wGammaT = 0.5
         const val wKt = 5E1
         const val wKn = wKt / 25
-
     }
 
 
@@ -66,7 +65,7 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 450.0
+        val velocityMagnitude = 45.0
         val angle = Math.PI / 2
         val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
         val position = Vector(boxWidth / 2.0, boxWidth / 2.0, 2 * boxHeight)
