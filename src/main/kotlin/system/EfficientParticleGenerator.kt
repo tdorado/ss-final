@@ -21,7 +21,6 @@ class EfficientParticleGenerator(
     private val pressure: Double,
     private val frictionCoefficient: Double
 ) {
-
     companion object {
         fun importParticlesFromFile(filePath: String): List<Particle> {
             val particles = mutableListOf<Particle>()
@@ -38,6 +37,7 @@ class EfficientParticleGenerator(
     private var progress = 0
     private var startTime = System.currentTimeMillis()
     private val grid: SpatialGrid = SpatialGrid(boxSize, maxRadius * 2) // assuming max diameter is twice the radius
+    private val epsilon = 1e-10
 
     fun generateParticles(shouldLog: Boolean = false): List<Particle> {
         startTime = System.currentTimeMillis()
@@ -53,8 +53,8 @@ class EfficientParticleGenerator(
             val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
 
             val position = Vector(
-                random.nextDouble(radius, boxSize.x - radius),
-                random.nextDouble(radius, boxSize.y - radius),
+                random.nextDouble(radius, boxSize.x - radius - epsilon),
+                random.nextDouble(radius, boxSize.y - radius - epsilon),
                 zPosition + radius
             )
 
@@ -77,7 +77,7 @@ class EfficientParticleGenerator(
                 grid.addParticle(newParticle) // add particle to grid
 
                 if (shouldLog) {
-                    logger.info("Added particle with position: $position, velocity: $velocity, radius: $radius")
+                    logger.info("Added particle with id: ${newParticle.id}, position: $position, velocity: $velocity, radius: $radius")
                 }
                 updateProgress()
                 overlapCount = 0

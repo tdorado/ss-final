@@ -11,7 +11,7 @@ import kotlin.math.sin
 class CannonballSystem {
     companion object {
         const val particleMass = 0.5
-        const val timeDelta = 0.01
+        const val timeDelta = 0.05
         const val saveTimeDelta = 0.02
         const val cutoffTime = 1.0
         const val particlesMinRadius = 0.02

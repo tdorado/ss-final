@@ -6,7 +6,7 @@ class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
 
     companion object {
         fun fromString(str: String): Vector {
-            val parts = str.trimStart('(').trimEnd(')').split(',')
+            val parts = str.trimStart('(').trimEnd(')').split(';')
             return Vector(parts[0].toDouble(), parts[1].toDouble(), parts[2].toDouble())
         }
     }
@@ -51,6 +51,6 @@ class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
     }
 
     override fun toString(): String {
-        return "($x, $y, $z)"
+        return "($x; $y; $z)"
     }
 }

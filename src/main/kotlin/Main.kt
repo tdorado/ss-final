@@ -89,7 +89,7 @@ class Main : Runnable {
                 CannonballSystem.boxParticlesFrictionCoefficient
             )
             particleGenerator.generateParticles(true)
-            particleGenerator.exportParticlesToFile("particles_test")
+            particleGenerator.exportParticlesToFile("particles/particles_50k")
         } else {
             if (particleFile.isEmpty()) {
                 cannonballSystem.run()
