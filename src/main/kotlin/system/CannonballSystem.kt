@@ -20,18 +20,18 @@ class CannonballSystem(
     val numberOfParticles: Int = 10000,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 0.01,
-    val pGammaT: Double = 0.01,
+    val pGammaN: Double = 1E-3,
+    val pGammaT: Double = 1E-3,
     val pKn: Double = 1E5,
     val pKt: Double = 2 * pKn,
-    val angle: Double = Math.toRadians(100.0)
+    val angle: Double = Math.toRadians(120.0)
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
     // Gamma alto implica mucho rebote
-    private val cannonballGammaN = 0.01
-    private val cannonballGammaT = 0.01
-    private val cannonballKn = 1E-4
+    private val cannonballGammaN = pGammaN
+    private val cannonballGammaT = pGammaT
+    private val cannonballKn = pKn
     private val cannonballKt = 2 * cannonballKn
 
     private val CONFIG = "particleMass:$particleMass" +
@@ -64,9 +64,9 @@ class CannonballSystem(
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 8.0
-        val velocity = Vector(0.0, velocityMagnitude * sin(angle), velocityMagnitude * cos(angle))
-        val position = Vector(boxWidth / 2, 0.0, 1.5 * boxHeight)
+        val velocityMagnitude = 2.0
+        val velocity = Vector(0.0, -velocityMagnitude * cos(angle), -velocityMagnitude * sin(angle))
+        val position = Vector(boxWidth / 2, 0.0, 2 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(
