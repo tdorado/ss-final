@@ -60,7 +60,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                     particle.radius
                 )
             ) {
-                if (particle.id == 0){
+                if (particle.id == 0) {
                     System.out.println("")
                 }
                 val relativePosition = particle.position - wall.position
@@ -78,11 +78,24 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
                 wallForce += normalForceValue + tangentialForceValue
 
-                if (wall.id == "BOTTOM" && !particle.hasCollide) {
+                if (wall.id == "BOTTOM") {
                     // Frenar la velocidad de la partícula en el eje z si se incrusta en el piso
-                    particle.velocity = Vector(particle.velocity.x, -particle.velocity.y, 0.0)
+                    particle.velocity = Vector(particle.velocity.x, (particle.velocity.y) * 0.8, 0.0)
                     particle.hasCollide = true
                     return Vector()
+                } else {
+                    if (wall.id == "RIGHT" || wall.id == "LEFT") {
+                        // Choque en la dirección y (eje vertical)
+                        val yVelocityComponent = particle.velocity.y
+                        particle.velocity = Vector(particle.velocity.x, -0.8 *yVelocityComponent, particle.velocity.z)
+                        particle.hasCollide = true
+                        return Vector()
+                    } else {
+                        particle.velocity =
+                            Vector(-0.8 * particle.velocity.x, particle.velocity.y, particle.velocity.z)
+                        particle.hasCollide = true
+                        return Vector()
+                    }
                 }
             }
         }

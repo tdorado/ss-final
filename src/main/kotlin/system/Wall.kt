@@ -23,11 +23,13 @@ class Wall(
     }
 
     fun isParticleInsideBox(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
-        if (particle.id == 0 && id == "BOTTOM"){
-            System.out.println("")
+        if (particle.position.x < 0 || particle.position.y < 0 || particle.position
+                .z < 0
+                ) {
+            return true
         }
         val position = particle.position
-        return !(abs(position.x) > (boxWidth/2) || abs(position.y) > (boxWidth) || abs(position.z) > boxHeight)
+        return !(abs(position.x) > boxWidth || abs(position.y) > boxWidth || abs(position.z) > boxHeight)
     }
 
     fun isOutsideBox(position: Vector): Boolean {
