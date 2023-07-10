@@ -72,15 +72,12 @@ class BeemanIntegrator(
             System.out.println("")
         }
 
-        if (particle.id == 1) {
-            val currentDateTime = LocalDateTime.now()
-            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration")
-        }
+
         //predict velocity with position
         val velocityPrediction = particle.velocity +
                 (acceleration * (3.0 / 2.0 * timeDelta)) -
                 (previousAcceleration * (1.0 / 2.0 * timeDelta))
+
         val nextParticlePrediction = Particle(
             particle.id,
             particle.position,
@@ -103,9 +100,10 @@ class BeemanIntegrator(
                 (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
                 (acceleration * (5.0 / 6.0 * timeDelta)) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta))
-
-        if (particle.id == 0 && particle.position.z < 0.1) {
-            System.out.println("")
+        if (particle.id == 1) {
+            val currentDateTime = LocalDateTime.now()
+            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration velocity $velocity")
         }
 
         previousAccelerations[particle.id] = acceleration
