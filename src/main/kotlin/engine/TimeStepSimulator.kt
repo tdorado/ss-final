@@ -31,7 +31,27 @@ class TimeStepSimulator(
         time = 0.0
 
     }
+
     fun simulate(closeFile: Boolean) {
+//        var particlesWithoutBullet = particles.filter { it.id != 0 }.toSet()
+//        // Till particles stabilize
+//        while (!cutCondition.isFinished(particlesWithoutBullet, time)) {
+//            val newParticles = runBlocking {
+//                particlesWithoutBullet.map { particle ->
+//                    async(Dispatchers.Default) {
+//                        integrator.applyIntegrator(timeDelta * 2, particle, particlesWithoutBullet - particle)
+//                    }
+//                }.awaitAll().toSet()
+//            }
+//            time += timeDelta
+//
+//            logger.info("Time for stabilization $time")
+//
+//            particlesWithoutBullet = newParticles
+//        }
+
+        time = 0.0
+//        particles = particlesWithoutBullet + particles.filter { it.id == 0 }
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             val currentDateTime = LocalDateTime.now()

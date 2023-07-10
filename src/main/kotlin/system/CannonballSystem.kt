@@ -7,32 +7,32 @@ import engine.model.Particle
 import engine.model.Vector
 import system.particle_generators.CannonballParticleGenerator
 import system.particle_generators.ParticleDiameterGenerator
+import kotlin.math.cos
 import kotlin.math.sin
 
 class CannonballSystem(
     val particleMass: Double = 0.005,
-    val timeDelta: Double = 0.0003,
-    val saveTimeDelta: Double = 0.0003,
-    val cutoffTime: Double = 1.0,
+    val timeDelta: Double = 0.005,
+    val saveTimeDelta: Double = 0.005,
+    val cutoffTime: Double = 5.0,
     val boxHeight: Double = 0.25,
-    val boxWidth: Double = 0.7,
-    val numberOfParticles: Int = 5000,
+    val boxWidth: Double = 0.9,
+    val numberOfParticles: Int = 10000,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 0.9,
-    val pGammaT: Double = 0.9,
+    val pGammaN: Double = 0.01,
+    val pGammaT: Double = 0.01,
     val pKn: Double = 1E5,
-    val pKt: Double = pKn / 30,
+    val pKt: Double = 2 * pKn,
     val angle: Double = Math.toRadians(100.0)
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
-    // Coeficientes de fricción y restitución para la bala de cañón
     // Gamma alto implica mucho rebote
-    private val cannonballGammaN = 0.9
-    private val cannonballGammaT = 0.9
-    private val cannonballKn = 6E-2
-    private val cannonballKt = cannonballKn
+    private val cannonballGammaN = 0.01
+    private val cannonballGammaT = 0.01
+    private val cannonballKn = 1E-4
+    private val cannonballKt = 2 * cannonballKn
 
     private val CONFIG = "particleMass:$particleMass" +
             "_minParticleDiameter:$minParticleDiameter" +
@@ -64,9 +64,9 @@ class CannonballSystem(
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 200.0
-        val velocity = Vector(0.0, velocityMagnitude * sin(angle), -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2, (-boxWidth / 5), 3 * boxHeight)
+        val velocityMagnitude = 8.0
+        val velocity = Vector(0.0, velocityMagnitude * sin(angle), velocityMagnitude * cos(angle))
+        val position = Vector(boxWidth / 2, 0.0, 1.5 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

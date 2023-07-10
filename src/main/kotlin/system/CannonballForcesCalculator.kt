@@ -14,7 +14,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private fun calculateGravityForce(particle: Particle): Vector {
-        val g = 9.81  // Acceleration due to gravity (in m/s^2)
+        val g = 1.62 // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
     }
 
@@ -45,6 +45,8 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         return interactionForce
     }
 
+
+
     private fun findClosestPointOnParticle(particle: Particle, point: Vector): Vector {
         val displacement = point - particle.position
         val closestPoint = particle.position + displacement.normalize() * particle.radius
@@ -55,55 +57,51 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         var wallForce = Vector()
 
         for (wall in walls) {
-            if (wall.overlapsWithParticle(
-                    particle.position,
-                    particle.radius, boxWidth, boxHeight
-                )
-            ) {
-                if (particle.id == 0) {
-                    System.out.println("")
-                }
+            if (wall.overlapsWithParticle(particle.position, particle.radius, boxWidth, boxHeight)) {
                 val relativePosition = particle.position - wall.position
                 val overlapSize = particle.radius - relativePosition.dotProduct(wall.normal)
 
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
                 val tangentialVelocity = particle.velocity.projectOnPlane(wall.normal)
 
-                val normalForceMagnitude = -(particle.Kn) * overlapSize - particle.gammaN * normalVelocity
-                val tangentialForceMagnitude =
-                    -particle.Kt * overlapSize - particle.gammaT * tangentialVelocity.magnitude
+                // Ajustar los coeficientes Kn y Kt para controlar el rebote de las partículas en las paredes
+                val wallKn = 10.0 // Coeficiente Kn para las paredes (ajustable según tus necesidades)
+                val wallKt = 10.0 // Coeficiente Kt para las paredes (ajustable según tus necesidades)
+
+                val normalForceMagnitude = -wallKn * overlapSize - particle.gammaN * normalVelocity
+                val tangentialForceMagnitude = -wallKt * overlapSize - particle.gammaT * tangentialVelocity.magnitude
 
                 val normalForceValue = wall.normal * normalForceMagnitude
                 val tangentialForceValue = tangentialVelocity.normalize() * tangentialForceMagnitude
 
-                wallForce += normalForceValue + tangentialForceValue
+                // Invertir la dirección de la fuerza normal para el rebote
+                val invertedNormalForceValue = normalForceValue * -1.0
 
-                particle.collideWithWall = wall.id
+                wallForce += invertedNormalForceValue + tangentialForceValue
 
-                if (particle.id == 0) {
-                    System.out.println("")
-                }
             }
         }
 
         return wallForce
     }
 
+
+
     override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
-
         var totalForce = gravityForce + interactionForce + wallForce
 
         if (particle.id == 0) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Gravity force for cannonBall: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
+            logger.info("[$formattedDateTime] Gravity force: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
         }
 
-        if (particle.collideWithWall.isNotBlank()) {
-            particle.velocity = particle.velocity.times(0.5)
+        if (particle.position.z <= particle.radius) {
+            // Invertir la componente z de la velocidad para simular el rebote hacia arriba
+            particle.velocity = Vector(particle.velocity.x, particle.velocity.y, abs(particle.velocity.z))
         }
 
         return totalForce

@@ -37,7 +37,7 @@ class CannonballParticleGenerator(
 
         var zPosition = 0.0
         var overlapCount = 0
-        while (particles.size < numberOfParticles) {
+        while (particles.size < numberOfParticles && zPosition < boxSize.z) {
             val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
 
             val position = Vector(

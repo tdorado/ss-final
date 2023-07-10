@@ -23,6 +23,8 @@ class BeemanIntegrator(
     init {
         previousAccelerations = HashMap()
         val zeroV = Vector()
+
+
         for (p in particles) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
@@ -49,7 +51,7 @@ class BeemanIntegrator(
                     )
 
                 if (previousParticleAux.Kt.isNaN()){
-                    System.out.println("")
+                    System.out.println("NaN")
                 }
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
                 previousAccelerations[p.id] = previousAcceleration
