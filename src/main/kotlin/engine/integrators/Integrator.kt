@@ -9,5 +9,5 @@ abstract class Integrator(private val forcesCalculator: ForcesCalculator) {
         return forcesCalculator.getForces(particle, particles)
     }
 
-    abstract fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>)
+    abstract fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) : Particle
 }

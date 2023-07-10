@@ -17,7 +17,7 @@ class BeemanIntegrator(
     particles: Set<Particle>,
     val walls: Set<Wall>
 ) : Integrator(forcesCalculator) {
-    private val previousAccelerations: MutableMap<Particle, Vector>
+    private val previousAccelerations: MutableMap<Int, Vector>
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     init {
@@ -28,7 +28,7 @@ class BeemanIntegrator(
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             logger.info("[$formattedDateTime] Performing simulation for particle " + p.id)
             if (p.velocity == zeroV) {
-                previousAccelerations[p] = zeroV
+                previousAccelerations[p.id] = zeroV
             } else {
                 val forces = getForces(p, particles)
                 val previousPosition =
@@ -48,19 +48,16 @@ class BeemanIntegrator(
                         p.pressure
                     )
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
-                previousAccelerations[p] = previousAcceleration
+                previousAccelerations[p.id] = previousAcceleration
             }
         }
     }
 
-    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) {
-        var acceleration = getForces(particle, particles) / particle.mass
+    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) : Particle {
+        val acceleration = getForces(particle, particles) / particle.mass
 
-
-
-
-        val previousAcceleration = previousAccelerations[particle]!!
-        particle.position = particle.position +
+        val previousAcceleration = previousAccelerations[particle.id]!!
+        val position = particle.position +
                 (particle.velocity * timeDelta) +
                 (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
@@ -68,7 +65,7 @@ class BeemanIntegrator(
         if (particle.id == 0) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Velocity for cannonBall: ${particle.velocity}, new position for cannonball: ${particle.position}")
+            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration")
         }
         //predict velocity with position
         val velocityPrediction = particle.velocity +
@@ -89,7 +86,7 @@ class BeemanIntegrator(
         val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
 
         //correct velocity
-        particle.velocity = particle.velocity +
+        val velocity = particle.velocity +
                 (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
                 (acceleration * (5.0 / 6.0 * timeDelta)) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta))
@@ -98,6 +95,7 @@ class BeemanIntegrator(
             System.out.println("")
         }
 
-        previousAccelerations[particle] = acceleration
+        previousAccelerations[particle.id] = acceleration
+        return particle.copy(position = position, velocity = velocity)
     }
 }

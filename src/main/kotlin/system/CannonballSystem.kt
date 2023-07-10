@@ -12,29 +12,30 @@ import kotlin.math.sin
 
 class CannonballSystem {
     companion object {
-        const val particleMass = 0.5
-        const val timeDelta = 0.0002
-        const val saveTimeDelta = 0.0002
-        const val cutoffTime = 10.0
+        const val particleMass = 0.05
+        const val timeDelta = 0.00005
+        const val saveTimeDelta = 0.00005
+        const val cutoffTime = 3.0
         private const val boxHeight = 0.5
-        private const val boxWidth = 0.5
+            private const val boxWidth = 1.0
         val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
-        const val numberOfParticles = 5000
+        const val numberOfParticles = 10000
         private const val minParticleDiameter = 0.01
         private const val maxParticleDiameter = 0.03
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
 
         // Coeficientes de fricción y restitución para la bala de cañón
-        const val cannonballGammaN = 0.2
-        const val cannonballGammaT = 0.2
-        const val cannonballKt = 2.0
-        const val cannonballKn = cannonballKt/25
+        // Gamma alto implica mucho rebote
+        const val cannonballGammaN = 0.9
+        const val cannonballGammaT = 0.9
+        const val cannonballKt = 1E-5
+        const val cannonballKn = cannonballKt / 10
 
         // Coeficientes de fricción y restitución para las partículas del lecho
-        const val pGammaN = 0.45
-        const val pGammaT = 0.45
-        const val pKt = 1E6
-        const val pKn = pKt/25
+        const val pGammaN = 0.8
+        const val pGammaT = 0.8
+        const val pKt = 1E7
+        const val pKn = pKt / 10
 
         // Coeficientes de fricción y restitución para las paredes
         const val wGammaN = 0.5
@@ -43,7 +44,8 @@ class CannonballSystem {
         const val wKn = wKt / 25
     }
 
-
+    //    Kn es el coeficiente elástico en la dirección normal, que es la dirección perpendicular a la superficie de contacto. Un Kn más alto significa que hay una mayor resistencia a la superposición de partículas o a la superposición de una partícula con una pared en esta dirección. Esto podría resultar en un rebote más fuerte cuando ocurre una colisión.
+//    Kt es el coeficiente elástico en la dirección tangencial, que es paralela a la superficie de contacto. Un Kt más alto significa que hay una mayor resistencia a la superposición de partículas o a la superposición de una partícula con una pared en esta dirección. Esto podría resultar en una mayor resistencia al deslizamiento de una partícula a lo largo de otra o a lo largo de una pared.
     fun run(particlesFromFile: Set<Particle> = emptySet()) {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
@@ -55,7 +57,7 @@ class CannonballSystem {
             setOf(cannonballParticle) + particlesFromFile
         }
 
-        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
+        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxWidth, boxHeight)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
         val cannonballFileGenerator = CannonballFileGenerator("cannonball-" + String.format("%.6f", timeDelta))
         val cutCondition = TimeCutCondition(cutoffTime)
@@ -65,10 +67,13 @@ class CannonballSystem {
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 45.0
-        val angle = Math.PI / 2
-        val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2.0, boxWidth / 2.0, 2 * boxHeight)
+        val velocityMagnitude = 850.0
+        val angle = Math.toRadians(95.0)
+        val velocity = Vector(0.0, velocityMagnitude * sin(angle), -velocityMagnitude * sin(angle))
+        val position = Vector(boxWidth / 2, (-boxWidth / 3), 2 * boxHeight)
+//        val angle = Math.PI / 2
+//        val velocity = Vector(0.0, 0.0, -velocityMagnitude * sin(angle))
+//        val position = Vector(boxWidth / 2.0, boxWidth / 2.0, 2 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

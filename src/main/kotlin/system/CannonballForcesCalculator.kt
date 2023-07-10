@@ -8,11 +8,9 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.pow
-import kotlin.math.sqrt
 
-class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculator {
+class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Double, val boxHeight: Double) :
+    ForcesCalculator {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private fun calculateGravityForce(particle: Particle): Vector {
@@ -53,12 +51,18 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
         return closestPoint
     }
 
-
     private fun calculateWallForce(particle: Particle, walls: Set<Wall>): Vector {
         var wallForce = Vector()
 
         for (wall in walls) {
-            if (wall.overlapsWithParticle(particle.position, particle.radius)) {
+            if (wall.isParticleInsideBox(particle, boxWidth, boxHeight) && wall.overlapsWithParticle(
+                    particle.position,
+                    particle.radius
+                )
+            ) {
+                if (particle.id == 0){
+                    System.out.println("")
+                }
                 val relativePosition = particle.position - wall.position
                 val overlapSize = particle.radius - relativePosition.dotProduct(wall.normal)
 
@@ -74,25 +78,31 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
 
                 wallForce += normalForceValue + tangentialForceValue
 
-                // Invertir la velocidad si hay colisión con la pared y darle empuje
-                val normalVelocityComponent = particle.velocity.dotProduct(wall.normal)
-                particle.velocity -= wall.normal * (1.7 * normalVelocityComponent)
+                if (wall.id == "BOTTOM" && !particle.hasCollide) {
+                    // Frenar la velocidad de la partícula en el eje z si se incrusta en el piso
+                    particle.velocity = Vector(particle.velocity.x, -particle.velocity.y, 0.0)
+                    particle.hasCollide = true
+                    return Vector()
+                }
             }
         }
 
         return wallForce
     }
 
-
     override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
 
+        if (particle.id == 0 && particle.hasCollide) {
+            return Vector()
+        }
+
         if (particle.id == 0) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Gravity force for cannonBall: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
+//            logger.info("[$formattedDateTime] Gravity force for cannonBall: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
         }
 
         return gravityForce + interactionForce + wallForce

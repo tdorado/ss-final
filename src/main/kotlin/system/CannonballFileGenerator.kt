@@ -24,7 +24,7 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
             }
             val pw = FileWriter("$folder$filename.xyz")
             pw.close()
-            fw = FileWriter("$folder$filename.xyz", true)
+            fw = FileWriter("$folder$filename.xyz", false)
         } catch (e: IOException) {
             e.printStackTrace()
         }

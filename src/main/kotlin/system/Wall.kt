@@ -2,6 +2,7 @@ package system
 
 import engine.model.Particle
 import engine.model.Vector
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 class Wall(
@@ -21,10 +22,19 @@ class Wall(
         return distanceFromWall <= radius
     }
 
+    fun isParticleInsideBox(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
+        if (particle.id == 0 && id == "BOTTOM"){
+            System.out.println("")
+        }
+        val position = particle.position
+        return !(abs(position.x) > (boxWidth/2) || abs(position.y) > (boxWidth) || abs(position.z) > boxHeight)
+    }
+
     fun isOutsideBox(position: Vector): Boolean {
         val wallToPosition = position - this.position
         return wallToPosition.dotProduct(this.normal) < 0
     }
+
     override fun toString(): String {
         return "Wall(identifier='$id')"
     }
