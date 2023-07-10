@@ -47,7 +47,7 @@ class CannonballParticleGenerator(
             )
 
             val overlappingParticle = particles.find { it.overlapsWith(position, radius) }
-            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius) }
+            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius, boxWidth = boxSize.x, boxHeight = boxSize.z) }
 
             if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()

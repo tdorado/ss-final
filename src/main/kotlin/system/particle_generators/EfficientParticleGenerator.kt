@@ -65,7 +65,7 @@ class EfficientParticleGenerator(
 
             // find overlapping particle using the grid
             val overlappingParticle = grid.findOverlappingParticle(position, radius)
-            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius) }
+            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius, boxSize.x, boxSize.z) }
 
             if (overlappingParticle == null && overlappingWall == null) {
                 val velocity = Vector()

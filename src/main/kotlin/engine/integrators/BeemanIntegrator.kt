@@ -47,6 +47,10 @@ class BeemanIntegrator(
                         p.gammaN,
                         p.pressure
                     )
+
+                if (previousParticleAux.Kt.isNaN()){
+                    System.out.println("")
+                }
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
                 previousAccelerations[p.id] = previousAcceleration
             }
@@ -62,11 +66,15 @@ class BeemanIntegrator(
                 (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
                 (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
 
-        if (particle.id == 0) {
-            val currentDateTime = LocalDateTime.now()
-            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration")
+        if (position.x.isNaN() || position.y.isNaN() || position.z.isNaN()){
+            System.out.println("")
         }
+
+//        if (particle.id == 1) {
+//            val currentDateTime = LocalDateTime.now()
+//            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+//            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration")
+//        }
         //predict velocity with position
         val velocityPrediction = particle.velocity +
                 (acceleration * (3.0 / 2.0 * timeDelta)) -
@@ -83,6 +91,9 @@ class BeemanIntegrator(
             particle.gammaN,
             particle.pressure
         )
+        if (particle.Kt.isNaN() || nextParticlePrediction.Kt.isNaN()){
+            System.out.println("")
+        }
         val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
 
         //correct velocity

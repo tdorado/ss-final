@@ -2,7 +2,7 @@ package engine.model
 
 import kotlin.math.sqrt
 
-class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
+class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
 
     companion object {
         fun fromString(str: String): Vector {
@@ -22,6 +22,9 @@ class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
     operator fun unaryMinus() = Vector(-x, -y, -z)
     fun projectOnPlane(planeNormal: Vector): Vector {
         val normalizedPlaneNormal = planeNormal.normalize()
+        if (normalizedPlaneNormal == Vector()) {
+            return Vector()
+        }
         return this - (normalizedPlaneNormal.times(this.dotProduct(normalizedPlaneNormal)))
     }
     fun squaredMagnitude(): Double {
@@ -33,6 +36,7 @@ class Vector(val x: Double = 0.0, val y: Double = 0.0, var z: Double = 0.0) {
 
     fun normalize(): Vector {
         val magnitude = magnitude
+        if (magnitude == 0.0) return Vector()
         return Vector(x / magnitude, y / magnitude, z / magnitude)
     }
 

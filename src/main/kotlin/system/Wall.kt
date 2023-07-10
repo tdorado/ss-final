@@ -8,33 +8,20 @@ import kotlin.math.absoluteValue
 class Wall(
     val position: Vector,
     val normal: Vector,
-    val Kn: Double,
-    val Kt: Double,
-    val gammaN: Double,
-    val gammaT: Double,
     val id: String
 ) {
     val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
-    fun overlapsWithParticle(positionToCompare: Vector, radius: Double): Boolean {
+    fun overlapsWithParticle(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
         val relativePosition = positionToCompare - position
         val distanceFromWall = relativePosition.dotProduct(normal)
-        return distanceFromWall <= radius
-    }
 
-    fun isParticleInsideBox(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
-        if (particle.position.x < 0 || particle.position.y < 0 || particle.position
-                .z < 0
-                ) {
-            return true
-        }
-        val position = particle.position
-        return !(abs(position.x) > boxWidth || abs(position.y) > boxWidth || abs(position.z) > boxHeight)
-    }
+        val insideBox =
+            positionToCompare.x in 0.0..boxWidth &&
+                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
+                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
 
-    fun isOutsideBox(position: Vector): Boolean {
-        val wallToPosition = position - this.position
-        return wallToPosition.dotProduct(this.normal) < 0
+        return insideBox && distanceFromWall <= radius
     }
 
     override fun toString(): String {

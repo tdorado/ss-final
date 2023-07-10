@@ -55,9 +55,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         var wallForce = Vector()
 
         for (wall in walls) {
-            if (wall.isParticleInsideBox(particle, boxWidth, boxHeight) && wall.overlapsWithParticle(
+            if (wall.overlapsWithParticle(
                     particle.position,
-                    particle.radius
+                    particle.radius, boxWidth, boxHeight
                 )
             ) {
                 if (particle.id == 0) {
@@ -69,7 +69,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
                 val tangentialVelocity = particle.velocity.projectOnPlane(wall.normal)
 
-                val normalForceMagnitude = -particle.Kn * overlapSize - particle.gammaN * normalVelocity
+                val normalForceMagnitude = -(particle.Kn) * overlapSize - particle.gammaN * normalVelocity
                 val tangentialForceMagnitude =
                     -particle.Kt * overlapSize - particle.gammaT * tangentialVelocity.magnitude
 
@@ -78,24 +78,10 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
                 wallForce += normalForceValue + tangentialForceValue
 
-                if (wall.id == "BOTTOM") {
-                    // Frenar la velocidad de la partícula en el eje z si se incrusta en el piso
-                    particle.velocity = Vector(particle.velocity.x, (particle.velocity.y) * 0.7, 0.0)
-                    particle.hasCollide = true
-                    return Vector()
-                } else {
-                    if (wall.id == "RIGHT" || wall.id == "LEFT") {
-                        // Choque en la dirección y (eje vertical)
-                        val yVelocityComponent = particle.velocity.y
-                        particle.velocity = Vector(particle.velocity.x, -0.7 *yVelocityComponent, particle.velocity.z)
-                        particle.hasCollide = true
-                        return Vector()
-                    } else {
-                        particle.velocity =
-                            Vector(-0.7 * particle.velocity.x, particle.velocity.y, particle.velocity.z)
-                        particle.hasCollide = true
-                        return Vector()
-                    }
+                particle.collideWithWall = wall.id
+
+                if (particle.id == 0) {
+                    System.out.println("")
                 }
             }
         }
@@ -108,16 +94,18 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
 
-        if (particle.id == 0 && particle.hasCollide) {
-            return Vector()
-        }
+        var totalForce = gravityForce + interactionForce + wallForce
 
         if (particle.id == 0) {
             val currentDateTime = LocalDateTime.now()
             val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-//            logger.info("[$formattedDateTime] Gravity force for cannonBall: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
+            logger.info("[$formattedDateTime] Gravity force for cannonBall: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, position: ${particle.position}")
         }
 
-        return gravityForce + interactionForce + wallForce
+        if (particle.collideWithWall.isNotBlank()) {
+            particle.velocity = particle.velocity.times(0.5)
+        }
+
+        return totalForce
     }
 }

@@ -1,7 +1,5 @@
 package engine.model
 
-import kotlin.math.abs
-
 data class Particle(
     val id: Int,
     var position: Vector,
@@ -13,7 +11,7 @@ data class Particle(
     var gammaT: Double,
     var gammaN: Double,
     var pressure: Double = 0.0,
-    var hasCollide: Boolean = false
+    var collideWithWall: String = "",
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
