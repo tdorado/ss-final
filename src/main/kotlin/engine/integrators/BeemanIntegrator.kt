@@ -73,16 +73,16 @@ class BeemanIntegrator(
                 currentAcceleration.times((2.0 / 3.0)) * timeDelta.pow(2) -
                 previousAcceleration.times((1.0 / 6.0)) * timeDelta.pow(2)
 
-        if (abs(newPosition.x) > 0.9 || abs(newPosition.y) > 0.9 || newPosition.z < 0.0) {
-            System.out.println("AL HORNO" + particle.id)
-        }
+//        if (abs(newPosition.x) > 0.9 || abs(newPosition.y) > 0.9 || newPosition.z < 0.0) {
+//            System.out.println("AL HORNO" + particle.id)
+//        }
         // Predict the velocity for the next timestep
         val predictedVelocity = particle.velocity +
                 currentAcceleration.times((3.0 / 2.0)) * timeDelta -
                 previousAcceleration.times((1.0 / 2.0)) * timeDelta
 
         // Get the predicted acceleration
-        val predictedParticle = particle.copy(position = newPosition, velocity = predictedVelocity)
+        val predictedParticle = particle.deepCopy(position = newPosition, velocity = predictedVelocity)
 
         // The "next" acceleration should be calculated with the updated position and velocity
         val nextAcceleration = getForces(predictedParticle, particles) / predictedParticle.mass

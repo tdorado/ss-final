@@ -28,6 +28,22 @@ data class Particle(
         return true
     }
 
+    fun deepCopy(position: Vector, velocity: Vector): Particle {
+        return Particle(
+            id = this.id,
+            position = Vector(position.x, position.y, position.z),  // Creando nueva instancia de Vector
+            velocity = Vector(velocity.x, velocity.y, velocity.z),  // Creando nueva instancia de Vector
+            radius = this.radius,
+            mass = this.mass,
+            Kt = this.Kt,
+            Kn = this.Kn,
+            gammaT = this.gammaT,
+            gammaN = this.gammaN,
+            pressure = this.pressure,
+            collideWithWall = this.collideWithWall
+        )
+    }
+
     fun serialize(): String {
         return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gammaT,$gammaN,$pressure"
     }

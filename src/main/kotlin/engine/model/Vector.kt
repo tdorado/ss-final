@@ -1,5 +1,7 @@
 package engine.model
 
+import java.math.BigDecimal
+import java.math.MathContext
 import kotlin.math.sqrt
 
 class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
@@ -27,6 +29,13 @@ class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
     operator fun minus(v: Vector) = Vector(x - v.x, y - v.y, z - v.z)
     operator fun times(scalar: Double) = Vector(x * scalar, y * scalar, z * scalar)
+
+    fun roundVec() : Vector {
+        this.x = BigDecimal(x).round(MathContext(10)).toDouble()
+        this.y = BigDecimal(y).round(MathContext(10)).toDouble()
+        this.z = BigDecimal(z).round(MathContext(10)).toDouble()
+        return Vector(this.x, this.y, this.z)
+    }
 
     operator fun div(scalar: Double) = Vector(x / scalar, y / scalar, z / scalar)
     operator fun unaryMinus() = Vector(-x, -y, -z)

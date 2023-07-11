@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
+import kotlin.math.max
 
 class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Double, val boxHeight: Double) :
     ForcesCalculator {
@@ -22,10 +23,16 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         var interactionForce = Vector()
         for (otherParticle in neighbours) {
             if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
-                val closestPoint = findClosestPointOnParticle(particle, otherParticle.position)
+                if (particle.id == 1){
+                    System.out.println()
+                }
+                if (particle.id == 2){
+                    System.out.println()
+                }
+                val closestPoint = findClosestPointOnParticle(particle, otherParticle.position).roundVec()
                 val overlapSize = (closestPoint - otherParticle.position).magnitude - otherParticle.radius
 
-                val normalVector = (closestPoint - otherParticle.position).normalize()
+                val normalVector = (otherParticle.position - closestPoint).normalize()
                 val relativeVelocity = particle.velocity - otherParticle.velocity
                 val relativeTangentialVelocity = relativeVelocity.projectOnPlane(normalVector)
 
@@ -53,7 +60,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
     private fun calculateWallForce(particle: Particle, walls: Set<Wall>): Vector {
         var wallForce = Vector()
-
+        particle.collideWithWall = ""
         for (wall in walls) {
             if (wall.overlapsWithParticle(particle.position, particle.radius, boxWidth, boxHeight)) {
                 val relativePosition = particle.position - wall.position
@@ -67,7 +74,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                     particle.velocity.projectOnPlane(wall.normal)
                 }
 
-                val wallKn = 5E0
+                val wallKn = 1E6
                 val wallKt = 2 * wallKn
 
                 val normalForceMagnitude = -(particle.gammaN * normalVelocity) - (wallKn * overlapSize)
@@ -123,7 +130,12 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         var wallForce = calculateWallForce(particle, walls)
         var totalForce = gravityForce + interactionForce + wallForce
-        return changeVelocitySignsForCollideWithWall(particle, walls, totalForce)
 
+        if (particle.id != 0) {
+            if (abs(particle.position.x) > 0.9 || abs(particle.position.y) > 0.9 || particle.position.z < 0.0) {
+                System.out.println("EXPLOTO")
+            }
+        }
+        return changeVelocitySignsForCollideWithWall(particle, walls, totalForce)
     }
 }
