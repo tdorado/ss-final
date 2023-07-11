@@ -21,7 +21,7 @@ class Wall(
                     positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
                     positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
 
-        return insideBox && distanceFromWall <= radius
+        return insideBox && distanceFromWall < radius
     }
 
     override fun toString(): String {

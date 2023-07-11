@@ -50,7 +50,7 @@ class BeemanIntegrator(
                         p.pressure
                     )
 
-                if (previousParticleAux.Kt.isNaN()){
+                if (previousParticleAux.Kt.isNaN()) {
                     System.out.println("NaN")
                 }
                 val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
@@ -59,54 +59,43 @@ class BeemanIntegrator(
         }
     }
 
-    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>) : Particle {
-        val acceleration = getForces(particle, particles) / particle.mass
+    override fun applyIntegrator(timeDelta: Double, particle: Particle, particles: Set<Particle>): Particle {
+        // Calculate current acceleration
+        val currentAcceleration = getForces(particle, particles) / particle.mass
 
+        // Fetch the previous acceleration
         val previousAcceleration = previousAccelerations[particle.id]!!
-        val position = particle.position +
-                (particle.velocity * timeDelta) +
-                (acceleration * ((2.0 / 3.0) * timeDelta.pow(2))) -
-                (previousAcceleration * (1.0 / 6.0 * timeDelta.pow(2)))
 
-        if (position.x.isNaN() || position.y.isNaN() || position.z.isNaN()){
-            System.out.println("")
-        }
+        // Position update
+        val newPosition = particle.position +
+                particle.velocity * timeDelta +
+                currentAcceleration.times((2.0 / 3.0)) * timeDelta.pow(2) -
+                previousAcceleration.times((1.0 / 6.0)) * timeDelta.pow(2)
 
+        // Predict the velocity for the next timestep
+        val predictedVelocity = particle.velocity +
+                currentAcceleration.times((3.0 / 2.0)) * timeDelta -
+                previousAcceleration.times((1.0 / 2.0)) * timeDelta
 
-        //predict velocity with position
-        val velocityPrediction = particle.velocity +
-                (acceleration * (3.0 / 2.0 * timeDelta)) -
-                (previousAcceleration * (1.0 / 2.0 * timeDelta))
+        // Get the predicted acceleration
+        val predictedParticle = particle.copy(position = newPosition, velocity = predictedVelocity)
 
-        val nextParticlePrediction = Particle(
-            particle.id,
-            particle.position,
-            velocityPrediction,
-            particle.radius,
-            particle.mass,
-            particle.Kt,
-            particle.Kn,
-            particle.gammaT,
-            particle.gammaN,
-            particle.pressure
-        )
-        if (particle.Kt.isNaN() || nextParticlePrediction.Kt.isNaN()){
-            System.out.println("")
-        }
-        val nextAcceleration = getForces(nextParticlePrediction, particles) / particle.mass
+        // The "next" acceleration should be calculated with the updated position and velocity
+        val nextAcceleration = getForces(predictedParticle, particles) / predictedParticle.mass
 
-        //correct velocity
-        val velocity = particle.velocity +
-                (nextAcceleration * (1.0 / 3.0 * timeDelta)) +
-                (acceleration * (5.0 / 6.0 * timeDelta)) -
-                (previousAcceleration * (1.0 / 6.0 * timeDelta))
-        if (particle.id == 1) {
-            val currentDateTime = LocalDateTime.now()
-            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] new position for cannonball: ${particle.position} acceleration $acceleration velocity $velocity")
-        }
+        // Correct the velocity with the predicted acceleration
+        val newVelocity = particle.velocity +
+                nextAcceleration.times((1.0 / 3.0)) * timeDelta +
+                currentAcceleration.times((5.0 / 6.0)) * timeDelta -
+                previousAcceleration.times((1.0 / 6.0)) * timeDelta
 
-        previousAccelerations[particle.id] = acceleration
-        return particle.copy(position = position, velocity = velocity)
+        if (particle.id == 0)
+            logger.info("acceleration, $currentAcceleration velocity $newVelocity position ${particle.position}")
+
+        // Store the current acceleration as the "previousAcceleration" for the next timestep
+        previousAccelerations[particle.id] = currentAcceleration
+
+        return particle.copy(position = newPosition, velocity = newVelocity)
     }
+
 }

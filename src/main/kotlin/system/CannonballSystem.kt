@@ -12,19 +12,19 @@ import kotlin.math.sin
 
 class CannonballSystem(
     val particleMass: Double = 0.005,
-    val timeDelta: Double = 0.005,
-    val saveTimeDelta: Double = 0.005,
-    val cutoffTime: Double = 5.0,
+    val timeDelta: Double = 0.0005,
+    val saveTimeDelta: Double = 0.0005,
+    val cutoffTime: Double = 1.0,
     val boxHeight: Double = 0.25,
     val boxWidth: Double = 0.9,
     val numberOfParticles: Int = 10000,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 1E-3,
-    val pGammaT: Double = 1E-3,
-    val pKn: Double = 1E5,
-    val pKt: Double = 2 * pKn,
-    val angle: Double = Math.toRadians(120.0)
+    val pGammaN: Double = 0.01,
+    val pGammaT: Double = pGammaN,
+    val pKn: Double = 5E4,
+    val pKt: Double = pKn,
+    val angle: Double = Math.toRadians(90.0)
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
@@ -46,12 +46,12 @@ class CannonballSystem(
     fun run(particlesFromFile: Set<Particle> = emptySet()) {
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
-
-        val particles: Set<Particle> = if (particlesFromFile.isEmpty()) {
+        val onlyCannon = false
+        val particles: Set<Particle> = if (onlyCannon) {
+            setOf(cannonballParticle)
+        } else {
             val boxParticles = createBoxParticles(boxWalls)
             boxParticles + cannonballParticle
-        } else {
-            particlesFromFile + cannonballParticle
         }
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxWidth, boxHeight)
@@ -66,7 +66,7 @@ class CannonballSystem(
     private fun createCannonBall(): Particle {
         val velocityMagnitude = 2.0
         val velocity = Vector(0.0, -velocityMagnitude * cos(angle), -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2, 0.0, 2 * boxHeight)
+        val position = Vector(boxWidth / 2, boxWidth / 3, 2 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

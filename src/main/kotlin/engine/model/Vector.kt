@@ -14,6 +14,16 @@ class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
     val magnitude: Double
         get() = sqrt(x * x + y * y + z * z)
 
+    fun isParallelTo(other: Vector): Boolean {
+        // Calcular el producto cruz entre los dos vectores
+        val crossProduct = this.crossProduct(other)
+
+        // Los vectores son paralelos si la magnitud del producto cruz es cerca de cero.
+        // Usamos una pequeña tolerancia en lugar de verificar si es exactamente cero
+        // debido a la posibilidad de errores de precisión numérica.
+        return crossProduct.magnitude < 1e-6
+    }
+
     operator fun plus(v: Vector) = Vector(x + v.x, y + v.y, z + v.z)
     operator fun minus(v: Vector) = Vector(x - v.x, y - v.y, z - v.z)
     operator fun times(scalar: Double) = Vector(x * scalar, y * scalar, z * scalar)

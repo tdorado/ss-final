@@ -28,32 +28,24 @@ class CannonballParticleGenerator(
     private var startTime = System.currentTimeMillis()
 
     fun generateParticles(shouldLog: Boolean = false): Set<Particle> {
-        startTime = System.currentTimeMillis()
+        val radius = particleDiameterGenerator.startInterval
+        val rows = (boxSize.y / (2 * radius)).toInt()
+        val cols = (boxSize.x / (2 * radius)).toInt()
+        val layers = (boxSize.z / (2 * radius)).toInt()
 
-        val currentDateTime = LocalDateTime.now()
-        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        logger.info("[$formattedDateTime] Generating particles")
-        var particleCount = 1 // Empieza en 1 para que la bala de cañón sea la 0
+        var count = 1
+        for (layer in 0 until layers) {
+            for (row in 0 until rows) {
+                for (col in 0 until cols) {
+                    val x = radius + col * (2.00 * radius)
+                    val y = radius + row * (2.00 * radius)
+                    val z = radius + layer * (2.00 * radius)
 
-        var zPosition = 0.0
-        var overlapCount = 0
-        while (particles.size < numberOfParticles && zPosition < boxSize.z) {
-            val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
+                    val position = Vector(x, y, z)
+                    val velocity = Vector()
 
-            val position = Vector(
-                random.nextDouble(radius, boxSize.x - radius),
-                random.nextDouble(radius, boxSize.y - radius),
-                zPosition + radius
-            )
-
-            val overlappingParticle = particles.find { it.overlapsWith(position, radius) }
-            val overlappingWall = walls.find { it.overlapsWithParticle(position, radius, boxWidth = boxSize.x, boxHeight = boxSize.z) }
-
-            if (overlappingParticle == null && overlappingWall == null) {
-                val velocity = Vector()
-                particles.add(
-                    Particle(
-                        particleCount++,
+                    val particle = Particle(
+                        count++,
                         position,
                         velocity,
                         radius,
@@ -64,25 +56,11 @@ class CannonballParticleGenerator(
                         gammaN,
                         pressure
                     )
-                )
 
-                if (shouldLog) {
-                    logger.info("Added particle with position: $position, velocity: $velocity, radius: $radius")
-                }
-                updateProgress()
-                overlapCount = 0
-            } else {
-                overlapCount++
-                if (overlapCount > 100) {
-                    zPosition += radius
-                    overlapCount = 0
-                }
+                    particles.add(particle)
 
-                if (shouldLog) {
-                    if (overlappingParticle != null) {
-                        logger.info("Failed to add particle with position: $position, radius: $radius, overlapped with existing particle: $overlappingParticle")
-                    } else {
-                        logger.info("Failed to add particle with position: $position, radius: $radius, overlapped with wall: $overlappingWall")
+                    if (shouldLog) {
+                        logger.info("Added particle with id: ${particle.id}, position: $position, velocity: $velocity, radius: $radius")
                     }
                 }
             }
