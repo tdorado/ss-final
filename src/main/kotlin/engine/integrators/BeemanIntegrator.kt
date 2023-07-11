@@ -89,11 +89,11 @@ class BeemanIntegrator(
 
         // Correct the velocity with the predicted acceleration
         val newVelocity = particle.velocity +
-                nextAcceleration.times((1.0 / 3.0)) * timeDelta +
-                currentAcceleration.times((5.0 / 6.0)) * timeDelta -
-                previousAcceleration.times((1.0 / 6.0)) * timeDelta
+                (nextAcceleration.times((1.0 / 3.0)) * timeDelta) +
+                (currentAcceleration.times((5.0 / 6.0)) * timeDelta) -
+                (previousAcceleration.times((1.0 / 6.0)) * timeDelta)
 
-        if (particle.id == 0)
+        if (particle.id == 1 || particle.id == 2)
             logger.info("acceleration, $currentAcceleration velocity $newVelocity position ${particle.position}")
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep

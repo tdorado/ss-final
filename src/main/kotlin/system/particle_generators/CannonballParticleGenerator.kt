@@ -34,9 +34,9 @@ class CannonballParticleGenerator(
         val layers = (boxSize.z / (2 * radius)).toInt()
 
         var count = 1
-        for (layer in 0 until layers) {
-            for (row in 0 until rows) {
-                for (col in 0 until cols) {
+        for (row in 0 until rows) {
+            for (col in 0 until cols) {
+                for (layer in 0 until layers) {
                     val x = radius + col * (2.00 * radius)
                     val y = radius + row * (2.00 * radius)
                     val z = radius + layer * (2.00 * radius)
@@ -57,12 +57,24 @@ class CannonballParticleGenerator(
                         pressure
                     )
 
+
+                    if (particles.size >= numberOfParticles) {
+                        break
+                    }
                     particles.add(particle)
 
                     if (shouldLog) {
                         logger.info("Added particle with id: ${particle.id}, position: $position, velocity: $velocity, radius: $radius")
                     }
                 }
+
+                if (particles.size >= numberOfParticles) {
+                    break
+                }
+            }
+
+            if (particles.size >= numberOfParticles) {
+                break
             }
         }
 

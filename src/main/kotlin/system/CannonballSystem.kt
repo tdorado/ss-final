@@ -11,13 +11,13 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class CannonballSystem(
-    val particleMass: Double = 0.005,
-    val timeDelta: Double = 0.0005,
-    val saveTimeDelta: Double = 0.0005,
+    val particleMass: Double = 0.05,
+    val timeDelta: Double = 0.001,
+    val saveTimeDelta: Double = 0.001,
     val cutoffTime: Double = 1.0,
     val boxHeight: Double = 0.25,
     val boxWidth: Double = 0.9,
-    val numberOfParticles: Int = 10000,
+    val numberOfParticles: Int = 2,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
     val pGammaN: Double = 0.9,
@@ -51,7 +51,7 @@ class CannonballSystem(
             setOf(cannonballParticle)
         } else {
             val boxParticles = createBoxParticles(boxWalls)
-            boxParticles + cannonballParticle
+            boxParticles
         }
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxWidth, boxHeight)

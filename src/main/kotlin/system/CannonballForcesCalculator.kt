@@ -23,11 +23,11 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         var interactionForce = Vector()
         for (otherParticle in neighbours) {
             if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
-                if (particle.id == 1){
-                    System.out.println()
+                if (particle.id == 1) {
+//                    System.out.println()
                 }
-                if (particle.id == 2){
-                    System.out.println()
+                if (particle.id == 2) {
+//                    System.out.println()
                 }
                 val closestPoint = findClosestPointOnParticle(particle, otherParticle.position).roundVec()
                 val overlapSize = (closestPoint - otherParticle.position).magnitude - otherParticle.radius
@@ -74,7 +74,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                     particle.velocity.projectOnPlane(wall.normal)
                 }
 
-                val wallKn = 1E6
+                val wallKn = 1E2
                 val wallKt = 2 * wallKn
 
                 val normalForceMagnitude = -(particle.gammaN * normalVelocity) - (wallKn * overlapSize)
@@ -125,17 +125,68 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 //        return force.times(0.5)
     }
 
-    override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
-        val gravityForce = calculateGravityForce(particle)
-        val interactionForce = calculateParticleInteractionForce(particle, neighbours)
-        var wallForce = calculateWallForce(particle, walls)
-        var totalForce = gravityForce + interactionForce + wallForce
+    //    override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
+//        val gravityForce = calculateGravityForce(particle)
+//        val interactionForce = calculateParticleInteractionForce(particle, neighbours)
+//        var wallForce = calculateWallForce(particle, walls)
+//        var totalForce = gravityForce + interactionForce + wallForce
+//
+//        if (particle.id == 1){
+//            logger.info("Gravity force: $gravityForce, interactionForce: $interactionForce, wallForce: $wallForce, totalForce: ${totalForce}")
+//        }
+////        if (particle.id != 0) {
+////            if (abs(particle.position.x) > 0.9 || abs(particle.position.y) > 0.9 || particle.position.z < 0.0) {
+////                System.out.println("EXPLOTO")
+////            }
+////        }
+////        return totalForce
+//        return changeVelocitySignsForCollideWithWall(particle, walls, totalForce)
+//    }
 
-        if (particle.id != 0) {
-            if (abs(particle.position.x) > 0.9 || abs(particle.position.y) > 0.9 || particle.position.z < 0.0) {
-                System.out.println("EXPLOTO")
+    private fun calculateInteractionForce(particle: Particle, otherParticle: Particle): Vector {
+        val closestPoint = findClosestPointOnParticle(particle, otherParticle.position).roundVec()
+        val overlapSize = (closestPoint - otherParticle.position).magnitude - otherParticle.radius
+
+        val normalVector = (otherParticle.position - closestPoint).normalize()
+        val relativeVelocity = particle.velocity - otherParticle.velocity
+        val relativeTangentialVelocity = relativeVelocity.projectOnPlane(normalVector)
+
+        val normalForceMagnitude =
+            -(particle.Kn * overlapSize + particle.gammaN * relativeVelocity.dotProduct(normalVector))
+        val tangentialForceMagnitude =
+            -(particle.Kt * overlapSize + particle.gammaT * relativeTangentialVelocity.magnitude)
+
+        val normalForceValue = normalVector * normalForceMagnitude
+        val tangentialForceValue = relativeTangentialVelocity.normalize() * tangentialForceMagnitude
+
+        return normalForceValue + tangentialForceValue
+    }
+
+
+    override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {
+        var totalForce = calculateGravityForce(particle)
+
+        val allParticles = neighbours + walls.map { wall ->
+            Particle(
+                id = -1, // you can assign unique IDs for walls if needed
+                position = wall.position,
+                velocity = Vector(),
+                radius = 0.0, // walls can be treated as particles with zero radius
+                mass = Double.POSITIVE_INFINITY, // walls are immovable, so they have infinite mass
+                Kt = 1E10 * 2,
+                Kn = 1E10,
+                gammaT = 100.0,
+                gammaN = 50.0
+            )
+        }
+
+        for (otherParticle in allParticles) {
+            if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
+                totalForce += calculateInteractionForce(particle, otherParticle)
             }
         }
-        return changeVelocitySignsForCollideWithWall(particle, walls, totalForce)
+
+        return totalForce
     }
+
 }
