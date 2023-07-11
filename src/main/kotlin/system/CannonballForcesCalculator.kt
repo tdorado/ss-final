@@ -67,7 +67,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                     particle.velocity.projectOnPlane(wall.normal)
                 }
 
-                val wallKn = 5E2
+                val wallKn = 5E1
                 val wallKt = 2 * wallKn
 
                 val normalForceMagnitude = -(particle.gammaN * normalVelocity) - (wallKn * overlapSize)
@@ -80,6 +80,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
                 wallForce += -(normalForceValue + tangentialForceValue)
                 particle.collideWithWall = wall.id
+            } else if (wall.isParticleOverWall(particle.position, particle.radius, boxWidth, boxHeight)) {
+                particle.velocity = Vector()
+                return Vector()
             }
         }
 
@@ -91,23 +94,20 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
             if (wall.overlapsWithParticle(particle.position, particle.radius, boxWidth, boxHeight)) {
                 if (particle.collideWithWall == "BOTTOM") {
                     if (particle.velocity.z < 0 && particle.position.z < particle.radius) {
-                        particle.velocity.z *= -0.01
-                        force.z *= 0.01
+                        particle.velocity.z *= -1.0
                     }
                 } else if (particle.collideWithWall == "BACK" || particle.collideWithWall == "FRONT") {
                     if (particle.velocity.y < 0 && particle.position.y < particle.radius) {
-                        particle.velocity.y *= -0.01
-                        force.y *= 0.01
+                        particle.velocity.y *= -1.0
                     }
                 } else if (particle.collideWithWall.isNotBlank()) {
                     if (particle.velocity.x < 0 && particle.position.x < particle.radius) {
-                        particle.velocity.x *= -0.01
-                        force.x *= 0.01
+                        particle.velocity.x *= -1.0
                     }
                 }
             }
         }
-        return force
+        return force.times(0.1)
     }
 
     override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {

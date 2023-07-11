@@ -24,6 +24,18 @@ class Wall(
         return insideBox && distanceFromWall < radius
     }
 
+    fun isParticleOverWall(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
+        val relativePosition = positionToCompare - position
+        val distanceFromWall = relativePosition.dotProduct(normal)
+
+        val insideBox =
+            positionToCompare.x in 0.0..boxWidth &&
+                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
+                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
+
+        return insideBox && distanceFromWall == radius
+    }
+
     override fun toString(): String {
         return "Wall(identifier='$id')"
     }
