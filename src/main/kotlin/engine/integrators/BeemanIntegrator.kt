@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory
 import system.Wall
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 import kotlin.math.pow
 
 
@@ -72,6 +73,9 @@ class BeemanIntegrator(
                 currentAcceleration.times((2.0 / 3.0)) * timeDelta.pow(2) -
                 previousAcceleration.times((1.0 / 6.0)) * timeDelta.pow(2)
 
+        if (abs(newPosition.x) > 0.9 || abs(newPosition.y) > 0.9 || newPosition.z < 0.0) {
+            System.out.println("AL HORNO" + particle.id)
+        }
         // Predict the velocity for the next timestep
         val predictedVelocity = particle.velocity +
                 currentAcceleration.times((3.0 / 2.0)) * timeDelta -
