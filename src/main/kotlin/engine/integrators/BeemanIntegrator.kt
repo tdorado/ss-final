@@ -94,7 +94,7 @@ class BeemanIntegrator(
                 (previousAcceleration.times((1.0 / 6.0)) * timeDelta)
 
         if (particle.id == 1 || particle.id == 2)
-            logger.info("acceleration, $currentAcceleration velocity $newVelocity position ${particle.position}")
+            logger.info("[${particle.id}] acceleration, $currentAcceleration velocity $newVelocity position ${particle.position}")
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep
         previousAccelerations[particle.id] = currentAcceleration
