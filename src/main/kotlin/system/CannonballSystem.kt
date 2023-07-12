@@ -51,7 +51,7 @@ class CannonballSystem(
             setOf(cannonballParticle)
         } else {
             val boxParticles = createBoxParticles(boxWalls)
-            boxParticles
+            boxParticles + cannonballParticle
         }
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxWidth, boxHeight)
