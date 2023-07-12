@@ -11,19 +11,19 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class CannonballSystem(
-    val particleMass: Double = 0.05,
-    val timeDelta: Double = 0.001,
-    val saveTimeDelta: Double = 0.001,
-    val cutoffTime: Double = 2.0,
+    val particleMass: Double = 0.01,
+    val timeDelta: Double = 0.0002,
+    val saveTimeDelta: Double = 0.0002,
+    val cutoffTime: Double = 5.0,
     val boxHeight: Double = 0.25,
-    val boxWidth: Double = 0.9,
-    val numberOfParticles: Int = 2000,
+    val boxWidth: Double = 0.5,
+    val numberOfParticles: Int = 1000,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 0.9,
+    val pGammaN: Double = 1.1,
     val pGammaT: Double = pGammaN,
     val pKn: Double = 5E4,
-    val pKt: Double = pKn,
+    val pKt: Double = 2 * pKn,
     val angle: Double = Math.toRadians(90.0)
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
