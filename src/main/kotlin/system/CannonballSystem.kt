@@ -12,15 +12,15 @@ import kotlin.math.sin
 
 class CannonballSystem(
     val particleMass: Double = 0.01,
-    val timeDelta: Double = 0.0002,
-    val saveTimeDelta: Double = 0.0002,
-    val cutoffTime: Double = 5.0,
-    val boxHeight: Double = 0.25,
-    val boxWidth: Double = 0.5,
-    val numberOfParticles: Int = 1000,
+    val timeDelta: Double = 0.0005,
+    val saveTimeDelta: Double = 0.0005,
+    val cutoffTime: Double = 3.0,
+    val boxHeight: Double = 1.0,
+    val boxWidth: Double = 0.6,
+    val numberOfParticles: Int = 2000,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 1.1,
+    val pGammaN: Double = 1.01,
     val pGammaT: Double = pGammaN,
     val pKn: Double = 5E4,
     val pKt: Double = 2 * pKn,
@@ -64,9 +64,9 @@ class CannonballSystem(
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 2.0
+        val velocityMagnitude = 20.0
         val velocity = Vector(0.0, -velocityMagnitude * cos(angle), -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2, boxWidth / 3, 2 * boxHeight)
+        val position = Vector(boxWidth / 2, boxWidth / 3, 1.5 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

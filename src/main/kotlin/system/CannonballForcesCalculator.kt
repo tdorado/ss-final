@@ -57,8 +57,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
         for (wall in walls) {
             if (wall.overlapsWithParticle(particle, boxWidth, boxHeight)) {
-                val relativePosition = particle.position - wall.position
-                val distanceToWall = relativePosition.dotProduct(wall.normal)
+
+                var relativePosition = particle.position - wall.position
+                var distanceToWall = relativePosition.dotProduct(wall.normal)
 
                 if (distanceToWall < particle.radius){
                     val overlapSize = particle.radius - distanceToWall
@@ -76,6 +77,23 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
 
                 wallForce -= (normalForceValue + tangentialForceValue)
             }
+        }
+
+        // Extra check for the floor
+        if (particle.position.z < particle.radius) {
+            val overlapSize = particle.radius - particle.position.z
+            particle.position.z += overlapSize
+
+            val normalVelocity = particle.velocity.z
+            val tangentialVelocity = Vector(particle.velocity.x, particle.velocity.y, 0.0)
+
+            val normalForceMagnitude = - particle.gammaN * normalVelocity
+            val tangentialForceMagnitude = - particle.gammaT * tangentialVelocity.magnitude
+
+            val normalForceValue = Vector(0.0, 0.0, -normalForceMagnitude)
+            val tangentialForceValue = -tangentialVelocity.normalize().times(tangentialForceMagnitude)
+
+            wallForce -= (normalForceValue + tangentialForceValue)
         }
 
         return wallForce

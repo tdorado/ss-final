@@ -13,6 +13,9 @@ class Wall(
     val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
     fun overlapsWithParticle(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
+//        if (id == "BOTTOM" && particle.position.z <= 0.0) {
+//            return true
+//        }
         val relativePosition = particle.position - this.position
         val distanceFromWall = relativePosition.dotProduct(this.normal)
 

@@ -102,11 +102,11 @@ class Main : Runnable {
 //                    factor += 10
 //                }
 //            }
-            var Kn = 1E3
+            var Kn = 5E3
 //            while (Kn <= 1E4) {
             val cannonballSystem = CannonballSystem(pKn = Kn)
             cannonballSystem.run()
-            Kn += 0.5E6
+            Kn += 0.5E4
 //            }
 //            var minParticleDiameter = 0.01
 //            while (minParticleDiameter < 0.3) {
