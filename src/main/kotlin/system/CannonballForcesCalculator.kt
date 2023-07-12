@@ -58,9 +58,11 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         for (wall in walls) {
             if (wall.overlapsWithParticle(particle, boxWidth, boxHeight)) {
                 val relativePosition = particle.position - wall.position
-                val overlapSize = particle.radius - relativePosition.dotProduct(wall.normal)
-                if (particle.position.z < particle.radius){
-                    particle.position.z += overlapSize
+                val distanceToWall = relativePosition.dotProduct(wall.normal)
+
+                if (distanceToWall < particle.radius){
+                    val overlapSize = particle.radius - distanceToWall
+                    particle.position += wall.normal * overlapSize
                 }
 
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
