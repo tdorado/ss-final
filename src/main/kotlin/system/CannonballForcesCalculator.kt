@@ -12,7 +12,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private fun calculateGravityForce(particle: Particle): Vector {
-        val g = 9.81  // Acceleration due to gravity (in m/s^2)
+        val g = 1.62  // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
     }
 
@@ -25,10 +25,6 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
                 val normalVector = (otherParticle.position - particle.position).normalize()
                 val overlapSize =
                     (particle.radius + otherParticle.radius) - (otherParticle.position - particle.position).magnitude
-
-                // Add position correction to avoid overlap
-                val positionCorrection = normalVector * overlapSize * 0.5
-                particle.position -= positionCorrection
 
                 if (overlapSize < 0) continue
 
@@ -84,9 +80,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         val gravityForce = calculateGravityForce(particle)
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
-//        if (wallForce != Vector()){
-//            return wallForce + gravityForce
-//        }
+        if (wallForce != Vector()){
+            return wallForce + gravityForce
+        }
 
         return gravityForce + interactionForce + wallForce
     }
