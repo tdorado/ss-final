@@ -13,9 +13,6 @@ class Wall(
     val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
     fun overlapsWithParticle(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
-//        if (id == "BOTTOM" && particle.position.z <= 0.0) {
-//            return true
-//        }
         val relativePosition = particle.position - this.position
         val distanceFromWall = relativePosition.dotProduct(this.normal)
 
@@ -26,29 +23,6 @@ class Wall(
 
         return insideBox && distanceFromWall < particle.radius
     }
-//    fun overlapsWithParticle(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
-//        val relativePosition = positionToCompare - position
-//        val distanceFromWall = relativePosition.dotProduct(normal)
-//
-//        val insideBox =
-//            positionToCompare.x in 0.0..boxWidth &&
-//                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
-//                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
-//
-//        return insideBox && distanceFromWall < radius
-//    }
-//
-//    fun isParticleOverWall(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
-//        val relativePosition = positionToCompare - position
-//        val distanceFromWall = relativePosition.dotProduct(normal)
-//
-//        val insideBox =
-//            positionToCompare.x in 0.0..boxWidth &&
-//                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
-//                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
-//
-//        return insideBox && distanceFromWall == radius
-//    }
 
     override fun toString(): String {
         return "Wall(identifier='$id')"
