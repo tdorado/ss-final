@@ -10,6 +10,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val overlapLimit = 0.0
     private fun calculateGravityForce(particle: Particle): Vector {
+        if (particle.radius <= particle.radius) {
+            return Vector()
+        }
         val g = 9.81  // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
     }

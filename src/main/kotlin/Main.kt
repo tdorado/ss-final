@@ -102,7 +102,7 @@ class Main : Runnable {
 //                    factor += 10
 //                }
 //            }
-            var Kn = 1E6
+            var Kn = 1E1
 //            while (Kn <= 1E4) {
             val cannonballSystem = CannonballSystem(pKn = Kn)
             cannonballSystem.run()
