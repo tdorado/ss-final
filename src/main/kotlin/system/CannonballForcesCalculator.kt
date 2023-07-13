@@ -59,7 +59,6 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
             if (distanceToWall < particle.radius) {
                 val overlapSize = particle.radius - distanceToWall
                 particle.position += wall.normal * overlapSize
-                particle.position -= wall.normal * overlapSize
 
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
                 val tangentialVelocity = particle.velocity - wall.normal * normalVelocity
