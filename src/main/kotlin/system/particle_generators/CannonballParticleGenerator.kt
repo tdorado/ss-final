@@ -28,15 +28,15 @@ class CannonballParticleGenerator(
         val radius = particleDiameterGenerator.startInterval
         val rows = (boxSize.y / (2 * radius)).toInt()
         val cols = (boxSize.x / (2 * radius)).toInt()
-        val layers = 10
+        val layers = 5
 
         var count = 1
         for (row in 0 until rows) {
             for (col in 0 until cols) {
                 for (layer in 0 until layers) {
-                    val x = radius + col * (2.00 * radius)
-                    val y = radius + row * (2.00 * radius)
-                    val z = radius + layer * (2.00 * radius)
+                    val x = radius + col * (2.00 * radius + 0.001)
+                    val y = radius + row * (2.00 * radius + 0.001)
+                    val z = radius + layer * (2.00 * radius + 0.001)
 
                     val position = Vector(x, y, z)
                     val velocity = Vector()

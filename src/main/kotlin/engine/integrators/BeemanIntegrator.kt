@@ -24,7 +24,7 @@ class BeemanIntegrator(
         val zeroV = Vector()
         for (p in particles) {
             if (p.velocity == zeroV) {
-                previousAccelerations[p.id] = zeroV
+                previousAccelerations[p.id] = Vector(0.0, 0.0, -1.62 * p.mass)
             } else {
                 val forces = getForces(p, particles)
                 val previousPosition =
@@ -45,27 +45,31 @@ class BeemanIntegrator(
         val previousAcceleration = previousAccelerations[particle.id]!!
 
         // Position update
-        val newPosition = particle.position +
+        var newPosition = particle.position +
                 particle.velocity * timeDelta +
-                currentAcceleration.times((2.0 / 3.0)) * timeDelta.pow(2) -
-                previousAcceleration.times((1.0 / 6.0)) * timeDelta.pow(2)
+                currentAcceleration.times((4.0 / 3.0)) * timeDelta.pow(2) -
+                previousAcceleration.times((1.0 / 3.0)) * timeDelta.pow(2)
 
-        // Predict the velocity for the next timestep
+        // Check for collisions and adjust position
+        if (particle.nextPosition != null) {
+            newPosition = particle.nextPosition!!
+            particle.nextPosition = null
+        }
+
+        // Predicted velocity
         val predictedVelocity = particle.velocity +
                 currentAcceleration.times((3.0 / 2.0)) * timeDelta -
-                previousAcceleration.times((1.0 / 2.0)) * timeDelta
+                 previousAcceleration.times((1.0 / 2.0)) * timeDelta
 
-        // Get the predicted acceleration
-        val predictedParticle = particle.deepCopy(position = newPosition, velocity = predictedVelocity)
-
-        // The "next" acceleration should be calculated with the updated position and velocity
-        val nextAcceleration = getForces(predictedParticle, particles) / predictedParticle.mass
+        // Calculate new acceleration using predicted velocity
+        val newParticle = particle.copy(velocity = predictedVelocity, position = newPosition)
+        val newAcceleration = getForces(newParticle, particles) / particle.mass
 
         // Correct the velocity with the predicted acceleration
         val newVelocity = particle.velocity +
-                (nextAcceleration.times((1.0 / 3.0)) * timeDelta) +
-                (currentAcceleration.times((5.0 / 6.0)) * timeDelta) -
-                (previousAcceleration.times((1.0 / 6.0)) * timeDelta)
+                 newAcceleration.times(1.0/3.0) * timeDelta +
+                currentAcceleration.times((5.0 / 6.0)) * timeDelta -
+                previousAcceleration.times(1.0/6.0) * timeDelta
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep
         previousAccelerations[particle.id] = currentAcceleration

@@ -31,26 +31,28 @@ class TimeStepSimulator(
         time = 0.0
     }
 
-    fun simulate(closeFile: Boolean) {
-//        var particlesWithoutBullet = particles.filter { it.id != 0 }.toSet()
-//        // Till particles stabilize
-//        while (!cutCondition.isFinished(particlesWithoutBullet, time)) {
-//            val newParticles = runBlocking {
-//                particlesWithoutBullet.map { particle ->
-//                    async(Dispatchers.Default) {
-//                        integrator.applyIntegrator(timeDelta * 2, particle, particlesWithoutBullet - particle)
-//                    }
-//                }.awaitAll().toSet()
-//            }
-//            time += timeDelta
-//
-//            logger.info("Time for stabilization $time")
-//
-//            particlesWithoutBullet = newParticles
-//        }
+    private fun relaxParticles(particles: Set<Particle>) {
+        for (particle in particles) {
+            for (otherParticle in particles) {
+                if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
+                    val overlapSize = (particle.radius + otherParticle.radius) - (otherParticle.position - particle.position).magnitude
+                    val normalVector = (otherParticle.position - particle.position).normalize()
 
+                    // Corrige la superposición moviendo las partículas lejos entre sí
+                    val positionCorrection = normalVector * overlapSize * 0.5
+
+                    // Aplicar la corrección solo a lo largo del eje Z, ya que estamos considerando un lecho de partículas
+                    positionCorrection.x = 0.0
+                    positionCorrection.y = 0.0
+
+                    particle.position += positionCorrection
+                    otherParticle.position -= positionCorrection
+                }
+            }
+        }
+    }
+    fun simulate(closeFile: Boolean) {
         time = 0.0
-//        particles = particlesWithoutBullet + particles.filter { it.id == 0 }
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             val currentDateTime = LocalDateTime.now()

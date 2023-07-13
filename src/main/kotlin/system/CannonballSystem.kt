@@ -12,15 +12,15 @@ import kotlin.math.sin
 
 class CannonballSystem(
     val particleMass: Double = 0.25,
-    val timeDelta: Double = 0.001,
-    val saveTimeDelta: Double = 0.02,
+    val timeDelta: Double = 0.0002,
+    val saveTimeDelta: Double = 0.0002,
     val cutoffTime: Double = 5.0,
     val boxHeight: Double = 1.0,
-    val boxWidth: Double = 0.6,
+    val boxWidth: Double = 0.3,
     val numberOfParticles: Int = 2500,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 4.0,
+    val pGammaN: Double = 0.9,
     val pGammaT: Double = pGammaN,
     val pKn: Double = 5E4,
     val pKt: Double = 2 * pKn,
@@ -31,7 +31,7 @@ class CannonballSystem(
     // Gamma alto implica mucho rebote
     private val cannonballGammaN = pGammaN
     private val cannonballGammaT = pGammaT
-    private val cannonballKn = pKn
+    private val cannonballKn = pKn * 1E-6
     private val cannonballKt = 2 * cannonballKn
 
     private val CONFIG = "particleMass:$particleMass" +
@@ -51,7 +51,7 @@ class CannonballSystem(
             setOf(cannonballParticle)
         } else {
             val boxParticles = createBoxParticles()
-            boxParticles + cannonballParticle
+            boxParticles
         }
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
@@ -64,9 +64,9 @@ class CannonballSystem(
     }
 
     private fun createCannonBall(): Particle {
-        val velocityMagnitude = 20.0
+        val velocityMagnitude = 5.0
         val velocity = Vector(0.0, -velocityMagnitude * cos(angle), -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2, boxWidth / 3, 1.5 * boxHeight)
+        val position = Vector(boxWidth / 2, boxWidth / 3, 1.1 * boxHeight)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

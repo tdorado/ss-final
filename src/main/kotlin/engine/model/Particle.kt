@@ -11,6 +11,7 @@ data class Particle(
     var gammaT: Double,
     var gammaN: Double,
     var pressure: Double = 0.0,
+    var nextPosition: Vector? = null
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
