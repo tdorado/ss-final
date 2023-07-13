@@ -9,7 +9,7 @@ import kotlin.math.abs
 
 class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculator {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
+    private val overlapLimit = 1E-7
     private fun calculateGravityForce(particle: Particle): Vector {
         val g = 9.81  // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
@@ -21,7 +21,7 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
         for (otherParticle in neighbours) {
             if (particle != otherParticle) {
                 val overlapSize = particle.overlapSize(otherParticle.position, otherParticle.radius)
-                if (overlapSize > 0) {
+                if (overlapSize > overlapLimit) {
                     val relativePosition = otherParticle.position - particle.position
                     val normalVector = relativePosition.normalize()
 
@@ -55,9 +55,9 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
         for (wall in walls) {
             val relativePosition = particle.position - wall.position
             val distanceToWall = relativePosition.dotProduct(wall.normal)
+            val overlapSize = particle.radius - distanceToWall
 
-            if (distanceToWall < particle.radius) {
-                val overlapSize = particle.radius - distanceToWall
+            if (overlapSize > overlapLimit) {
                 particle.position += wall.normal * overlapSize
 
                 val normalVelocity = particle.velocity.dotProduct(wall.normal)
