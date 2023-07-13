@@ -6,10 +6,12 @@ data class Particle(
     var velocity: Vector,
     val radius: Double,
     val mass: Double,
-    val frictionCoefficient: Double,
-    var pressure: Double,
-    var isOnTheGround: Boolean = false,
-    var collideWithWall: Boolean = false
+    val Kt: Double,
+    val Kn: Double,
+    var gammaT: Double,
+    var gammaN: Double,
+    var pressure: Double = 0.0,
+    var collideWithWall: String = "",
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
@@ -26,8 +28,24 @@ data class Particle(
         return true
     }
 
+    fun deepCopy(position: Vector, velocity: Vector): Particle {
+        return Particle(
+            id = this.id,
+            position = Vector(position.x, position.y, position.z),  // Creando nueva instancia de Vector
+            velocity = Vector(velocity.x, velocity.y, velocity.z),  // Creando nueva instancia de Vector
+            radius = this.radius,
+            mass = this.mass,
+            Kt = this.Kt,
+            Kn = this.Kn,
+            gammaT = this.gammaT,
+            gammaN = this.gammaN,
+            pressure = this.pressure,
+            collideWithWall = this.collideWithWall
+        )
+    }
+
     fun serialize(): String {
-        return "$id,$position,$velocity,$radius,$mass,$frictionCoefficient,$pressure"
+        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gammaT,$gammaN,$pressure"
     }
 
     companion object {
@@ -40,7 +58,10 @@ data class Particle(
                 parts[3].toDouble(),
                 parts[4].toDouble(),
                 parts[5].toDouble(),
-                parts[6].toDouble()
+                parts[6].toDouble(),
+                parts[7].toDouble(),
+                parts[8].toDouble(),
+                parts[9].toDouble()
             )
         }
     }

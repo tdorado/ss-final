@@ -24,14 +24,15 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
             }
             val pw = FileWriter("$folder$filename.xyz")
             pw.close()
-            fw = FileWriter("$folder$filename.xyz", true)
+            fw = FileWriter("$folder$filename.xyz", false)
+            System.out.println("filename: $filename")
         } catch (e: IOException) {
             e.printStackTrace()
         }
         bw = BufferedWriter(fw)
     }
 
-    override fun addToFile(particles: List<Particle>, time: Double) {
+    override fun addToFile(particles: Set<Particle>, time: Double) {
         try {
             bw.write(particles.size.toString() + "\n")
             bw.write("id xPosition yPosition zPosition xVelocity yVelocity zVelocity radius mass pressure time\n")

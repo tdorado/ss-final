@@ -7,6 +7,7 @@ data class ParticleDiameterGenerator(val startInterval: Double, val endInterval:
         when (model) {
             MassGeneratorModel.UNIFORM -> Random.nextDouble(startInterval, endInterval)
         }
+
 }
 
 enum class MassGeneratorModel {

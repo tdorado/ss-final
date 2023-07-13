@@ -2,27 +2,55 @@ package system
 
 import engine.model.Particle
 import engine.model.Vector
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 class Wall(
-    val point: Vector,
+    val position: Vector,
     val normal: Vector,
-    val width: Double,    // El ancho de la pared (en la dirección perpendicular a la normal)
-    val height: Double,    // La altura de la pared (en la dirección perpendicular a la normal),
-    val identifier: String = ""
+    val id: String
 ) {
     val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
-    fun overlapsWith(particlePosition: Vector, particleRadius: Double, particle: Particle? = null): Boolean {
-        if (particle != null && identifier == "BOTTOM") {
-            System.out.println("")
-        }
-        val relativePosition = particlePosition - point
-        val distanceFromWall = relativePosition.dotProduct(normal)
-        return distanceFromWall < particleRadius
+    fun overlapsWithParticle(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
+//        if (id == "BOTTOM" && particle.position.z <= 0.0) {
+//            return true
+//        }
+        val relativePosition = particle.position - this.position
+        val distanceFromWall = relativePosition.dotProduct(this.normal)
+
+        val insideBox =
+            particle.position.x in 0.0..boxWidth &&
+                    particle.position.y in 0.0..boxWidth &&
+                    particle.position.z in 0.0..boxHeight
+
+        return insideBox && distanceFromWall < particle.radius
     }
+//    fun overlapsWithParticle(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
+//        val relativePosition = positionToCompare - position
+//        val distanceFromWall = relativePosition.dotProduct(normal)
+//
+//        val insideBox =
+//            positionToCompare.x in 0.0..boxWidth &&
+//                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
+//                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
+//
+//        return insideBox && distanceFromWall < radius
+//    }
+//
+//    fun isParticleOverWall(positionToCompare: Vector, radius: Double, boxWidth: Double, boxHeight: Double): Boolean {
+//        val relativePosition = positionToCompare - position
+//        val distanceFromWall = relativePosition.dotProduct(normal)
+//
+//        val insideBox =
+//            positionToCompare.x in 0.0..boxWidth &&
+//                    positionToCompare.y >= 0 && positionToCompare.y <= boxWidth &&
+//                    positionToCompare.z >= 0 && positionToCompare.z <= boxHeight
+//
+//        return insideBox && distanceFromWall == radius
+//    }
 
     override fun toString(): String {
-        return "Wall(identifier='$identifier')"
+        return "Wall(identifier='$id')"
     }
 }

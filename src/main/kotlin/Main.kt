@@ -2,7 +2,6 @@ import picocli.CommandLine
 import picocli.CommandLine.Command
 import picocli.CommandLine.Option
 import system.CannonballSystem
-import system.particle_generators.EfficientParticleGenerator
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = ["1.0"])
 class Main : Runnable {
@@ -73,30 +72,57 @@ class Main : Runnable {
         println("boxSideLength: $boxSideLength")
         println("boxHeight: $boxHeight")
         println("frictionCoefficient: $frictionCoefficient")
-        val cannonballSystem = CannonballSystem()
 
         if (pGen) {
-
-            val particleGenerator = EfficientParticleGenerator(
-                CannonballSystem.particleMass,
-                CannonballSystem.particlesMinRadius,
-                CannonballSystem.particlesMaxRadius,
-                CannonballSystem.boxSize,
-                nParticles,
-                cannonballSystem.createBoxWalls(),
-                CannonballSystem.particlesDiameterGenerator,
-                0.0,
-                CannonballSystem.boxParticlesFrictionCoefficient
-            )
-            particleGenerator.generateParticles(true)
-            particleGenerator.exportParticlesToFile("particles/particles_50k")
+//
+//            val particleGenerator = EfficientParticleGenerator(
+//                particleMass,
+//                lowDiam,
+//                upperDiam,
+//                ,
+//                nParticles,
+//                cannonballSystem.createBoxWalls(),
+//                particlesDiameterGenerator,
+//                0.0,
+//                pKn,
+//                pKt,
+//                pGammaN,
+//                pGammaT
+//            )
+//            particleGenerator.generateParticles(true)
+//            particleGenerator.exportParticlesToFile("particles/particles_50k")
         } else {
-            if (particleFile.isEmpty()) {
-                cannonballSystem.run()
-            } else {
-                val particles = EfficientParticleGenerator.importParticlesFromFile(particleFile)
-                cannonballSystem.run(particles)
-            }
+//            var Kn = 5E2
+//            var factor = 1
+//            while (factor <= 40) {
+//                cannonballSystem.run()
+//                if (factor == 1) {
+//                    factor = 10
+//                } else {
+//                    factor += 10
+//                }
+//            }
+            var Kn = 1E4
+//            while (Kn <= 1E4) {
+            val cannonballSystem = CannonballSystem(pKn = Kn)
+            cannonballSystem.run()
+            Kn += 0.5E4
+//            }
+//            var minParticleDiameter = 0.01
+//            while (minParticleDiameter < 0.3) {
+//                cannonballSystem.run(
+//                    config = Config(
+//                        minParticleDiameter = minParticleDiameter,
+//                        maxParticleDiameter = minParticleDiameter + 0.02
+//                    )
+//                )
+//                minParticleDiameter += 0.05
+//            }
+//            var angle = 90.0
+//            while (angle < 130.0) {
+//                cannonballSystem.run(config = Config(angle = Math.toRadians(angle)))
+//                angle += 10
+//            }
         }
     }
 
