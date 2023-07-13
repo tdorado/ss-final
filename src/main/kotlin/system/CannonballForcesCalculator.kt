@@ -50,51 +50,48 @@ class CannonballForcesCalculator(private val walls: Set<Wall>, val boxWidth: Dou
         return interactionForce
     }
 
-
-
     private fun calculateWallForce(particle: Particle, walls: Set<Wall>): Vector {
         var wallForce = Vector()
 
         for (wall in walls) {
-            if (wall.overlapsWithParticle(particle, boxWidth, boxHeight)) {
+            if(wall.id == "BOTTOM") {
+                if (particle.position.z < particle.radius) {
+                    val overlapSize = particle.radius - particle.position.z
+                    particle.position.z += overlapSize
 
-                var relativePosition = particle.position - wall.position
-                var distanceToWall = relativePosition.dotProduct(wall.normal)
+                    val normalVelocity = particle.velocity.z
+                    val tangentialVelocity = Vector(particle.velocity.x, particle.velocity.y, 0.0)
 
-                if (distanceToWall < particle.radius){
+                    val normalForceMagnitude = - particle.gammaN * normalVelocity
+                    val tangentialForceMagnitude = - particle.gammaT * tangentialVelocity.magnitude
+
+                    val normalForceValue = Vector(0.0, 0.0, -normalForceMagnitude)
+                    val tangentialForceValue = -tangentialVelocity.normalize().times(tangentialForceMagnitude)
+
+                    wallForce -= (normalForceValue + tangentialForceValue)
+                }
+            } else {
+                val relativePosition = particle.position - wall.position
+                val distanceToWall = relativePosition.dotProduct(wall.normal)
+
+                if (distanceToWall < particle.radius) {
                     val overlapSize = particle.radius - distanceToWall
                     particle.position += wall.normal * overlapSize
+
+                    val normalVelocity = particle.velocity.dotProduct(wall.normal)
+                    val tangentialVelocity = particle.velocity - wall.normal * normalVelocity
+
+                    val normalForceMagnitude = - particle.gammaN * normalVelocity
+                    val tangentialForceMagnitude = - particle.gammaT * tangentialVelocity.magnitude
+
+                    val normalForceValue = -wall.normal.times(normalForceMagnitude)
+                    val tangentialForceValue = -tangentialVelocity.normalize().times(tangentialForceMagnitude)
+
+                    wallForce -= (normalForceValue + tangentialForceValue)
                 }
-
-                val normalVelocity = particle.velocity.dotProduct(wall.normal)
-                val tangentialVelocity = particle.velocity - wall.normal * normalVelocity
-
-                val normalForceMagnitude = - particle.gammaN * normalVelocity
-                val tangentialForceMagnitude = - particle.gammaT * tangentialVelocity.magnitude
-
-                val normalForceValue = -wall.normal.times(normalForceMagnitude)
-                val tangentialForceValue = -tangentialVelocity.normalize().times(tangentialForceMagnitude)
-
-                wallForce -= (normalForceValue + tangentialForceValue)
             }
         }
 
-        // Extra check for the floor
-        if (particle.position.z < particle.radius) {
-            val overlapSize = particle.radius - particle.position.z
-            particle.position.z += overlapSize
-
-            val normalVelocity = particle.velocity.z
-            val tangentialVelocity = Vector(particle.velocity.x, particle.velocity.y, 0.0)
-
-            val normalForceMagnitude = - particle.gammaN * normalVelocity
-            val tangentialForceMagnitude = - particle.gammaT * tangentialVelocity.magnitude
-
-            val normalForceValue = Vector(0.0, 0.0, -normalForceMagnitude)
-            val tangentialForceValue = -tangentialVelocity.normalize().times(tangentialForceMagnitude)
-
-            wallForce -= (normalForceValue + tangentialForceValue)
-        }
 
         return wallForce
     }

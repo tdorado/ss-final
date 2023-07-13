@@ -20,7 +20,7 @@ class CannonballSystem(
     val numberOfParticles: Int = 2500,
     val minParticleDiameter: Double = 0.02,
     val maxParticleDiameter: Double = 0.03,
-    val pGammaN: Double = 1.5,
+    val pGammaN: Double = 4.0,
     val pGammaT: Double = pGammaN,
     val pKn: Double = 5E4,
     val pKt: Double = 2 * pKn,
