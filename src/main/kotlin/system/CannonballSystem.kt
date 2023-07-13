@@ -13,7 +13,7 @@ import kotlin.math.sin
 class CannonballSystem(
     val particleMass: Double = 0.25,
     val timeDelta: Double = 0.001,
-    val saveTimeDelta: Double = 0.001,
+    val saveTimeDelta: Double = 0.02,
     val cutoffTime: Double = 5.0,
     val boxHeight: Double = 1.0,
     val boxWidth: Double = 0.6,
@@ -50,12 +50,12 @@ class CannonballSystem(
         val particles: Set<Particle> = if (onlyCannon) {
             setOf(cannonballParticle)
         } else {
-            val boxParticles = createBoxParticles(boxWalls)
+            val boxParticles = createBoxParticles()
             boxParticles + cannonballParticle
         }
 
-        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls, boxWidth, boxHeight)
-        val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles, boxWalls)
+        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
+        val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator(CONFIG)
         val cutCondition = TimeCutCondition(cutoffTime)
         val simulator =
@@ -82,13 +82,12 @@ class CannonballSystem(
         )
     }
 
-    private fun createBoxParticles(boxWalls: Set<Wall>): Set<Particle> {
+    private fun createBoxParticles(): Set<Particle> {
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
         val particleGenerator = CannonballParticleGenerator(
             particleMass,
             boxSizeInMeters,
             numberOfParticles,
-            boxWalls,
             particlesDiameterGenerator,
             pKn,
             pKt,

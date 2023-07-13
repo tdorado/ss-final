@@ -11,10 +11,13 @@ data class Particle(
     var gammaT: Double,
     var gammaN: Double,
     var pressure: Double = 0.0,
-    var collideWithWall: String = "",
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
+    }
+
+    fun overlapSize(otherPosition: Vector, otherRadius: Double): Double {
+        return radius + otherRadius - position.distance(otherPosition)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -40,7 +43,6 @@ data class Particle(
             gammaT = this.gammaT,
             gammaN = this.gammaN,
             pressure = this.pressure,
-            collideWithWall = this.collideWithWall
         )
     }
 

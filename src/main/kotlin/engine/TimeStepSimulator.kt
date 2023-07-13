@@ -29,7 +29,6 @@ class TimeStepSimulator(
     init {
         timeToSave = saveTimeDelta
         time = 0.0
-
     }
 
     fun simulate(closeFile: Boolean) {
