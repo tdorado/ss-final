@@ -2,16 +2,15 @@ package engine
 
 import engine.integrators.Integrator
 import engine.model.Particle
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import system.particle_generators.CannonballParticleGenerator
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.CompletionService
-import java.util.concurrent.ExecutorCompletionService
 
 class TimeStepSimulator(
     private val timeDelta: Double,
@@ -29,29 +28,9 @@ class TimeStepSimulator(
     init {
         timeToSave = saveTimeDelta
         time = 0.0
-
     }
 
     fun simulate(closeFile: Boolean) {
-//        var particlesWithoutBullet = particles.filter { it.id != 0 }.toSet()
-//        // Till particles stabilize
-//        while (!cutCondition.isFinished(particlesWithoutBullet, time)) {
-//            val newParticles = runBlocking {
-//                particlesWithoutBullet.map { particle ->
-//                    async(Dispatchers.Default) {
-//                        integrator.applyIntegrator(timeDelta * 2, particle, particlesWithoutBullet - particle)
-//                    }
-//                }.awaitAll().toSet()
-//            }
-//            time += timeDelta
-//
-//            logger.info("Time for stabilization $time")
-//
-//            particlesWithoutBullet = newParticles
-//        }
-
-        time = 0.0
-//        particles = particlesWithoutBullet + particles.filter { it.id == 0 }
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             val currentDateTime = LocalDateTime.now()
@@ -68,11 +47,10 @@ class TimeStepSimulator(
 
             time += timeDelta
             if (time >= timeToSave) {
-                fileGenerator.addToFile(particles, time)
+                fileGenerator.addToFile(particles, timeToSave)
                 timeToSave += saveTimeDelta
             }
             particles = newParticles
-
         }
         val currentDateTime = LocalDateTime.now()
         val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
