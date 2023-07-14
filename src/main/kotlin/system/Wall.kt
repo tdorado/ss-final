@@ -24,6 +24,12 @@ class Wall(
         return insideBox && distanceFromWall < particle.radius
     }
 
+    fun overlapsWith(particlePosition: Vector, particleRadius: Double): Boolean {
+        val relativePosition = particlePosition - position
+        val distanceFromWall = relativePosition.dotProduct(normal)
+        return distanceFromWall < particleRadius
+    }
+
     override fun toString(): String {
         return "Wall(identifier='$id')"
     }

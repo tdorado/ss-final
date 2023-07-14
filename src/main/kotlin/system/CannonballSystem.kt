@@ -53,7 +53,7 @@ class CannonballSystem(
         val particles: Set<Particle> = if (onlyCannon) {
             setOf(cannonballParticle)
         } else {
-            val boxParticles = createBoxParticles()
+            val boxParticles = createBoxParticles(boxWalls)
             boxParticles + cannonballParticle
         }
 
@@ -85,7 +85,7 @@ class CannonballSystem(
         )
     }
 
-    private fun createBoxParticles(): Set<Particle> {
+    private fun createBoxParticles(walls: Set<Wall>): Set<Particle> {
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
         val particleGenerator = CannonballParticleGenerator(
             particleMass,
@@ -95,7 +95,8 @@ class CannonballSystem(
             pKn,
             pKt,
             pGammaN,
-            pGammaT
+            pGammaT,
+            walls
         )
         return particleGenerator.generateParticles()
     }
