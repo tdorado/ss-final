@@ -12,8 +12,8 @@ import kotlin.math.sin
 
 class CannonballSystem(
     val particleMass: Double = 0.025,
-    val timeDelta: Double = 0.00002,
-    val saveTimeDelta: Double = 0.0001,
+    val timeDelta: Double = 0.0002,
+    val saveTimeDelta: Double = 0.001,
     val cutoffTime: Double = 4.0,
     val boxHeight: Double = 1.0,
     val boxWidth: Double = 0.445,

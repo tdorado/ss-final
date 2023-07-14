@@ -18,7 +18,9 @@ data class Particle(
     }
 
     fun overlapSize(otherPosition: Vector, otherRadius: Double): Double {
-        return radius + otherRadius - position.distance(otherPosition)
+        val relativePosition = otherPosition - position
+        val distance = relativePosition.magnitude
+        return radius + otherRadius - distance
     }
 
     override fun equals(other: Any?): Boolean {

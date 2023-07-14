@@ -10,9 +10,6 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val overlapLimit = 0.0
     private fun calculateGravityForce(particle: Particle): Vector {
-        if (particle.position.z < particle.radius) {
-            return Vector()
-        }
         val g = 9.81  // Acceleration due to gravity (in m/s^2)
         return Vector(0.0, 0.0, -particle.mass * g)  // Gravity force acts in the -z direction
     }
@@ -31,20 +28,16 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
                     val relativeNormalVelocity = relativeVelocity.dotProduct(normalVector)
                     val relativeTangentVelocity = relativeVelocity - normalVector * relativeNormalVelocity
 
-                    // Invierto el signo del término de amortiguación
                     val normalForceMagnitude = particle.Kn * overlapSize + particle.gammaN * relativeNormalVelocity
-                    val tangentialForceMagnitude =
-                        particle.Kt * overlapSize + particle.gammaT * relativeTangentVelocity.magnitude
+                    val tangentialForceMagnitude = particle.Kt * overlapSize
 
                     val normalForceValue = -normalVector * normalForceMagnitude
                     val tangentialForceValue = -relativeTangentVelocity.normalize() * tangentialForceMagnitude
 
-                    interactionForce += normalForceValue
+                    interactionForce += normalForceValue + tangentialForceValue
                 }
             }
         }
-
-
         return interactionForce
     }
 
@@ -53,21 +46,17 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
 
         for (wall in walls) {
             val overlapSize = calculateOverlapSizeWithWall(particle, wall)
-
-            if (particle.id == 99 && particle.position.z < 0.0) {
-                val overlapSize = calculateOverlapSizeWithWall(particle, wall)
-            }
             if (overlapSize > overlapLimit) {
                 val relativeVelocity = particle.velocity - wall.normal * particle.velocity.dotProduct(wall.normal)
 
                 val normalForceMagnitude =
                     -particle.Kn * overlapSize - particle.gammaN * relativeVelocity.dotProduct(wall.normal)
-                val tangentialForceMagnitude = -particle.Kt * overlapSize - particle.gammaT * relativeVelocity.magnitude
+                val tangentialForceMagnitude = particle.Kt * overlapSize
 
                 val normalForceValue = -wall.normal * normalForceMagnitude
                 val tangentialForceValue = -relativeVelocity.normalize() * tangentialForceMagnitude
 
-                wallForce += normalForceValue
+                wallForce += normalForceValue + tangentialForceValue
             }
         }
 
@@ -84,16 +73,6 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
         val interactionForce = calculateParticleInteractionForce(particle, neighbours)
         val wallForce = calculateWallForce(particle, walls)
         val gravityForce = calculateGravityForce(particle)
-
-        if (particle.id == 99) {
-            return gravityForce + interactionForce + wallForce
-        }
-
-        if (wallForce != Vector() && particle.position.z < 0.0) {
-            return gravityForce + interactionForce + wallForce
-        }
         return gravityForce + interactionForce + wallForce
     }
-
-
 }
