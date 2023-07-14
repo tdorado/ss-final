@@ -17,7 +17,7 @@ class CannonballSystem(
     val cutoffTime: Double = 1.0,
     val boxHeight: Double = 1.0,
     val boxWidth: Double = 0.445,
-    val numberOfParticles: Int = 10500,
+    val numberOfParticles: Int = 6000,
     val minParticleDiameter: Double = 0.015,
     val maxParticleDiameter: Double = 0.025,
     val pGammaN: Double = 6.0,
@@ -69,7 +69,7 @@ class CannonballSystem(
     private fun createCannonBall(): Particle {
         val velocityMagnitude = 20.0
         val velocity = Vector(0.0, -velocityMagnitude * cos(angle), -velocityMagnitude * sin(angle))
-        val position = Vector(boxWidth / 2, boxWidth / 2, 0.3)
+        val position = Vector(boxWidth / 2, boxWidth / 2, 0.6)
         val radius = 175e-3 / 2
         val mass = 17.5
         return Particle(

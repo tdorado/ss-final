@@ -24,7 +24,7 @@ class BeemanIntegrator(
         val zeroV = Vector()
         for (p in particles) {
             if (p.velocity == zeroV) {
-                previousAccelerations[p.id] = Vector(0.0, 0.0, -1.62 * p.mass)
+                previousAccelerations[p.id] = zeroV
             } else {
                 val forces = getForces(p, particles)
                 val previousPosition =
