@@ -2,6 +2,8 @@ package system
 
 import engine.FileGenerator
 import engine.model.Particle
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -9,6 +11,8 @@ import java.io.IOException
 
 
 class CannonballFileGenerator(filename: String) : FileGenerator {
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     companion object {
         private const val folder = "out/"
     }
@@ -25,9 +29,8 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
             val pw = FileWriter("$folder$filename.xyz")
             pw.close()
             fw = FileWriter("$folder$filename.xyz", false)
-            System.out.println("filename: $filename")
         } catch (e: IOException) {
-            e.printStackTrace()
+            logger.error("Error while creating file: $e")
         }
         bw = BufferedWriter(fw)
     }
@@ -51,8 +54,9 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
                             time.toString() + "\n"
                 )
             }
+            bw.flush()
         } catch (e: IOException) {
-            e.printStackTrace()
+            logger.error("Error while adding to file: $e")
         }
     }
 
@@ -60,7 +64,7 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
         try {
             bw.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            logger.error("Error while closing file: $e")
         }
     }
 }

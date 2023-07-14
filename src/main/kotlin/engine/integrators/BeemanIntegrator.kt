@@ -3,12 +3,6 @@ package engine.integrators
 import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import system.Wall
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.math.abs
 import kotlin.math.pow
 
 
@@ -17,22 +11,21 @@ class BeemanIntegrator(
     timeDelta: Double,
     particles: Set<Particle>
 ) : Integrator(forcesCalculator) {
-    private val previousAccelerations: MutableMap<Int, Vector>
+    private val previousAccelerations: HashMap<Int, Vector> = HashMap()
 
     init {
-        previousAccelerations = HashMap()
-        val zeroV = Vector()
-        for (p in particles) {
-            if (p.velocity == zeroV) {
-                previousAccelerations[p.id] = zeroV
+        for (particle in particles) {
+            if (particle.velocity == Vector()) {
+                previousAccelerations[particle.id] = Vector()
             } else {
-                val forces = getForces(p, particles)
-                val previousPosition =
-                    p.position - (p.velocity * (timeDelta)) + (forces * (timeDelta * timeDelta / (2 * p.mass)))
-                val previousVelocity = p.velocity - (forces * (timeDelta))
-                val previousParticleAux = p.copy(position = previousPosition, velocity = previousVelocity)
-                val previousAcceleration = getForces(previousParticleAux, particles) / (p.mass)
-                previousAccelerations[p.id] = previousAcceleration
+                val forces = getForces(particle, particles)
+                val previousPosition = particle.position -
+                        particle.velocity * timeDelta +
+                        forces * (timeDelta * timeDelta / (2 * particle.mass))
+                val previousVelocity = particle.velocity - forces * timeDelta
+                val previousParticleStep = particle.copy(position = previousPosition, velocity = previousVelocity)
+                val previousAcceleration = getForces(previousParticleStep, particles) / particle.mass
+                previousAccelerations[particle.id] = previousAcceleration
             }
         }
     }
@@ -45,21 +38,15 @@ class BeemanIntegrator(
         val previousAcceleration = previousAccelerations[particle.id]!!
 
         // Position update
-        var newPosition = particle.position +
+        val newPosition = particle.position +
                 particle.velocity * timeDelta +
-                currentAcceleration.times((4.0 / 3.0)) * timeDelta.pow(2) -
-                previousAcceleration.times((1.0 / 3.0)) * timeDelta.pow(2)
-
-        // Check for collisions and adjust position
-        if (particle.nextPosition != null) {
-            newPosition = particle.nextPosition!!
-            particle.nextPosition = null
-        }
+                currentAcceleration * (4.0 / 3.0) * timeDelta.pow(2) -
+                previousAcceleration * (1.0 / 3.0) * timeDelta.pow(2)
 
         // Predicted velocity
         val predictedVelocity = particle.velocity +
-                currentAcceleration.times((3.0 / 2.0)) * timeDelta -
-                 previousAcceleration.times((1.0 / 2.0)) * timeDelta
+                currentAcceleration * (3.0 / 2.0) * timeDelta -
+                previousAcceleration * (1.0 / 2.0) * timeDelta
 
         // Calculate new acceleration using predicted velocity
         val newParticle = particle.copy(velocity = predictedVelocity, position = newPosition)
@@ -67,9 +54,9 @@ class BeemanIntegrator(
 
         // Correct the velocity with the predicted acceleration
         val newVelocity = particle.velocity +
-                 newAcceleration.times(1.0/3.0) * timeDelta +
-                currentAcceleration.times((5.0 / 6.0)) * timeDelta -
-                previousAcceleration.times(1.0/6.0) * timeDelta
+                newAcceleration * (1.0 / 3.0) * timeDelta +
+                currentAcceleration * (5.0 / 6.0) * timeDelta -
+                previousAcceleration * (1.0 / 6.0) * timeDelta
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep
         previousAccelerations[particle.id] = currentAcceleration

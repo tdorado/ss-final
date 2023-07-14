@@ -2,16 +2,14 @@ package engine.model
 
 data class Particle(
     val id: Int,
-    var position: Vector,
-    var velocity: Vector,
+    val position: Vector,
+    val velocity: Vector,
     val radius: Double,
     val mass: Double,
     val Kt: Double,
     val Kn: Double,
-    var gammaT: Double,
-    var gammaN: Double,
+    val gamma: Double,
     var pressure: Double = 0.0,
-    var nextPosition: Vector? = null
 ) {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
@@ -36,21 +34,20 @@ data class Particle(
 
     fun deepCopy(position: Vector, velocity: Vector): Particle {
         return Particle(
-            id = this.id,
-            position = Vector(position.x, position.y, position.z),  // Creando nueva instancia de Vector
-            velocity = Vector(velocity.x, velocity.y, velocity.z),  // Creando nueva instancia de Vector
-            radius = this.radius,
-            mass = this.mass,
-            Kt = this.Kt,
-            Kn = this.Kn,
-            gammaT = this.gammaT,
-            gammaN = this.gammaN,
-            pressure = this.pressure,
+            id = id,
+            position = Vector(position.x, position.y, position.z),
+            velocity = Vector(velocity.x, velocity.y, velocity.z),
+            radius = radius,
+            mass = mass,
+            Kt = Kt,
+            Kn = Kn,
+            gamma = gamma,
+            pressure = pressure,
         )
     }
 
     fun serialize(): String {
-        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gammaT,$gammaN,$pressure"
+        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gamma,$pressure"
     }
 
     companion object {
@@ -66,7 +63,6 @@ data class Particle(
                 parts[6].toDouble(),
                 parts[7].toDouble(),
                 parts[8].toDouble(),
-                parts[9].toDouble()
             )
         }
     }

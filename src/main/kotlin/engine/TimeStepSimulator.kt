@@ -2,16 +2,15 @@ package engine
 
 import engine.integrators.Integrator
 import engine.model.Particle
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import system.particle_generators.CannonballParticleGenerator
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.CompletionService
-import java.util.concurrent.ExecutorCompletionService
 
 class TimeStepSimulator(
     private val timeDelta: Double,
@@ -31,28 +30,7 @@ class TimeStepSimulator(
         time = 0.0
     }
 
-    private fun relaxParticles(particles: Set<Particle>) {
-        for (particle in particles) {
-            for (otherParticle in particles) {
-                if (particle != otherParticle && particle.overlapsWith(otherParticle.position, otherParticle.radius)) {
-                    val overlapSize = (particle.radius + otherParticle.radius) - (otherParticle.position - particle.position).magnitude
-                    val normalVector = (otherParticle.position - particle.position).normalize()
-
-                    // Corrige la superposición moviendo las partículas lejos entre sí
-                    val positionCorrection = normalVector * overlapSize * 0.5
-
-                    // Aplicar la corrección solo a lo largo del eje Z, ya que estamos considerando un lecho de partículas
-                    positionCorrection.x = 0.0
-                    positionCorrection.y = 0.0
-
-                    particle.position += positionCorrection
-                    otherParticle.position -= positionCorrection
-                }
-            }
-        }
-    }
     fun simulate(closeFile: Boolean) {
-        time = 0.0
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             val currentDateTime = LocalDateTime.now()
@@ -69,11 +47,10 @@ class TimeStepSimulator(
 
             time += timeDelta
             if (time >= timeToSave) {
-                fileGenerator.addToFile(particles, time)
+                fileGenerator.addToFile(particles, timeToSave)
                 timeToSave += saveTimeDelta
             }
             particles = newParticles
-
         }
         val currentDateTime = LocalDateTime.now()
         val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)

@@ -8,9 +8,11 @@ import kotlin.math.absoluteValue
 class Wall(
     val position: Vector,
     val normal: Vector,
+    val Kn: Double,
+    val Kt: Double,
+    val gamma: Double,
     val id: String
 ) {
-    val tangent: Vector = normal.crossProduct(Vector(0.0, 0.0, 1.0))
 
     fun overlapsWithParticle(particle: Particle, boxWidth: Double, boxHeight: Double): Boolean {
         val relativePosition = particle.position - this.position
