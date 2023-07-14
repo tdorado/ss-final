@@ -84,7 +84,7 @@ class CannonballSystem(
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
-        val cannonballFileGenerator = CannonballFileGenerator("Stabilization_dt{$CONFIG}")
+        val cannonballFileGenerator = CannonballFileGenerator("Stabilization_dt$CONFIG")
         val cutCondition = KineticEnergyCondition()
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)

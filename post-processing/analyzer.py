@@ -1,52 +1,26 @@
 import plotly.graph_objects as go
 import numpy as np
+import pandas as pd
 
-def create_velocity_bullet_plot(file):
-    time = []
-    velocity_bullet = []
+df = pd.read_csv('salida.csv')
 
-    with open(file, "r") as f:
-        for line in f:
-            data = line.split()
-            particle_id = int(data[0])
-            bullet_velocity = float(data[5])
-            current_time = float(data[10])
-            if particle_id == 0:
-                time.append(current_time)
-                velocity_bullet.append(bullet_velocity)
+def plot_kinetic_energy_in_time(df):
+    print('en kinetic energy', df)
+        # Calcula la energía cinética (KE = 1/2 * m * v^2)
+    df['kineticEnergy'] = 0.5 * df['mass'] * (df['xVelocity']**2 + df['yVelocity']**2 + df['zVelocity']**2)
 
-    fig_velocity_bullet = go.Figure()
-    fig_velocity_bullet.add_trace(go.Scatter(x=time, y=velocity_bullet, mode='lines'))
-    fig_velocity_bullet.update_layout(
-        title="Evolución de la Velocidad de la Bala",
-        xaxis_title="Tiempo [segundos]",
-        yaxis_title="Velocidad ['m/s']",
-        font=dict(size=16)
-    )
-    fig_velocity_bullet.show()
+    # Agrupa los datos por el tiempo y calcula la energía cinética total en cada instante de tiempo
+    grouped = df.groupby('time')['kineticEnergy'].sum().reset_index()
 
-def create_system_kinetic_energy_plot(file):
-    time = []
-    kinetic_energy = []
+    # Crea la gráfica
+    fig = go.Figure()
 
-    with open(file, "r") as f:
-        for line in f:
-            data = line.split()
-            particle_id = int(data[0])
-            velocity = float(data[5])
-            current_time = float(data[10])
-            if particle_id != 0:
-                time.append(current_time)
-                kinetic_energy.append(0.5 * velocity ** 2)
+    fig.add_trace(go.Scatter(x=grouped['time'], y=grouped['kineticEnergy'], mode='lines'))
 
-    fig_kinetic_energy = go.Figure()
-    fig_kinetic_energy.add_trace(go.Scatter(x=time, y=kinetic_energy, mode='lines'))
-    fig_kinetic_energy.update_layout(
-        title="Energía Cinética del Sistema",
-        xaxis_title="Tiempo [segundos]",
-        yaxis_title="Energía Cinética [Joules]",
-        font=dict(size=16)
-    )
-    fig_kinetic_energy.show()
+    # Configura los ejes y el título
+    fig.update_layout(title='Energía cinética en función del tiempo [J]', xaxis_title='Tiempo [segundos]', yaxis_title='Energía cinética', font=dict(size=20), yaxis_type="log")
 
+    # Muestra la gráfica
+    fig.show()
 
+plot_kinetic_energy_in_time(df)
