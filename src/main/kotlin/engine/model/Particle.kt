@@ -1,5 +1,8 @@
 package engine.model
 
+import java.lang.Math.pow
+import kotlin.math.pow
+
 data class Particle(
     val id: Int,
     val position: Vector,
@@ -14,6 +17,8 @@ data class Particle(
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
     }
+
+    fun getKineticEnergy(): Double = 0.5 * mass * velocity.magnitude.pow(2.0)
 
     fun overlapSize(otherPosition: Vector, otherRadius: Double): Double {
         val relativePosition = otherPosition - position

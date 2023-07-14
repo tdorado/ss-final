@@ -1,5 +1,6 @@
 package system
 
+import engine.KineticEnergyCondition
 import engine.TimeCutCondition
 import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
@@ -12,11 +13,11 @@ import kotlin.math.sin
 
 class CannonballSystem(
     val timeDelta: Double = 0.00002,
-    val saveTimeDelta: Double = 0.001,
+    val saveTimeDelta: Double = 0.0001,
     val cutoffTime: Double = 0.5,
     val boxHeight: Double = 1.0,
     val boxWidth: Double = 0.445,
-    val numberOfParticles: Int = 6000,
+    val numberOfParticles: Int = 4000,
     val minParticleDiameter: Double = 0.015,
     val maxParticleDiameter: Double = 0.025,
     val particleMass: Double = 0.025,
@@ -49,15 +50,13 @@ class CannonballSystem(
             "_timeDelta:$timeDelta"
 
     fun run(particlesFromFile: Set<Particle> = emptySet()) {
+        var boxParticles = runParticlesStabilization()
+
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
-        val onlyCannon = false
-        val particles: Set<Particle> = if (onlyCannon) {
-            setOf(cannonballParticle)
-        } else {
-            val boxParticles = createBoxParticles(boxWalls)
-            boxParticles + cannonballParticle
-        }
+
+
+        val particles: Set<Particle> = boxParticles + cannonballParticle
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
@@ -66,6 +65,21 @@ class CannonballSystem(
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
         simulator.simulate(true)
+    }
+
+    fun runParticlesStabilization(): Set<Particle> {
+        val boxWalls = createBoxWalls()
+        val boxParticles = createBoxParticles(boxWalls)
+
+        val particles: Set<Particle> = boxParticles
+
+        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
+        val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
+        val cannonballFileGenerator = CannonballFileGenerator("Stabilization")
+        val cutCondition = KineticEnergyCondition()
+        val simulator =
+            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
+        return simulator.waitForParticlesToStabilize()
     }
 
     private fun createCannonBall(): Particle {
