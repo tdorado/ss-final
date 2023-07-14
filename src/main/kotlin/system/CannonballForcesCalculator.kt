@@ -50,8 +50,8 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
                 val relativeVelocity = particle.velocity - wall.normal * particle.velocity.dotProduct(wall.normal)
 
                 val normalForceMagnitude =
-                    -particle.Kn * overlapSize - particle.gammaN * relativeVelocity.dotProduct(wall.normal)
-                val tangentialForceMagnitude = particle.Kt * overlapSize
+                    -3E3 * overlapSize - particle.gammaN * relativeVelocity.dotProduct(wall.normal)
+                val tangentialForceMagnitude = 6E3 * overlapSize
 
                 val normalForceValue = -wall.normal * normalForceMagnitude
                 val tangentialForceValue = -relativeVelocity.normalize() * tangentialForceMagnitude
