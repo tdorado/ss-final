@@ -19,14 +19,14 @@ class CannonballSystem(
     val boxWidth: Double = 0.445,
     val numberOfParticles: Int = 2000,
     val minParticleDiameter: Double = 0.015,
-    val maxParticleDiameter: Double = 0.025,
-    val particleMass: Double = 0.025,
+    val maxParticleDiameter: Double = 0.03,
+    val particleMass: Double = 0.065,
     val pKn: Double = 1E6,
     val pKt: Double = 2 * pKn,
     val pGamma: Double = 10.0,
-    val wallKn: Double = 3E2,
+    val wallKn: Double = 5E2,
     val wallKt: Double = 2 * wallKn,
-    val wallGamma: Double = 0.9,
+    val wallGamma: Double = 100.0,
     val cannonballKn: Double = pKn,
     val cannonballKt: Double = 2 * cannonballKn,
     val cannonballGamma: Double = pGamma,
@@ -38,17 +38,19 @@ class CannonballSystem(
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
-    private val CONFIG = "numberOfParticles:$numberOfParticles" +
-            "_particleMass:$particleMass" +
-            "_minParticleDiameter:$minParticleDiameter" +
-            "_maxParticleDiameter:$maxParticleDiameter" +
-            "_cannonballAngle:$cannonballAngle" +
+    private val CONFIG = "nP:$numberOfParticles" +
+            "_pMass:$particleMass" +
+            "_minDiameter:$minParticleDiameter" +
+            "_maxDiameter:$maxParticleDiameter" +
+            "_angle:$cannonballAngle" +
             "_pKt:$pKt" +
             "_pKn:$pKn" +
             "_pGamma:$pGamma" +
             "_cutoffTime:$cutoffTime" +
-            "_saveTimeDelta:$saveTimeDelta" +
-            "_timeDelta:$timeDelta"
+            "_TimeDelta:$saveTimeDelta" +
+            "_timeDelta:$timeDelta" +
+            "_wallGamma${wallGamma}" +
+            "_wallKn${wallKn}"
 
     fun run() {
         val saveParticles = pFile == null
@@ -82,7 +84,7 @@ class CannonballSystem(
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
-        val cannonballFileGenerator = CannonballFileGenerator("Stabilization_dt{$timeDelta}")
+        val cannonballFileGenerator = CannonballFileGenerator("Stabilization_dt{$CONFIG}")
         val cutCondition = KineticEnergyCondition()
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
