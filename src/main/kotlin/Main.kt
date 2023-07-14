@@ -6,7 +6,7 @@ import system.CannonballSystem
 @Command(name = "Main", mixinStandardHelpOptions = true, version = ["1.0"])
 class Main : Runnable {
     @Option(names = ["-n"], description = ["Number of particles"], required = false)
-    var nParticles: Int = 1000
+    var nParticles: Int = 2000
 
     @Option(names = ["-pGen"], description = ["True to run only generating particles"], required = false)
     var pGen: Boolean = false
@@ -18,7 +18,7 @@ class Main : Runnable {
     var outputFileName: String = "output.xyz"
 
     @Option(names = ["-dt"], description = ["Time delta in seconds"], required = false)
-    var timeDelta: Double = 0.05
+    var timeDelta: Double = 0.00005
 
     @Option(names = ["-r"], description = ["Number of repetitions"], required = false)
     var repetitions: Int = 1
@@ -27,28 +27,28 @@ class Main : Runnable {
     var cutTime: Int = 5
 
     @Option(names = ["-bm"], description = ["Bullet mass in kg"], required = false)
-    var bulletMass: Double = 17.6
+    var bulletMass: Double = 17.5
 
     @Option(names = ["-bd"], description = ["Bullet diameter mm"], required = false)
     var bulletDiameter: Double = 175.0
 
     @Option(names = ["-bv"], description = ["Bullet velocity in m/s"], required = false)
-    var bulletInitialVelocity: Double = 450.0
+    var bulletInitialVelocity: Double = 10.0
 
     @Option(names = ["-bva"], description = ["Bullet velocity angle in radians"], required = false)
-    var bulletInitialVelocityAngle: Double = Math.PI / 2 // 90 degrees
+    var bulletInitialVelocityAngle: Double = Math.toRadians(90.0) // 90 degrees
 
     @Option(names = ["-pld"], description = ["Lower bound of particle's diameter"], required = false)
-    var lowDiam: Double = 0.02
+    var lowDiam: Double = 0.015
 
     @Option(names = ["-pud"], description = ["Upper bound of particle's diameter"], required = false)
-    var upperDiam: Double = 0.05
+    var upperDiam: Double = 0.025
 
     @Option(names = ["-pm"], description = ["Particle mass in kg"], required = false)
-    var particleMass: Double = 0.01
+    var particleMass: Double = 0.025
 
     @Option(names = ["-bxs"], description = ["Box side length in meters"], required = false)
-    var boxSideLength: Double = 1.0
+    var boxSideLength: Double = 0.445
 
     @Option(names = ["-bxh"], description = ["Box height in meters"], required = false)
     var boxHeight: Double = 1.0
@@ -57,72 +57,22 @@ class Main : Runnable {
     var frictionCoefficient: Double = 0.4
 
     override fun run() {
-        println("n_particles: $nParticles")
-        println("outputFileName: $outputFileName")
-        println("timeDelta: $timeDelta")
-        println("repetitions: $repetitions")
-        println("cutTime: $cutTime")
-        println("bulletMass: $bulletMass")
-        println("bulletDiameter: $bulletDiameter")
-        println("bulletInitialVelocity: $bulletInitialVelocity")
-        println("bulletInitialVelocityAngle: $bulletInitialVelocityAngle")
-        println("lowDiam: $lowDiam")
-        println("upperDiam: $upperDiam")
-        println("particleMass: $particleMass")
-        println("boxSideLength: $boxSideLength")
-        println("boxHeight: $boxHeight")
-        println("frictionCoefficient: $frictionCoefficient")
+        val cannonballSystem = CannonballSystem(
+            timeDelta = timeDelta,
+            boxHeight = boxHeight,
+            boxWidth = boxSideLength,
+            numberOfParticles = nParticles,
+            minParticleDiameter = lowDiam,
+            maxParticleDiameter = upperDiam,
+            particleMass = particleMass,
+            cannonballAngle = bulletInitialVelocityAngle,
+            cannonballVelocity = bulletInitialVelocity,
+            cannonballMass = bulletMass,
+            cannonballRadius = bulletDiameter / 2 / 1000,
+            pFile = particleFile
+        )
 
-        if (pGen) {
-//
-//            val particleGenerator = EfficientParticleGenerator(
-//                particleMass,
-//                lowDiam,
-//                upperDiam,
-//                ,
-//                nParticles,
-//                cannonballSystem.createBoxWalls(),
-//                particlesDiameterGenerator,
-//                0.0,
-//                pKn,
-//                pKt,
-//                pGammaN,
-//                pGammaT
-//            )
-//            particleGenerator.generateParticles(true)
-//            particleGenerator.exportParticlesToFile("particles/particles_50k")
-        } else {
-//            var Kn = 5E2
-//            var factor = 1
-//            while (factor <= 40) {
-//                cannonballSystem.run()
-//                if (factor == 1) {
-//                    factor = 10
-//                } else {
-//                    factor += 10
-//                }
-//            }
-
-//            while (Kn <= 1E4) {
-            val cannonballSystem = CannonballSystem()
-            cannonballSystem.run()
-//            }
-//            var minParticleDiameter = 0.01
-//            while (minParticleDiameter < 0.3) {
-//                cannonballSystem.run(
-//                    config = Config(
-//                        minParticleDiameter = minParticleDiameter,
-//                        maxParticleDiameter = minParticleDiameter + 0.02
-//                    )
-//                )
-//                minParticleDiameter += 0.05
-//            }
-//            var angle = 90.0
-//            while (angle < 130.0) {
-//                cannonballSystem.run(config = Config(angle = Math.toRadians(angle)))
-//                angle += 10
-//            }
-        }
+        cannonballSystem.run()
     }
 
 

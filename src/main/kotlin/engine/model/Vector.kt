@@ -1,8 +1,9 @@
 package engine.model
 
+import java.io.Serializable
 import kotlin.math.sqrt
 
-class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) {
+class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) : Serializable {
 
     val magnitude: Double
         get() = sqrt(x * x + y * y + z * z)

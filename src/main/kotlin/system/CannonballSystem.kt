@@ -12,28 +12,29 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class CannonballSystem(
-    val timeDelta: Double = 0.00002,
-    val saveTimeDelta: Double = 0.0001,
-    val cutoffTime: Double = 0.5,
+    val timeDelta: Double = 0.00005,
+    val saveTimeDelta: Double = 0.005,
+    val cutoffTime: Double = 1.0,
     val boxHeight: Double = 1.0,
     val boxWidth: Double = 0.445,
-    val numberOfParticles: Int = 4000,
+    val numberOfParticles: Int = 2000,
     val minParticleDiameter: Double = 0.015,
     val maxParticleDiameter: Double = 0.025,
     val particleMass: Double = 0.025,
-    val pKn: Double = 1E5,
+    val pKn: Double = 1E6,
     val pKt: Double = 2 * pKn,
-    val pGamma: Double = 6.0,
-    val wallKn: Double = 3E3,
+    val pGamma: Double = 10.0,
+    val wallKn: Double = 3E2,
     val wallKt: Double = 2 * wallKn,
-    val wallGamma: Double = 6.0,
+    val wallGamma: Double = 0.9,
     val cannonballKn: Double = pKn,
     val cannonballKt: Double = 2 * cannonballKn,
     val cannonballGamma: Double = pGamma,
     val cannonballAngle: Double = Math.toRadians(90.0),
-    val cannonballVelocity: Double = 20.0,
+    val cannonballVelocity: Double = 10.0,
     val cannonballMass: Double = 17.5,
     val cannonballRadius: Double = 175e-3 / 2,
+    val pFile: String = "",
 ) {
     private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
@@ -49,9 +50,15 @@ class CannonballSystem(
             "_saveTimeDelta:$saveTimeDelta" +
             "_timeDelta:$timeDelta"
 
-    fun run(particlesFromFile: Set<Particle> = emptySet()) {
-        var boxParticles = runParticlesStabilization()
-
+    fun run() {
+        val saveParticles = pFile == null
+        var boxParticles: Set<Particle>
+        if (pFile.isNotBlank()) {
+            boxParticles = Particle.loadParticlesFromFile("out/$pFile")
+        } else {
+            boxParticles = runParticlesStabilization()
+            Particle.saveParticlesToFile(boxParticles, "PARTICLES_$CONFIG")
+        }
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()
 
@@ -75,7 +82,7 @@ class CannonballSystem(
 
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
-        val cannonballFileGenerator = CannonballFileGenerator("Stabilization")
+        val cannonballFileGenerator = CannonballFileGenerator("Stabilization_dt{$timeDelta}")
         val cutCondition = KineticEnergyCondition()
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)

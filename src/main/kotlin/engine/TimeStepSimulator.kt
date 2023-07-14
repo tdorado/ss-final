@@ -34,7 +34,7 @@ class TimeStepSimulator(
         fileGenerator.addToFile(particles, time)
         val cutCondition = KineticEnergyCondition()
         var firstRun = true
-        while (firstRun || !cutCondition.isFinished(particles, 1E-6)) {
+        while (firstRun || !cutCondition.isFinished(particles, 1E-3) || time < 0.5) {
             particles = runBlocking {
                 particles.map { particle ->
                     async(Dispatchers.Default) {

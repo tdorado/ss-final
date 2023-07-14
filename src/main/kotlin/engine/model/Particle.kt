@@ -1,5 +1,6 @@
 package engine.model
 
+import java.io.*
 import java.lang.Math.pow
 import kotlin.math.pow
 
@@ -13,7 +14,7 @@ data class Particle(
     val Kn: Double,
     val gamma: Double,
     var pressure: Double = 0.0,
-) {
+) : Serializable {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
     }
@@ -51,24 +52,14 @@ data class Particle(
         )
     }
 
-    fun serialize(): String {
-        return "$id,$position,$velocity,$radius,$mass,$Kn,$Kt,$gamma,$pressure"
-    }
 
     companion object {
-        fun deserialize(line: String): Particle {
-            val parts = line.split(",")
-            return Particle(
-                parts[0].toInt(),
-                Vector.fromString(parts[1]),
-                Vector.fromString(parts[2]),
-                parts[3].toDouble(),
-                parts[4].toDouble(),
-                parts[5].toDouble(),
-                parts[6].toDouble(),
-                parts[7].toDouble(),
-                parts[8].toDouble(),
-            )
+        fun saveParticlesToFile(particles: Set<Particle>, fileName: String) {
+            ObjectOutputStream(FileOutputStream(fileName)).use { it.writeObject(particles) }
+        }
+
+        fun loadParticlesFromFile(fileName: String): Set<Particle> {
+            return ObjectInputStream(FileInputStream(fileName)).use { it.readObject() as Set<Particle> }
         }
     }
 
