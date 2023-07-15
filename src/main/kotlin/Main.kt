@@ -10,7 +10,7 @@ class Main : Runnable {
     var timeDelta: Double = 0.00005
 
     @Option(names = ["-dt2"], description = ["Save time delta in seconds"], required = false)
-    var saveTimeDelta: Double = 0.001
+    var saveTimeDelta: Double = 0.0005
 
     @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
     var cutoffTime: Double = 3.0
@@ -32,7 +32,7 @@ class Main : Runnable {
         description = ["Kinetic energy to cut for particles stabilization"],
         required = false
     )
-    var pStabilizationEnergy: Double = 5E-3
+    var pStabilizationEnergy: Double = 1E-3
 
     @Option(names = ["-n"], description = ["Number of particles"], required = false)
     var nParticles: Int = 2000

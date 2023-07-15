@@ -17,18 +17,18 @@ class KineticEnergyAndTimeCutCondition(
             return true
         }
         val kineticEnergy = particles.map { it.getKineticEnergy() }.reduce { acc, kineticEnergy -> acc + kineticEnergy }
+        logger.info("Current kinetic energy: $kineticEnergy")
 
         if (lastTenKineticEnergies.size < 10) {
             lastTenKineticEnergies.add(kineticEnergy)
         } else if (lastTenKineticEnergies.size == 10) {
             if (shouldStopByVariationOfLastKs()) {
-                return true
+                return time > 0.1
             }
             lastTenKineticEnergies.removeFirst()
             lastTenKineticEnergies.add(kineticEnergy)
         }
 
-        logger.info("Current kinetic energy: $kineticEnergy")
         return time > 0.1 && kineticEnergy <= energyThreshold
     }
 
