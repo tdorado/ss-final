@@ -28,8 +28,8 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
                     val relativeNormalVelocity = relativeVelocity.dotProduct(normalVector)
                     val relativeTangentVelocity = relativeVelocity - normalVector * relativeNormalVelocity
 
-                    val normalForceMagnitude = particle.Kn * overlapSize + particle.gamma * relativeNormalVelocity
-                    val tangentialForceMagnitude = particle.Kt * overlapSize
+                    val normalForceMagnitude = particle.kn * overlapSize + particle.gamma * relativeNormalVelocity
+                    val tangentialForceMagnitude = particle.kt * overlapSize
 
                     val normalForceValue = -normalVector * normalForceMagnitude
                     val tangentialForceValue = -relativeTangentVelocity.normalize() * tangentialForceMagnitude
@@ -50,8 +50,8 @@ class CannonballForcesCalculator(private val walls: Set<Wall>) : ForcesCalculato
                 val relativeVelocity = particle.velocity - wall.normal * particle.velocity.dotProduct(wall.normal)
 
                 val normalForceMagnitude =
-                    -wall.Kn * overlapSize - wall.gamma * relativeVelocity.dotProduct(wall.normal)
-                val tangentialForceMagnitude = wall.Kt * overlapSize
+                    -wall.kn * overlapSize - wall.gamma * relativeVelocity.dotProduct(wall.normal)
+                val tangentialForceMagnitude = wall.kt * overlapSize
 
                 val normalForceValue = -wall.normal * normalForceMagnitude
                 val tangentialForceValue = -relativeVelocity.normalize() * tangentialForceMagnitude

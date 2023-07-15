@@ -9,8 +9,8 @@ data class Particle(
     val velocity: Vector,
     val radius: Double,
     val mass: Double,
-    val Kt: Double,
-    val Kn: Double,
+    val kt: Double,
+    val kn: Double,
     val gamma: Double,
     var pressure: Double = 0.0,
     var previousAcceleration: Vector = Vector()
@@ -36,29 +36,13 @@ data class Particle(
         return id == other.id
     }
 
-    fun deepCopy(position: Vector, velocity: Vector): Particle {
-        return Particle(
-            id = id,
-            position = Vector(position.x, position.y, position.z),
-            velocity = Vector(velocity.x, velocity.y, velocity.z),
-            radius = radius,
-            mass = mass,
-            Kt = Kt,
-            Kn = Kn,
-            gamma = gamma,
-            pressure = pressure,
-            previousAcceleration = previousAcceleration,
-        )
-    }
-
-
     companion object {
         fun saveParticlesToFile(particles: Set<Particle>, fileName: String) {
-            ObjectOutputStream(FileOutputStream(fileName)).use { it.writeObject(particles) }
+            ObjectOutputStream(FileOutputStream("$fileName.dat")).use { it.writeObject(particles) }
         }
 
         fun loadParticlesFromFile(fileName: String): Set<Particle> {
-            return ObjectInputStream(FileInputStream(fileName)).use { it.readObject() as Set<Particle> }
+            return ObjectInputStream(FileInputStream("$fileName.dat")).use { it.readObject() as Set<Particle> }
         }
     }
 

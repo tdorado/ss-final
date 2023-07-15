@@ -23,6 +23,8 @@ class BeemanIntegrator(
                 val previousParticleStep = particle.copy(position = previousPosition, velocity = previousVelocity)
                 val previousAcceleration = getForces(previousParticleStep, particles) / particle.mass
                 particle.previousAcceleration = previousAcceleration
+            } else {
+                particle.previousAcceleration = Vector()
             }
         }
     }

@@ -16,7 +16,7 @@ class Main : Runnable {
     var cutoffTime: Double = 3.0
 
     @Option(names = ["-o"], description = ["Output file name"], required = false)
-    lateinit var outputFileName: String
+    var outputFileName: String = ""
 
     @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
     var pFile: String = ""
@@ -95,7 +95,10 @@ class Main : Runnable {
     var boxHeight: Double = 1.0
 
     override fun run() {
-        outputFileName = defaultOutputFile()
+        if (outputFileName == ""){
+            outputFileName = defaultOutputFile()
+        }
+
         val cannonballSystem = CannonballSystem(
             timeDelta = timeDelta,
             saveTimeDelta = saveTimeDelta,
