@@ -17,7 +17,11 @@ class CannonballParticleGenerator(
     private val Kn: Double,
     private val Kt: Double,
     private val gamma: Double,
-    private val walls: Set<Wall>
+    private val walls: Set<Wall>,
+    private val particleMassGenerator: ParticleMassGenerator = ParticleMassGenerator(
+        particleDiameterGenerator.startInterval,
+        mass
+    )
 ) {
     private val particles = mutableSetOf<Particle>()
     private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
@@ -54,7 +58,7 @@ class CannonballParticleGenerator(
                         position,
                         velocity,
                         radius,
-                        mass,
+                        particleMassGenerator.getParticleMass(radius * 2),
                         Kt,
                         Kn,
                         gamma,
