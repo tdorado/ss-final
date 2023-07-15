@@ -30,6 +30,32 @@ class TimeStepSimulator(
         time = 0.0
     }
 
+    fun waitForParticlesToStabilize(): Set<Particle> {
+        fileGenerator.addToFile(particles, time)
+        val cutCondition = KineticEnergyCondition()
+        var firstRun = true
+        while ((firstRun || !cutCondition.isFinished(particles, 1E-3) || time < 0.5) && time < 0.65) {
+            particles = runBlocking {
+                particles.map { particle ->
+                    async(Dispatchers.Default) {
+                        integrator.applyIntegrator(timeDelta, particle, particles - particle)
+                    }
+                }.awaitAll().toSet()
+            }
+            val currentDateTime = LocalDateTime.now()
+            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            logger.info("[$formattedDateTime] New iteration for simulation with time $time")
+
+            firstRun = false
+            time += timeDelta
+            if (time >= timeToSave) {
+                fileGenerator.addToFile(particles, timeToSave)
+                timeToSave += saveTimeDelta
+            }
+        }
+        return particles
+    }
+
     fun simulate(closeFile: Boolean) {
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
@@ -68,4 +94,6 @@ class TimeStepSimulator(
         this.time = time
         timeToSave = time + saveTimeDelta
     }
+
+
 }
