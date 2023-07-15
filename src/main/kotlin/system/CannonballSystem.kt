@@ -35,6 +35,7 @@ class CannonballSystem(
     val cannonballDiameter: Double,
     val cannonballHeight: Double,
     val pFile: String,
+    val pGenSave: Boolean,
     val outputFile: String,
     val pStableEnergy: Double,
     val pStableTime: Double,
@@ -66,14 +67,21 @@ class CannonballSystem(
     private fun runParticlesStabilization(): Set<Particle> {
         val boxWalls = createBoxWalls()
         val particles = createBoxParticles(boxWalls)
-        Particle.saveParticlesToFile(particles, "out/init-particles/particles-$outputFile")
+        if (pGenSave) {
+            Particle.saveParticlesToFile(particles, "out/init-particles/particles-$outputFile")
+        }
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile")
         val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime)
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
-        return simulator.simulate(true)
+        val stabilizedParticles = simulator.simulate(true)
+        if (pGenSave) {
+            Particle.saveParticlesToFile(particles, "out/init-particles/stable-particles-$outputFile")
+        }
+
+        return stabilizedParticles
     }
 
     private fun createCannonBall(cannonballHeight: Double): Particle {

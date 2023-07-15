@@ -21,7 +21,7 @@ class Main : Runnable {
     @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
     var pFile: String = ""
 
-    @Option(names = ["-pGen"], description = ["True to run with particle generator"], required = false)
+    @Option(names = ["-pGen"], description = ["True to save generated particles"], required = false)
     var pGen: Boolean = true
 
     @Option(names = ["-pStableTime"], description = ["Time to cut for particles stabilization"], required = false)
@@ -124,6 +124,7 @@ class Main : Runnable {
             cannonballDiameter = ballDiameter,
             cannonballHeight = ballHeight,
             pFile = pFile,
+            pGenSave = pGen,
             outputFile = outputFileName,
             pStableEnergy = pStabilizationEnergy,
             pStableTime = pStabilizationTime,
