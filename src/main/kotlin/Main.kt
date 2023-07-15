@@ -102,8 +102,6 @@ class Main : Runnable {
             outputFileName = defaultOutputFile()
         }
 
-        outputFileName = "tests"
-
         val cannonballSystem = CannonballSystem(
             timeDelta = timeDelta,
             saveTimeDelta = saveTimeDelta,
