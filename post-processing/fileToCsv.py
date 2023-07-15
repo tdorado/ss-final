@@ -1,8 +1,7 @@
 import pandas as pd
-from tqdm import tqdm
 
 # Nombre del archivo a leer
-archivo = '../out/particles/stabilization-nP:0_pMass:0.0_minDiameter:0.0_maxDiameter:0.0_angle:0.0_pKt:0.0_pGamma:0.0_cutoff:5.0_dT:5.0E-5_dT2:3.0E-4_wallGamma0.0.xyz'
+archivo = '../out/particles/stabilization-nP:0_pMass:0.0_minDiameter:0.0_maxDiameter:0.0_angle:0.0_pKt:0.0_pGamma:0.0_cutoff:3.0_dT:5.0E-5_dT2:5.0E-4_wallGamma0.0.xyz'
 csv_salida = 'salida.csv'
 
 # Abre el archivo
@@ -14,7 +13,7 @@ datos = []
 
 # Itera sobre cada línea del archivo
 i = 0
-while i < tqdm(len(lineas)):
+while i < len(lineas):
     try:
         # Intenta convertir la línea actual a un número
         n = int(lineas[i].strip())

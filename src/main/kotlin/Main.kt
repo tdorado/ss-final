@@ -32,7 +32,7 @@ class Main : Runnable {
         description = ["Kinetic energy to cut for particles stabilization"],
         required = false
     )
-    var pStabilizationEnergy: Double = 5E-3
+    var pStabilizationEnergy: Double = 1E-3
 
     @Option(names = ["-n"], description = ["Number of particles"], required = false)
     var nParticles: Int = 2000
@@ -56,7 +56,7 @@ class Main : Runnable {
     var pGamma: Double = 15.0
 
     @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
-    var wallKn: Double = pKn
+    var wallKn: Double = pKn * 1E-2
 
     @Option(names = ["-wallKt"], description = ["Walls Kt variable"], required = false)
     var wallKt: Double = 2 * wallKn
@@ -80,7 +80,7 @@ class Main : Runnable {
     var ballAngle: Double = 90.0
 
     @Option(names = ["-ballVelocity"], description = ["Cannonball velocity variable"], required = false)
-    var ballVelocity: Double = 70.0
+    var ballVelocity: Double = 20.0
 
     @Option(names = ["-ballDiameter"], description = ["Cannonball diameter variable"], required = false)
     var ballDiameter: Double = 175e-3
