@@ -11,8 +11,8 @@ class KineticEnergyAndTimeCutCondition(
 ) : TimeCutCondition(timeToCut) {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun isFinished(particles: Set<Particle>, timetoCut: Double): Boolean {
-        if (super.isFinished(particles, timetoCut)) {
+    override fun isFinished(particles: Set<Particle>, time: Double): Boolean {
+        if (super.isFinished(particles, time)) {
             return true
         }
         val kineticEnergy = particles.map { it.getKineticEnergy() }.reduce { acc, kineticEnergy -> acc + kineticEnergy }
