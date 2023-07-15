@@ -32,7 +32,7 @@ class Main : Runnable {
         description = ["Kinetic energy to cut for particles stabilization"],
         required = false
     )
-    var pStabilizationEnergy: Double = 1E-3
+    var pStabilizationEnergy: Double = 5E-3
 
     @Option(names = ["-n"], description = ["Number of particles"], required = false)
     var nParticles: Int = 2000
