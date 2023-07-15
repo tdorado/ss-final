@@ -10,10 +10,10 @@ class Main : Runnable {
     var timeDelta: Double = 0.00005
 
     @Option(names = ["-dt2"], description = ["Save time delta in seconds"], required = false)
-    var saveTimeDelta: Double = 0.0003
+    var saveTimeDelta: Double = 0.001
 
     @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
-    var cutoffTime: Double = 5.0
+    var cutoffTime: Double = 3.0
 
     @Option(names = ["-o"], description = ["Output file name"], required = false)
     var outputFileName: String = defaultOutputFile()
@@ -25,14 +25,14 @@ class Main : Runnable {
     var pGen: Boolean = true
 
     @Option(names = ["-pStableTime"], description = ["Time to cut for particles stabilization"], required = false)
-    var pStabilizationTime: Double = 0.65
+    var pStabilizationTime: Double = 0.7
 
     @Option(
         names = ["-pStableEnergy"],
         description = ["Kinetic energy to cut for particles stabilization"],
         required = false
     )
-    var pStabilizationEnergy: Double = 1E-3
+    var pStabilizationEnergy: Double = 5E-3
 
     @Option(names = ["-n"], description = ["Number of particles"], required = false)
     var nParticles: Int = 2000
@@ -53,10 +53,10 @@ class Main : Runnable {
     var pKt: Double = 2 * pKn
 
     @Option(names = ["-pGamma"], description = ["Particles gamma variable"], required = false)
-    var pGamma: Double = 70.0
+    var pGamma: Double = 20.0
 
     @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
-    var wallKn: Double = 6E2
+    var wallKn: Double = 3E3
 
     @Option(names = ["-wallKt"], description = ["Walls Kt variable"], required = false)
     var wallKt: Double = 2 * wallKn
