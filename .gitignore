@@ -10,7 +10,6 @@
 /ideaSDK
 /clionSDK
 /android-studio/sdk
-out/
 /tmp
 /intellij
 workspace.xml
@@ -80,3 +79,6 @@ outTmp/
 kotlin-ide/
 .idea
 *.log
+out/init-particles/*
+out/particles/*
+out/runs/*

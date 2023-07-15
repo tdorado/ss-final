@@ -1,8 +1,7 @@
 import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
-
-df = pd.read_csv('salida.csv')
+from file_to_csv import file_to_csv
 
 def plot_kinetic_energy_in_time(df):
     print('en kinetic energy', df)
@@ -23,4 +22,11 @@ def plot_kinetic_energy_in_time(df):
     # Muestra la gráfica
     fig.show()
 
-plot_kinetic_energy_in_time(df)
+# Aca se levantan los xyz, se parsean y se visualiza, independientemente de la variacion
+
+
+
+variation_name = "PUT VARIATION HERE"
+REPETITIONS = 5
+filename = f"../out/runs/{variation_name}_rep_{REPETITIONS}.xyz" 
+

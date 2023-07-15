@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 class CannonballParticleGenerator(
-    private val mass: Double,
+    private val lowParticleMass: Double,
     private val boxSize: Vector,
     private val numberOfParticles: Int,
     private val particleDiameterGenerator: ParticleDiameterGenerator,
@@ -20,7 +20,7 @@ class CannonballParticleGenerator(
     private val walls: Set<Wall>,
     private val particleMassGenerator: ParticleMassGenerator = ParticleMassGenerator(
         particleDiameterGenerator.startInterval,
-        mass
+        lowParticleMass
     )
 ) {
     private val particles = mutableSetOf<Particle>()
@@ -88,57 +88,4 @@ class CannonballParticleGenerator(
 
         return particles.toSet()
     }
-
-//    fun generateParticlesOld(shouldLog: Boolean = false): Set<Particle> {
-//        val radius = particleDiameterGenerator.startInterval
-//        val rows = (boxSize.y / (2 * radius)).toInt()
-//        val cols = (boxSize.x / (2 * radius)).toInt()
-//        val layers = 6
-//
-//        var count = 1
-//        for (row in 0 until rows) {
-//            for (col in 0 until cols) {
-//                for (layer in 0 until layers) {
-//                    val x = radius + col * (2.00 * radius + 0.001)
-//                    val y = radius + row * (2.00 * radius + 0.001)
-//                    val z = radius + layer * (2.00 * radius + 0.001)
-//
-//                    val position = Vector(x, y, z)
-//                    val velocity = Vector()
-//
-//                    val particle = Particle(
-//                        count++,
-//                        position,
-//                        velocity,
-//                        radius,
-//                        mass,
-//                        Kt,
-//                        Kn,
-//                        gammaT,
-//                        gammaN,
-//                    )
-//
-//
-//                    if (particles.size >= numberOfParticles) {
-//                        break
-//                    }
-//                    particles.add(particle)
-//
-//                    if (shouldLog) {
-//                        logger.info("Added particle with id: ${particle.id}, position: $position, velocity: $velocity, radius: $radius")
-//                    }
-//                }
-//
-//                if (particles.size >= numberOfParticles) {
-//                    break
-//                }
-//            }
-//
-//            if (particles.size >= numberOfParticles) {
-//                break
-//            }
-//        }
-//
-//        return particles
-//    }
 }
