@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def file_to_csv(filename)
     # Nombre del archivo a leer
     archivo = f'../out/runs/{filename}'
