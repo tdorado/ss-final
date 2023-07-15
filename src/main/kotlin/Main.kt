@@ -10,13 +10,13 @@ class Main : Runnable {
     var timeDelta: Double = 0.00005
 
     @Option(names = ["-dt2"], description = ["Save time delta in seconds"], required = false)
-    var saveTimeDelta: Double = 0.0005
+    var saveTimeDelta: Double = 0.005
 
     @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
     var cutoffTime: Double = 3.0
 
     @Option(names = ["-o"], description = ["Output file name"], required = false)
-    var outputFileName: String = defaultOutputFile()
+    lateinit var outputFileName: String
 
     @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
     var pFile: String = ""
@@ -53,16 +53,16 @@ class Main : Runnable {
     var pKt: Double = 2 * pKn
 
     @Option(names = ["-pGamma"], description = ["Particles gamma variable"], required = false)
-    var pGamma: Double = 15.0
+    var pGamma: Double = 50.0
 
     @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
-    var wallKn: Double = pKn * 1E-2
+    var wallKn: Double = pKn
 
     @Option(names = ["-wallKt"], description = ["Walls Kt variable"], required = false)
     var wallKt: Double = 2 * wallKn
 
     @Option(names = ["-wallGamma"], description = ["Particles wall variable"], required = false)
-    var wallGamma: Double = pGamma
+    var wallGamma: Double = 200.0
 
     @Option(names = ["-ballMass"], description = ["Mass of the lowest radius particle"], required = false)
     var ballMass: Double = 17.5
@@ -74,7 +74,7 @@ class Main : Runnable {
     var ballKt: Double = 2 * ballKn
 
     @Option(names = ["-ballGamma"], description = ["Cannonball gamma variable"], required = false)
-    var ballGamma: Double = pGamma
+    var ballGamma: Double = 10.0
 
     @Option(names = ["-ballAngle"], description = ["Cannonball angle variable"], required = false)
     var ballAngle: Double = 90.0
@@ -95,6 +95,7 @@ class Main : Runnable {
     var boxHeight: Double = 1.0
 
     override fun run() {
+        outputFileName = defaultOutputFile()
         val cannonballSystem = CannonballSystem(
             timeDelta = timeDelta,
             saveTimeDelta = saveTimeDelta,

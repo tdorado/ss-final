@@ -2,8 +2,6 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv('salida.csv')
-
 def plot_kinetic_energy_in_time(df):
     print('en kinetic energy', df)
         # Calcula la energía cinética (KE = 1/2 * m * v^2)
@@ -23,4 +21,5 @@ def plot_kinetic_energy_in_time(df):
     # Muestra la gráfica
     fig.show()
 
-plot_kinetic_energy_in_time(df)
+# Aca se levantan los xyz, se parsean y se visualiza, independientemente de la variacion
+
