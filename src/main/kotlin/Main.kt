@@ -86,7 +86,7 @@ class Main : Runnable {
     var ballDiameter: Double = 175e-3
 
     @Option(names = ["-ballHeight"], description = ["Cannonball height variable"], required = false)
-    var ballHeight: Double = 0.6
+    var ballHeight: Double = 0.1
 
     @Option(names = ["-bw"], description = ["Box width in meters"], required = false)
     var boxWidth: Double = 0.4

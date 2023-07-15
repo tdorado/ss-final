@@ -47,7 +47,7 @@ class CannonballSystem(
         } else {
             runParticlesStabilization()
         }
-        val cannonballParticle = createCannonBall()
+        val cannonballParticle = createCannonBall(getHighestParticle(boxParticles))
         val boxWalls = createBoxWalls()
         val particles: Set<Particle> = boxParticles + cannonballParticle
         val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
@@ -57,6 +57,10 @@ class CannonballSystem(
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
         simulator.simulate(true)
+    }
+
+    private fun getHighestParticle(particle: Set<Particle>): Double {
+        return (particle.maxOfOrNull { it.position.z } ?: 0.0).plus(cannonballHeight)
     }
 
     private fun runParticlesStabilization(): Set<Particle> {
@@ -72,7 +76,7 @@ class CannonballSystem(
         return simulator.simulate(true)
     }
 
-    private fun createCannonBall(): Particle {
+    private fun createCannonBall(cannonballHeight: Double): Particle {
         val radiansAngle = Math.toRadians(cannonballAngle)
         val velocity = Vector(0.0, -cannonballVelocity * cos(radiansAngle), -cannonballVelocity * sin(radiansAngle))
         val position = Vector(boxWidth / 2, boxWidth / 2, cannonballHeight)
