@@ -53,16 +53,16 @@ class Main : Runnable {
     var pKt: Double = 2 * pKn
 
     @Option(names = ["-pGamma"], description = ["Particles gamma variable"], required = false)
-    var pGamma: Double = 20.0
+    var pGamma: Double = 15.0
 
     @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
-    var wallKn: Double = 3E3
+    var wallKn: Double = pKn
 
     @Option(names = ["-wallKt"], description = ["Walls Kt variable"], required = false)
     var wallKt: Double = 2 * wallKn
 
     @Option(names = ["-wallGamma"], description = ["Particles wall variable"], required = false)
-    var wallGamma: Double = 20.0
+    var wallGamma: Double = pGamma
 
     @Option(names = ["-ballMass"], description = ["Mass of the lowest radius particle"], required = false)
     var ballMass: Double = 17.5
@@ -71,10 +71,10 @@ class Main : Runnable {
     var ballKn: Double = pKn
 
     @Option(names = ["-ballKt"], description = ["Cannonball Kt variable"], required = false)
-    var ballKt: Double = 2 * pKn
+    var ballKt: Double = 2 * ballKn
 
     @Option(names = ["-ballGamma"], description = ["Cannonball gamma variable"], required = false)
-    var ballGamma: Double = 70.0
+    var ballGamma: Double = pGamma
 
     @Option(names = ["-ballAngle"], description = ["Cannonball angle variable"], required = false)
     var ballAngle: Double = 90.0
