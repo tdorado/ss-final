@@ -56,10 +56,10 @@ class CannonballSystem(
         val saveParticles = pFile == null
         var boxParticles: Set<Particle>
         if (pFile.isNotBlank()) {
-            boxParticles = Particle.loadParticlesFromFile("out/$pFile")
+            boxParticles = Particle.loadParticlesFromFile("out/particles/$pFile")
         } else {
             boxParticles = runParticlesStabilization()
-            Particle.saveParticlesToFile(boxParticles, "PARTICLES_$CONFIG")
+            Particle.saveParticlesToFile(boxParticles, "out/particles/PARTICLES_$CONFIG")
         }
         val cannonballParticle = createCannonBall()
         val boxWalls = createBoxWalls()

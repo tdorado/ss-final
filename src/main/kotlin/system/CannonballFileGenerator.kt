@@ -14,7 +14,7 @@ class CannonballFileGenerator(filename: String) : FileGenerator {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     companion object {
-        private const val folder = "out/"
+        private const val folder = "out/runs/"
     }
 
     private val bw: BufferedWriter
