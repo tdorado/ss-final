@@ -79,8 +79,8 @@ class CannonballSystem(
     private fun createCannonBall(cannonballHeight: Double): Particle {
         val radiansAngle = Math.toRadians(cannonballAngle)
         val velocity = Vector(0.0, -cannonballVelocity * cos(radiansAngle), -cannonballVelocity * sin(radiansAngle))
-        val position = Vector(boxWidth / 2, boxWidth / 2, cannonballHeight)
         val radius = cannonballDiameter / 2
+        val position = Vector(boxWidth / 2, boxWidth / 2, cannonballHeight + radius)
         val mass = cannonballMass
         return Particle(
             0,
