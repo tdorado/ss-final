@@ -57,7 +57,7 @@ class Main : Runnable {
     var frictionCoefficient: Double = 0.4
 
     override fun run() {
-        val gammas = arrayOf(20.0)
+        val gammas = arrayOf(10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0)
         for (gamma in gammas) {
             val cannonballSystem = CannonballSystem(
                 timeDelta = timeDelta,

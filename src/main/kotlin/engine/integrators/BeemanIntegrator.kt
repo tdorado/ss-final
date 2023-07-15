@@ -40,7 +40,7 @@ class BeemanIntegrator(
         // Position update
         val newPosition = particle.position +
                 particle.velocity * timeDelta +
-                currentAcceleration * (4.0 / 3.0) * timeDelta.pow(2) -
+                currentAcceleration * (2.0 / 3.0) * timeDelta.pow(2) -
                 previousAcceleration * (1.0 / 3.0) * timeDelta.pow(2)
 
         // Predicted velocity
