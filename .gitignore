@@ -79,3 +79,6 @@ outTmp/
 kotlin-ide/
 .idea
 *.log
+out/init-particles/*
+out/particles/*
+out/runs/*
