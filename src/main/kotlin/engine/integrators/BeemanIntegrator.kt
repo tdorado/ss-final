@@ -11,13 +11,10 @@ class BeemanIntegrator(
     timeDelta: Double,
     particles: Set<Particle>
 ) : Integrator(forcesCalculator) {
-    private val previousAccelerations: HashMap<Int, Vector> = HashMap()
 
     init {
         for (particle in particles) {
-            if (particle.velocity == Vector()) {
-                previousAccelerations[particle.id] = Vector()
-            } else {
+            if (particle.velocity != Vector()) {
                 val forces = getForces(particle, particles)
                 val previousPosition = particle.position -
                         particle.velocity * timeDelta +
@@ -25,7 +22,7 @@ class BeemanIntegrator(
                 val previousVelocity = particle.velocity - forces * timeDelta
                 val previousParticleStep = particle.copy(position = previousPosition, velocity = previousVelocity)
                 val previousAcceleration = getForces(previousParticleStep, particles) / particle.mass
-                previousAccelerations[particle.id] = previousAcceleration
+                particle.previousAcceleration = previousAcceleration
             }
         }
     }
@@ -35,7 +32,7 @@ class BeemanIntegrator(
         val currentAcceleration = getForces(particle, particles) / particle.mass
 
         // Fetch the previous acceleration
-        val previousAcceleration = previousAccelerations[particle.id]!!
+        val previousAcceleration = particle.previousAcceleration
 
         // Position update
         val newPosition = particle.position +
@@ -59,7 +56,7 @@ class BeemanIntegrator(
                 previousAcceleration * (1.0 / 6.0) * timeDelta
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep
-        previousAccelerations[particle.id] = currentAcceleration
+        particle.previousAcceleration = currentAcceleration
 
         return particle.copy(position = newPosition, velocity = newVelocity)
     }

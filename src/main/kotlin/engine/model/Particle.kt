@@ -1,7 +1,6 @@
 package engine.model
 
 import java.io.*
-import java.lang.Math.pow
 import kotlin.math.pow
 
 data class Particle(
@@ -14,13 +13,11 @@ data class Particle(
     val Kn: Double,
     val gamma: Double,
     var pressure: Double = 0.0,
-    var firstPosition: Vector? = position
+    var previousAcceleration: Vector = Vector()
 ) : Serializable {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
     }
-
-    fun resetParticle(): Particle = copy(position = firstPosition!!, velocity = Vector())
 
     fun getKineticEnergy(): Double = 0.5 * mass * velocity.magnitude.pow(2.0)
 
@@ -36,9 +33,7 @@ data class Particle(
 
         other as Particle
 
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 
     fun deepCopy(position: Vector, velocity: Vector): Particle {
@@ -52,6 +47,7 @@ data class Particle(
             Kn = Kn,
             gamma = gamma,
             pressure = pressure,
+            previousAcceleration = previousAcceleration,
         )
     }
 

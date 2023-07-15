@@ -5,81 +5,142 @@ import system.CannonballSystem
 
 @Command(name = "Main", mixinStandardHelpOptions = true, version = ["1.0"])
 class Main : Runnable {
-    @Option(names = ["-n"], description = ["Number of particles"], required = false)
-    var nParticles: Int = 2000
-
-    @Option(names = ["-pGen"], description = ["True to run only generating particles"], required = false)
-    var pGen: Boolean = false
-
-    @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
-    var particleFile: String = ""
-
-    @Option(names = ["-o"], description = ["Output file name"], required = false)
-    var outputFileName: String = "output.xyz"
 
     @Option(names = ["-dt"], description = ["Time delta in seconds"], required = false)
     var timeDelta: Double = 0.00005
 
-    @Option(names = ["-r"], description = ["Number of repetitions"], required = false)
-    var repetitions: Int = 1
+    @Option(names = ["-dt2"], description = ["Save time delta in seconds"], required = false)
+    var saveTimeDelta: Double = 0.0003
 
-    @Option(names = ["-ct"], description = ["Cut time after equilibrium in seconds"], required = false)
-    var cutTime: Int = 5
+    @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
+    var cutoffTime: Double = 5.0
 
-    @Option(names = ["-bm"], description = ["Bullet mass in kg"], required = false)
-    var bulletMass: Double = 17.5
+    @Option(names = ["-o"], description = ["Output file name"], required = false)
+    var outputFileName: String = defaultOutputFile()
 
-    @Option(names = ["-bd"], description = ["Bullet diameter mm"], required = false)
-    var bulletDiameter: Double = 175.0
+    @Option(names = ["-pFile"], description = ["File path to load particles from it"], required = false)
+    var pFile: String = ""
 
-    @Option(names = ["-bv"], description = ["Bullet velocity in m/s"], required = false)
-    var bulletInitialVelocity: Double = 10.0
+    @Option(names = ["-pGen"], description = ["True to run with particle generator"], required = false)
+    var pGen: Boolean = true
 
-    @Option(names = ["-bva"], description = ["Bullet velocity angle in radians"], required = false)
-    var bulletInitialVelocityAngle: Double = Math.toRadians(90.0) // 90 degrees
+    @Option(names = ["-pStableTime"], description = ["Time to cut for particles stabilization"], required = false)
+    var pStabilizationTime: Double = 0.65
+
+    @Option(
+        names = ["-pStableEnergy"],
+        description = ["Kinetic energy to cut for particles stabilization"],
+        required = false
+    )
+    var pStabilizationEnergy: Double = 1E-3
+
+    @Option(names = ["-n"], description = ["Number of particles"], required = false)
+    var nParticles: Int = 2000
+
+    @Option(names = ["-pMass"], description = ["Mass of the lowest radius particle"], required = false)
+    var pMass: Double = 0.085
 
     @Option(names = ["-pld"], description = ["Lower bound of particle's diameter"], required = false)
-    var lowDiam: Double = 0.015
+    var pLowDiam: Double = 0.015
 
     @Option(names = ["-pud"], description = ["Upper bound of particle's diameter"], required = false)
-    var upperDiam: Double = 0.025
+    var pUpperDiam: Double = 0.03
 
-    @Option(names = ["-pm"], description = ["Particle mass in kg"], required = false)
-    var particleMass: Double = 0.025
+    @Option(names = ["-pKn"], description = ["Particles Kn variable"], required = false)
+    var pKn: Double = 2E6
 
-    @Option(names = ["-bxs"], description = ["Box side length in meters"], required = false)
-    var boxSideLength: Double = 0.445
+    @Option(names = ["-pKt"], description = ["Particles Kt variable"], required = false)
+    var pKt: Double = 2 * pKn
 
-    @Option(names = ["-bxh"], description = ["Box height in meters"], required = false)
+    @Option(names = ["-pGamma"], description = ["Particles gamma variable"], required = false)
+    var pGamma: Double = 70.0
+
+    @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
+    var wallKn: Double = 6E2
+
+    @Option(names = ["-wallKt"], description = ["Walls Kt variable"], required = false)
+    var wallKt: Double = 2 * wallKn
+
+    @Option(names = ["-wallGamma"], description = ["Particles wall variable"], required = false)
+    var wallGamma: Double = 20.0
+
+    @Option(names = ["-ballMass"], description = ["Mass of the lowest radius particle"], required = false)
+    var ballMass: Double = 17.5
+
+    @Option(names = ["-ballKn"], description = ["Cannonball Kn variable"], required = false)
+    var ballKn: Double = pKn
+
+    @Option(names = ["-ballKt"], description = ["Cannonball Kt variable"], required = false)
+    var ballKt: Double = 2 * pKn
+
+    @Option(names = ["-ballGamma"], description = ["Cannonball gamma variable"], required = false)
+    var ballGamma: Double = 70.0
+
+    @Option(names = ["-ballAngle"], description = ["Cannonball angle variable"], required = false)
+    var ballAngle: Double = 90.0
+
+    @Option(names = ["-ballVelocity"], description = ["Cannonball velocity variable"], required = false)
+    var ballVelocity: Double = 70.0
+
+    @Option(names = ["-ballDiameter"], description = ["Cannonball diameter variable"], required = false)
+    var ballDiameter: Double = 175e-3
+
+    @Option(names = ["-ballHeight"], description = ["Cannonball height variable"], required = false)
+    var ballHeight: Double = 0.6
+
+    @Option(names = ["-bw"], description = ["Box width in meters"], required = false)
+    var boxWidth: Double = 0.4
+
+    @Option(names = ["-bh"], description = ["Box height in meters"], required = false)
     var boxHeight: Double = 1.0
 
-    @Option(names = ["-fr"], description = ["Friction coefficient"], required = false)
-    var frictionCoefficient: Double = 0.4
-
     override fun run() {
-        val gammas = arrayOf(10.0, 15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0)
-        for (gamma in gammas) {
-            val cannonballSystem = CannonballSystem(
-                timeDelta = timeDelta,
-                boxHeight = boxHeight,
-                boxWidth = boxSideLength,
-                numberOfParticles = nParticles,
-                minParticleDiameter = lowDiam,
-                maxParticleDiameter = upperDiam,
-                particleMass = particleMass,
-                cannonballAngle = bulletInitialVelocityAngle,
-                cannonballVelocity = bulletInitialVelocity,
-                cannonballMass = bulletMass,
-                cannonballRadius = bulletDiameter / 2 / 1000,
-                pFile = particleFile,
-                pGamma = gamma
-            )
+        val cannonballSystem = CannonballSystem(
+            timeDelta = timeDelta,
+            saveTimeDelta = saveTimeDelta,
+            cutoffTime = cutoffTime,
+            boxHeight = boxHeight,
+            boxWidth = boxWidth,
+            numberOfParticles = nParticles,
+            minParticleDiameter = pLowDiam,
+            maxParticleDiameter = pUpperDiam,
+            lowParticleMass = pMass,
+            pKn = pKn,
+            pKt = pKt,
+            pGamma = pGamma,
+            wallKn = wallKn,
+            wallKt = wallKt,
+            wallGamma = wallGamma,
+            cannonballKn = ballKn,
+            cannonballKt = ballKt,
+            cannonballGamma = ballGamma,
+            cannonballAngle = ballAngle,
+            cannonballVelocity = ballVelocity,
+            cannonballMass = ballMass,
+            cannonballDiameter = ballDiameter,
+            cannonballHeight = ballHeight,
+            pFile = pFile,
+            outputFile = outputFileName,
+            pStableEnergy = pStabilizationEnergy,
+            pStableTime = pStabilizationTime,
+        )
 
-            cannonballSystem.run()
-        }
+        cannonballSystem.run()
     }
 
-
+    private fun defaultOutputFile(): String {
+        return "nP:$nParticles" +
+                "_pMass:$pMass" +
+                "_minDiameter:$pLowDiam" +
+                "_maxDiameter:$pUpperDiam" +
+                "_angle:$ballAngle" +
+                "_pKt:$pKt" +
+                "_pGamma:$pGamma" +
+                "_cutoff:$cutoffTime" +
+                "_dT:$timeDelta" +
+                "_dT2:$saveTimeDelta" +
+                "_wallGamma${wallGamma}"
+    }
 }
 
 fun main(args: Array<String>) {

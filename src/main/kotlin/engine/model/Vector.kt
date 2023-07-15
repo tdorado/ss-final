@@ -31,9 +31,7 @@ class Vector(var x: Double = 0.0, var y: Double = 0.0, var z: Double = 0.0) : Se
 
         if (x != other.x) return false
         if (y != other.y) return false
-        if (z != other.z) return false
-
-        return true
+        return z == other.z
     }
 
     override fun hashCode(): Int {

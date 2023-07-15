@@ -10,12 +10,8 @@ import java.io.FileWriter
 import java.io.IOException
 
 
-class CannonballFileGenerator(filename: String) : FileGenerator {
+class CannonballFileGenerator(folder: String, filename: String) : FileGenerator {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
-    companion object {
-        private const val folder = "out/runs/"
-    }
 
     private val bw: BufferedWriter
     private lateinit var fw: FileWriter
