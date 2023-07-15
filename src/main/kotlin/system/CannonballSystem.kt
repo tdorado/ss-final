@@ -39,18 +39,19 @@ class CannonballSystem(
     val outputFile: String,
     val pStableEnergy: Double,
     val pStableTime: Double,
+    val gravity: Double,
 ) {
 
     fun run() {
+        val boxWalls = createBoxWalls()
         val boxParticles: Set<Particle> = if (pFile.isNotBlank()) {
             Particle.loadParticlesFromFile("out/init-particles/$pFile")
         } else {
-            runParticlesStabilization()
+            runParticlesStabilization(boxWalls)
         }
         val cannonballParticle = createCannonBall(getHighestParticle(boxParticles))
-        val boxWalls = createBoxWalls()
         val particles: Set<Particle> = boxParticles + cannonballParticle
-        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
+        val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("out/runs/", outputFile)
         val cutCondition = TimeCutCondition(cutoffTime)
@@ -63,13 +64,12 @@ class CannonballSystem(
         return (particle.maxOfOrNull { it.position.z } ?: 0.0).plus(cannonballHeight)
     }
 
-    private fun runParticlesStabilization(): Set<Particle> {
-        val boxWalls = createBoxWalls()
+    private fun runParticlesStabilization(boxWalls: Set<Wall> ): Set<Particle> {
         val particles = createBoxParticles(boxWalls)
         if (pGenSave) {
             Particle.saveParticlesToFile(particles, "out/init-particles/particles-$outputFile")
         }
-        val cannonballForcesCalculator = CannonballForcesCalculator(boxWalls)
+        val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile")
         val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime)

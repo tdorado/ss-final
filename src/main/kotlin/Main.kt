@@ -94,10 +94,15 @@ class Main : Runnable {
     @Option(names = ["-bh"], description = ["Box height in meters"], required = false)
     var boxHeight: Double = 1.0
 
+    @Option(names = ["-g"], description = ["Gravity in m/s"], required = false)
+    var gravity: Double = 9.81
+
     override fun run() {
         if (outputFileName == ""){
             outputFileName = defaultOutputFile()
         }
+
+        outputFileName = "tests"
 
         val cannonballSystem = CannonballSystem(
             timeDelta = timeDelta,
@@ -128,6 +133,7 @@ class Main : Runnable {
             outputFile = outputFileName,
             pStableEnergy = pStabilizationEnergy,
             pStableTime = pStabilizationTime,
+            gravity = gravity,
         )
 
         cannonballSystem.run()

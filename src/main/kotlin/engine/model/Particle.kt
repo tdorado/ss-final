@@ -29,6 +29,12 @@ data class Particle(
         return radius + otherRadius - distance
     }
 
+    fun setPressure(totalForces: Vector) {
+        val totalForceMagnitude = totalForces.magnitude
+        val surfaceArea = 4 * Math.PI * radius.pow(2.0)
+        pressure = totalForceMagnitude / surfaceArea
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

@@ -23,8 +23,6 @@ class BeemanIntegrator(
                 val previousParticleStep = particle.copy(position = previousPosition, velocity = previousVelocity)
                 val previousAcceleration = getForces(previousParticleStep, particles) / particle.mass
                 particle.previousAcceleration = previousAcceleration
-            } else {
-                particle.previousAcceleration = Vector()
             }
         }
     }
@@ -37,7 +35,7 @@ class BeemanIntegrator(
         val previousAcceleration = particle.previousAcceleration
 
         // Position update
-        val newPosition = particle.position +
+        val nextPosition = particle.position +
                 particle.velocity * timeDelta +
                 currentAcceleration * (2.0 / 3.0) * timeDelta.pow(2) -
                 previousAcceleration * (1.0 / 3.0) * timeDelta.pow(2)
@@ -48,19 +46,19 @@ class BeemanIntegrator(
                 previousAcceleration * (1.0 / 2.0) * timeDelta
 
         // Calculate new acceleration using predicted velocity
-        val newParticle = particle.copy(velocity = predictedVelocity, position = newPosition)
-        val newAcceleration = getForces(newParticle, particles) / particle.mass
+        val predictedParticle = particle.copy(velocity = predictedVelocity, position = nextPosition)
+        val nextAcceleration = getForces(predictedParticle, particles) / particle.mass
 
         // Correct the velocity with the predicted acceleration
         val newVelocity = particle.velocity +
-                newAcceleration * (1.0 / 3.0) * timeDelta +
+                nextAcceleration * (1.0 / 3.0) * timeDelta +
                 currentAcceleration * (5.0 / 6.0) * timeDelta -
                 previousAcceleration * (1.0 / 6.0) * timeDelta
 
         // Store the current acceleration as the "previousAcceleration" for the next timestep
         particle.previousAcceleration = currentAcceleration
 
-        return particle.copy(position = newPosition, velocity = newVelocity)
+        return particle.copy(position = nextPosition, velocity = newVelocity)
     }
 
 }
