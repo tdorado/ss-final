@@ -1,4 +1,4 @@
-package system.particle_generators
+package system.generator
 
 data class ParticleMassGenerator(val lowDiameter: Double, val lowMass: Double) {
 

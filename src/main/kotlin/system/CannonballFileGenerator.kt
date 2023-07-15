@@ -22,11 +22,15 @@ class CannonballFileGenerator(folder: String, filename: String) : FileGenerator 
             if (!directory.exists()) {
                 directory.mkdir()
             }
-            val pw = FileWriter("$folder$filename.xyz")
-            pw.close()
-            fw = FileWriter("$folder$filename.xyz", false)
+            var file = File("$folder$filename.xyz")
+            if (file.exists()) {
+                file.renameTo(File("$folder$filename.old.xyz"))
+                logger.info("Existing file renamed to: $folder$filename.old")
+            }
+            file = File("$folder$filename.xyz")
+            fw = FileWriter(file, false)
         } catch (e: IOException) {
-            logger.error("Error while creating file: $e")
+            logger.error("Error while creating or renaming file: $e")
         }
         bw = BufferedWriter(fw)
     }

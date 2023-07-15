@@ -1,4 +1,4 @@
-package system.particle_generators
+package system.generator
 
 import engine.model.Particle
 import engine.model.Vector
@@ -14,8 +14,8 @@ class CannonballParticleGenerator(
     private val boxSize: Vector,
     private val numberOfParticles: Int,
     private val particleDiameterGenerator: ParticleDiameterGenerator,
-    private val Kn: Double,
-    private val Kt: Double,
+    private val kn: Double,
+    private val kt: Double,
     private val gamma: Double,
     private val walls: Set<Wall>,
     private val particleMassGenerator: ParticleMassGenerator = ParticleMassGenerator(
@@ -23,23 +23,20 @@ class CannonballParticleGenerator(
         lowParticleMass
     )
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
     private val particles = mutableSetOf<Particle>()
-    private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
-    private var startTime = System.currentTimeMillis()
     private var random = Random
 
     fun generateParticles(shouldLog: Boolean = false): Set<Particle> {
-        startTime = System.currentTimeMillis()
-
         val currentDateTime = LocalDateTime.now()
         val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         logger.info("[$formattedDateTime] Generating particles")
-        var particleCount = 1 // Empieza en 1 para que la bala de cañón sea la 0
+        var particleCount = 1
 
         var zPosition = 0.0
         var overlapCount = 0
         while (particles.size < numberOfParticles) {
-            val radius = particleDiameterGenerator.getParticleDiameter() / 2 // Radio = diámetro / 2
+            val radius = particleDiameterGenerator.getParticleDiameter() / 2
 
             val position = Vector(
                 random.nextDouble(radius, boxSize.x - radius),
@@ -59,8 +56,8 @@ class CannonballParticleGenerator(
                         velocity,
                         radius,
                         particleMassGenerator.getParticleMass(radius * 2),
-                        Kt,
-                        Kn,
+                        kt,
+                        kn,
                         gamma,
                     )
                 )

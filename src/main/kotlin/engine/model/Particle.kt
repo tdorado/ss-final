@@ -1,5 +1,7 @@
 package engine.model
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.*
 import kotlin.math.pow
 
@@ -37,8 +39,15 @@ data class Particle(
     }
 
     companion object {
+        private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
         fun saveParticlesToFile(particles: Set<Particle>, fileName: String) {
-            ObjectOutputStream(FileOutputStream("$fileName.dat")).use { it.writeObject(particles) }
+            val file = File("$fileName.dat")
+            if (file.exists()) {
+                file.renameTo(File("$fileName.old.dat"))
+                logger.info("Existing file renamed to: $fileName.old.dat")
+            }
+            ObjectOutputStream(FileOutputStream(file)).use { it.writeObject(particles) }
         }
 
         fun loadParticlesFromFile(fileName: String): Set<Particle> {

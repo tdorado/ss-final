@@ -5,8 +5,8 @@ import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
 import engine.model.Particle
 import engine.model.Vector
-import system.particle_generators.CannonballParticleGenerator
-import system.particle_generators.ParticleDiameterGenerator
+import system.generator.CannonballParticleGenerator
+import system.generator.ParticleDiameterGenerator
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -40,7 +40,6 @@ class CannonballSystem(
     val pStableEnergy: Double,
     val pStableTime: Double,
 ) {
-    private val boxSizeInMeters = Vector(boxWidth, boxWidth, boxHeight)
 
     fun run() {
         val boxParticles: Set<Particle> = if (pFile.isNotBlank()) {
@@ -104,9 +103,10 @@ class CannonballSystem(
 
     private fun createBoxParticles(walls: Set<Wall>): Set<Particle> {
         val particlesDiameterGenerator = ParticleDiameterGenerator(minParticleDiameter, maxParticleDiameter)
+        val boxSize = Vector(boxWidth, boxWidth, boxHeight)
         val particleGenerator = CannonballParticleGenerator(
             lowParticleMass,
-            boxSizeInMeters,
+            boxSize,
             numberOfParticles,
             particlesDiameterGenerator,
             pKn,

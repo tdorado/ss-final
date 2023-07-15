@@ -10,17 +10,15 @@ class KineticEnergyAndTimeCutCondition(
     private val energyThreshold: Double,
     timeToCut: Double
 ) : TimeCutCondition(timeToCut) {
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val lastTenKineticEnergies = mutableListOf<Double>()
     private val listSize = 100
     private val minTime = 0.4
 
-    val lastTenKineticEnergies = mutableListOf<Double>()
     override fun isFinished(particles: Set<Particle>, time: Double): Boolean {
         if (super.isFinished(particles, time)) {
             return true
         }
         val kineticEnergy = particles.map { it.getKineticEnergy() }.reduce { acc, kineticEnergy -> acc + kineticEnergy }
-        logger.info("Current kinetic energy: $kineticEnergy")
 
         if (lastTenKineticEnergies.size < listSize) {
             lastTenKineticEnergies.add(kineticEnergy)
@@ -37,8 +35,6 @@ class KineticEnergyAndTimeCutCondition(
 
     private fun shouldStopByVariationOfLastKs(actualK: Double): Boolean {
         val average = lastTenKineticEnergies.sum() / listSize
-        logger.info("avg $average")
-
         return abs(average - actualK) < energyThreshold
     }
 }

@@ -29,7 +29,7 @@ class Main : Runnable {
 
     @Option(
         names = ["-pStableEnergy"],
-        description = ["Kinetic energy to cut for particles stabilization"],
+        description = ["Kinetic energy threshold to cut for particles stabilization"],
         required = false
     )
     var pStabilizationEnergy: Double = 1E-3
@@ -83,7 +83,7 @@ class Main : Runnable {
     var ballVelocity: Double = 20.0
 
     @Option(names = ["-ballDiameter"], description = ["Cannonball diameter variable"], required = false)
-    var ballDiameter: Double = 175e-3
+    var ballDiameter: Double = 0.175
 
     @Option(names = ["-ballHeight"], description = ["Cannonball height variable"], required = false)
     var ballHeight: Double = 0.1

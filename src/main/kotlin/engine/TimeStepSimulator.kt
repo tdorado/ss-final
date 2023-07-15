@@ -8,7 +8,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import system.particle_generators.CannonballParticleGenerator
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -23,7 +22,7 @@ class TimeStepSimulator(
     private var time: Double
     private var timeToSave: Double
 
-    private val logger: Logger = LoggerFactory.getLogger(CannonballParticleGenerator::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     init {
         timeToSave = saveTimeDelta

@@ -1,4 +1,4 @@
-package system.particle_generators
+package system.generator
 
 import kotlin.random.Random
 
