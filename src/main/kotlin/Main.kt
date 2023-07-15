@@ -57,22 +57,26 @@ class Main : Runnable {
     var frictionCoefficient: Double = 0.4
 
     override fun run() {
-        val cannonballSystem = CannonballSystem(
-            timeDelta = timeDelta,
-            boxHeight = boxHeight,
-            boxWidth = boxSideLength,
-            numberOfParticles = nParticles,
-            minParticleDiameter = lowDiam,
-            maxParticleDiameter = upperDiam,
-            particleMass = particleMass,
-            cannonballAngle = bulletInitialVelocityAngle,
-            cannonballVelocity = bulletInitialVelocity,
-            cannonballMass = bulletMass,
-            cannonballRadius = bulletDiameter / 2 / 1000,
-            pFile = particleFile
-        )
+        val gammas = arrayOf(20.0)
+        for (gamma in gammas) {
+            val cannonballSystem = CannonballSystem(
+                timeDelta = timeDelta,
+                boxHeight = boxHeight,
+                boxWidth = boxSideLength,
+                numberOfParticles = nParticles,
+                minParticleDiameter = lowDiam,
+                maxParticleDiameter = upperDiam,
+                particleMass = particleMass,
+                cannonballAngle = bulletInitialVelocityAngle,
+                cannonballVelocity = bulletInitialVelocity,
+                cannonballMass = bulletMass,
+                cannonballRadius = bulletDiameter / 2 / 1000,
+                pFile = particleFile,
+                pGamma = gamma
+            )
 
-        cannonballSystem.run()
+            cannonballSystem.run()
+        }
     }
 
 

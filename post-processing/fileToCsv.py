@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Nombre del archivo a leer
-archivo = '../out/Stabilization_dt{nP:2000_pMass:0.025_minDiameter:0.015_maxDiameter:0.025_angle:1.5707963267948966_pKt:2000000.0_pKn:1000000.0_pGamma:10.0_cutoffTime:1.0_TimeDelta:0.005_timeDelta:5.0E-5_wallGamma100.0_wallKn500.0}.xyz'
+archivo = '../out/Stabilization_dtnP:2000_pMass:0.025_minDiameter:0.015_maxDiameter:0.025_angle:1.5707963267948966_pKt:2000000.0_pKn:1000000.0_pGamma:50.0_cutoffTime:1.0_TimeDelta:0.001_timeDelta:5.0E-5_wallGamma50.0_wallKn1000.0_parallel.xyz'
 csv_salida = 'salida.csv'
 
 # Abre el archivo

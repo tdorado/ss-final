@@ -14,10 +14,13 @@ data class Particle(
     val Kn: Double,
     val gamma: Double,
     var pressure: Double = 0.0,
+    var firstPosition: Vector? = position
 ) : Serializable {
     fun overlapsWith(otherPosition: Vector, otherRadius: Double): Boolean {
         return position.distance(otherPosition) < (radius + otherRadius)
     }
+
+    fun resetParticle(): Particle = copy(position = firstPosition!!, velocity = Vector())
 
     fun getKineticEnergy(): Double = 0.5 * mass * velocity.magnitude.pow(2.0)
 
