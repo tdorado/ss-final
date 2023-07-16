@@ -45,14 +45,14 @@ class CannonballForcesCalculator(private val gravity: Double, private val walls:
         for (wall in walls) {
             val overlapSize = calculateOverlapSizeWithWall(particle, wall)
             if (overlapSize > 0.0) {
-                val relativeVelocity = particle.velocity - wall.normal * particle.velocity.dotProduct(wall.normal)
+                val normalRelativeVelocity = particle.velocity.dotProduct(wall.normal)
+                val tangentialRelativeVelocity = particle.velocity - wall.normal * normalRelativeVelocity
 
-                val normalForceMagnitude =
-                    -wall.kn * overlapSize - wall.gamma * relativeVelocity.dotProduct(wall.normal)
-                val tangentialForceMagnitude = wall.kt * overlapSize
+                val normalForceMagnitude = -wall.kn * overlapSize - wall.gamma * normalRelativeVelocity
+                val tangentialForceMagnitude = -wall.kt * overlapSize
 
                 val normalForceValue = -wall.normal * normalForceMagnitude
-                val tangentialForceValue = -relativeVelocity.normalize() * tangentialForceMagnitude
+                val tangentialForceValue = tangentialRelativeVelocity.normalize() * tangentialForceMagnitude
 
                 wallForce += normalForceValue + tangentialForceValue
             }
