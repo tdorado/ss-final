@@ -6,6 +6,7 @@ REPETITIONS = 5
 
 def execute_variation(variation_string, variation_name):
     for i in tqdm(range(REPETITIONS)):
+        print("Started simulating variation: " + variation_name + "...")
         cmd = f"java -jar build/libs/ss-final-1.0.jar -o {variation_name}_rep_{i} {variation_string}"
         os.system(cmd)
 
@@ -15,7 +16,7 @@ def execute_dimeters_variation():
         execute_variation(f"-pld {diameters_range[0]} -pud {diameters_range[1]}", diameters_range[2])
 
 def execute_gammas_variation():
-    params = [[10.0, "g_10"], [20.0, "g_20"], [30.0, "g_30"],[40.0, "g_40"],[50.0, "g_50"],[60.0, "g_60"],[70.0, "g_70"],[80.0, "g_80"],[90.0, "g_90"],[100.0, "g_100"]]
+    params = [ [20.0, "g_20"], [30.0, "g_30"],[40.0, "g_40"],[50.0, "g_50"],[60.0, "g_60"],[70.0, "g_70"],[80.0, "g_80"],[90.0, "g_90"],[100.0, "g_100"]]
     for gamma in params:
         execute_variation(f"-pGamma {gamma[0]}",  gamma[1])
 
