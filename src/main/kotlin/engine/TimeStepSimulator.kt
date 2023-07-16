@@ -16,6 +16,7 @@ class TimeStepSimulator(
     private val integrator: Integrator,
     private val fileGenerator: FileGenerator,
     private var particles: Set<Particle>,
+    private val name: String,
 ) {
     private val logger = KotlinLogging.logger {}
     private var time: Double
@@ -30,7 +31,7 @@ class TimeStepSimulator(
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             if (shouldLog) {
-                logger.info("New iteration for simulation with time $time")
+                logger.info("$name: New iteration for simulation with time $time")
             }
 
             val newParticles = runBlocking {
@@ -49,7 +50,7 @@ class TimeStepSimulator(
             particles = newParticles
         }
         if (shouldLog) {
-            logger.info("Simulation finished")
+            logger.info("$name: Simulation finished")
         }
         if (closeFile) {
             fileGenerator.closeFile()

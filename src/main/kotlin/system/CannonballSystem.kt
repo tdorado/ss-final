@@ -57,7 +57,7 @@ class CannonballSystem(
         val cannonballFileGenerator = CannonballFileGenerator("out/runs/", outputFile, shouldLog)
         val cutCondition = KineticEnergyAndTimeCutCondition(energyThreshold, cutoffTime, shouldLog)
         val simulator =
-            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
+            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles, "Cannonball")
         simulator.simulate(true, shouldLog)
     }
 
@@ -75,7 +75,7 @@ class CannonballSystem(
         val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile", shouldLog)
         val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime, shouldLog)
         val simulator =
-            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
+            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles,"Stabilization")
         val stabilizedParticles = simulator.simulate(true, shouldLog)
         if (pGenSave) {
             Particle.saveParticlesToFile(particles, "out/init-particles/stable-particles-$outputFile", shouldLog)
