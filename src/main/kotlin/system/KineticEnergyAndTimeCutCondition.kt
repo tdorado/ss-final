@@ -20,7 +20,9 @@ class KineticEnergyAndTimeCutCondition(
             return true
         }
         val kineticEnergy = particles.map { it.getKineticEnergy() }.reduce { acc, kineticEnergy -> acc + kineticEnergy }
-
+        if (shouldLog) {
+            logger.info("Current kinetic energy: $kineticEnergy")
+        }
         if (lastTenKineticEnergies.size < averageSize) {
             lastTenKineticEnergies.add(kineticEnergy)
         } else if (lastTenKineticEnergies.size == averageSize) {
