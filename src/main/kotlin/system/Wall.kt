@@ -1,6 +1,5 @@
 package system
 
-import engine.model.Particle
 import engine.model.Vector
 
 class Wall(

@@ -3,12 +3,10 @@ package system
 import engine.ForcesCalculator
 import engine.model.Particle
 import engine.model.Vector
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import kotlin.math.pow
+import mu.KotlinLogging
 
 class CannonballForcesCalculator(private val gravity: Double, private val walls: Set<Wall>) : ForcesCalculator {
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = KotlinLogging.logger {}
 
     private fun calculateGravityForce(particle: Particle): Vector {
         return Vector(0.0, 0.0, -particle.mass * gravity)
@@ -67,7 +65,6 @@ class CannonballForcesCalculator(private val gravity: Double, private val walls:
         val distanceToWall = (particle.position - wall.position).dotProduct(wall.normal)
         return particle.radius - distanceToWall
     }
-
 
 
     override fun getForces(particle: Particle, neighbours: Set<Particle>): Vector {

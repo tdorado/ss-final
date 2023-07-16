@@ -15,6 +15,9 @@ class Main : Runnable {
     @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
     var cutoffTime: Double = 3.0
 
+    @Option(names = ["-energyThreshold"], description = ["Energy threshold to stop cannonball simulation"], required = false)
+    var ballEnergyThreshold: Double = 1E-3
+
     @Option(names = ["-o"], description = ["Output file name"], required = false)
     var outputFileName: String = ""
 
@@ -97,8 +100,11 @@ class Main : Runnable {
     @Option(names = ["-g"], description = ["Gravity in m/s"], required = false)
     var gravity: Double = 9.81
 
+    @Option(names = ["-logs"], description = ["True if logs are activated"], required = false)
+    var shouldLog: Boolean = true
+
     override fun run() {
-        if (outputFileName == ""){
+        if (outputFileName == "") {
             outputFileName = defaultOutputFile()
         }
 
@@ -106,6 +112,7 @@ class Main : Runnable {
             timeDelta = timeDelta,
             saveTimeDelta = saveTimeDelta,
             cutoffTime = cutoffTime,
+            energyThreshold = ballEnergyThreshold,
             boxHeight = boxHeight,
             boxWidth = boxWidth,
             numberOfParticles = nParticles,
@@ -132,6 +139,7 @@ class Main : Runnable {
             pStableEnergy = pStabilizationEnergy,
             pStableTime = pStabilizationTime,
             gravity = gravity,
+            shouldLog = shouldLog,
         )
 
         cannonballSystem.run()

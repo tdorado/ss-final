@@ -6,10 +6,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import mu.KotlinLogging
+
 
 class TimeStepSimulator(
     private val timeDelta: Double,
@@ -19,10 +17,9 @@ class TimeStepSimulator(
     private val fileGenerator: FileGenerator,
     private var particles: Set<Particle>,
 ) {
+    private val logger = KotlinLogging.logger {}
     private var time: Double
     private var timeToSave: Double
-
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     init {
         timeToSave = saveTimeDelta
@@ -33,9 +30,7 @@ class TimeStepSimulator(
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
             if (shouldLog) {
-                val currentDateTime = LocalDateTime.now()
-                val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                logger.info("[$formattedDateTime] New iteration for simulation with time $time")
+                logger.info("New iteration for simulation with time $time")
             }
 
             val newParticles = runBlocking {
@@ -54,9 +49,7 @@ class TimeStepSimulator(
             particles = newParticles
         }
         if (shouldLog) {
-        val currentDateTime = LocalDateTime.now()
-        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Simulation finished")
+            logger.info("Simulation finished")
         }
         if (closeFile) {
             fileGenerator.closeFile()

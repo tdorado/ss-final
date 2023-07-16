@@ -13,8 +13,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.slf4j:slf4j-api:1.7.30")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("ch.qos.logback:logback-classic:1.2.6")
     implementation("info.picocli:picocli:4.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
 }

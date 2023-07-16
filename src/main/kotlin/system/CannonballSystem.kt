@@ -1,6 +1,5 @@
 package system
 
-import engine.TimeCutCondition
 import engine.TimeStepSimulator
 import engine.integrators.BeemanIntegrator
 import engine.model.Particle
@@ -14,6 +13,7 @@ class CannonballSystem(
     val timeDelta: Double,
     val saveTimeDelta: Double,
     val cutoffTime: Double,
+    val energyThreshold: Double,
     val boxHeight: Double,
     val boxWidth: Double,
     val numberOfParticles: Int,
@@ -40,6 +40,7 @@ class CannonballSystem(
     val pStableEnergy: Double,
     val pStableTime: Double,
     val gravity: Double,
+    val shouldLog: Boolean,
 ) {
 
     fun run() {
@@ -50,34 +51,34 @@ class CannonballSystem(
             runParticlesStabilization(boxWalls)
         }
         val cannonballParticle = createCannonBall(getHighestParticle(boxParticles))
-        val particles: Set<Particle> = boxParticles + cannonballParticle
+        val particles = boxParticles + cannonballParticle
         val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
-        val cannonballFileGenerator = CannonballFileGenerator("out/runs/", outputFile)
-        val cutCondition = TimeCutCondition(cutoffTime)
+        val cannonballFileGenerator = CannonballFileGenerator("out/runs/", outputFile, shouldLog)
+        val cutCondition = KineticEnergyAndTimeCutCondition(energyThreshold, cutoffTime, shouldLog)
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
-        simulator.simulate(true)
+        simulator.simulate(true, shouldLog)
     }
 
     private fun getHighestParticle(particle: Set<Particle>): Double {
         return (particle.maxOfOrNull { it.position.z } ?: 0.0).plus(cannonballHeight)
     }
 
-    private fun runParticlesStabilization(boxWalls: Set<Wall> ): Set<Particle> {
+    private fun runParticlesStabilization(boxWalls: Set<Wall>): Set<Particle> {
         val particles = createBoxParticles(boxWalls)
         if (pGenSave) {
-            Particle.saveParticlesToFile(particles, "out/init-particles/particles-$outputFile")
+            Particle.saveParticlesToFile(particles, "out/init-particles/particles-$outputFile", shouldLog)
         }
         val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
-        val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile")
-        val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime)
+        val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile", shouldLog)
+        val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime, shouldLog)
         val simulator =
             TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles)
-        val stabilizedParticles = simulator.simulate(true)
+        val stabilizedParticles = simulator.simulate(true, shouldLog)
         if (pGenSave) {
-            Particle.saveParticlesToFile(particles, "out/init-particles/stable-particles-$outputFile")
+            Particle.saveParticlesToFile(particles, "out/init-particles/stable-particles-$outputFile", shouldLog)
         }
 
         return stabilizedParticles
@@ -114,7 +115,7 @@ class CannonballSystem(
             pGamma,
             walls
         )
-        return particleGenerator.generateParticles()
+        return particleGenerator.generateParticles(shouldLog)
     }
 
     private fun createBoxWalls(): Set<Wall> {

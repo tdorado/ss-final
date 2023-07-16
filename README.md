@@ -80,6 +80,7 @@ Here are the parameters detailed:
 - `-bw <value>`: Box width in meters.
 - `-bh <value>`: Box height in meters.
 - `-g <value>`: Gravity in m/s^2.
+- `-logs <value>`: True if logs activated.
 
 ### Example Usage
 

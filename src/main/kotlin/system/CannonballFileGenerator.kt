@@ -2,8 +2,7 @@ package system
 
 import engine.FileGenerator
 import engine.model.Particle
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -11,7 +10,7 @@ import java.io.IOException
 
 
 class CannonballFileGenerator(folder: String, filename: String, shouldLog: Boolean = false) : FileGenerator {
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = KotlinLogging.logger {}
 
     private val bw: BufferedWriter
     private lateinit var fw: FileWriter

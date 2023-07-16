@@ -1,7 +1,6 @@
 package engine.model
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.io.*
 import kotlin.math.pow
 
@@ -45,7 +44,7 @@ data class Particle(
     }
 
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+        private val logger = KotlinLogging.logger {}
 
         fun saveParticlesToFile(particles: Set<Particle>, fileName: String, shouldLog: Boolean = false) {
             val file = File("$fileName.dat")

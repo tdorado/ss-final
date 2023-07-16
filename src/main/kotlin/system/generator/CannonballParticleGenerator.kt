@@ -2,11 +2,8 @@ package system.generator
 
 import engine.model.Particle
 import engine.model.Vector
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import system.Wall
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 class CannonballParticleGenerator(
@@ -23,15 +20,13 @@ class CannonballParticleGenerator(
         lowParticleMass
     )
 ) {
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+    private val logger = KotlinLogging.logger {}
     private val particles = mutableSetOf<Particle>()
     private var random = Random
 
     fun generateParticles(shouldLog: Boolean = false): Set<Particle> {
         if (shouldLog) {
-            val currentDateTime = LocalDateTime.now()
-            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] Generating particles")
+            logger.info("Generating particles")
         }
         var particleCount = 1
 
