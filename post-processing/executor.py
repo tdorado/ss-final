@@ -7,7 +7,6 @@ REPETITIONS = 5
 def execute_variation(variation_string, variation_name):
     for i in tqdm(range(REPETITIONS)):
         cmd = f"java -jar build/libs/ss-final-1.0.jar -o {variation_name}_rep_{i} {variation_string}"
-        print(cmd)
         os.system(cmd)
 
 def execute_dimeters_variation():
