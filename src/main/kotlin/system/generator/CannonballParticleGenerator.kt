@@ -28,9 +28,11 @@ class CannonballParticleGenerator(
     private var random = Random
 
     fun generateParticles(shouldLog: Boolean = false): Set<Particle> {
-        val currentDateTime = LocalDateTime.now()
-        val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        logger.info("[$formattedDateTime] Generating particles")
+        if (shouldLog) {
+            val currentDateTime = LocalDateTime.now()
+            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            logger.info("[$formattedDateTime] Generating particles")
+        }
         var particleCount = 1
 
         var zPosition = 0.0

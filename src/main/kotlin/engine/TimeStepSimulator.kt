@@ -29,12 +29,14 @@ class TimeStepSimulator(
         time = 0.0
     }
 
-    fun simulate(closeFile: Boolean): Set<Particle> {
+    fun simulate(closeFile: Boolean, shouldLog: Boolean = false): Set<Particle> {
         fileGenerator.addToFile(particles, time)
         while (!cutCondition.isFinished(particles, time)) {
-            val currentDateTime = LocalDateTime.now()
-            val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            logger.info("[$formattedDateTime] New iteration for simulation with time $time")
+            if (shouldLog) {
+                val currentDateTime = LocalDateTime.now()
+                val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                logger.info("[$formattedDateTime] New iteration for simulation with time $time")
+            }
 
             val newParticles = runBlocking {
                 particles.map { particle ->
@@ -51,9 +53,11 @@ class TimeStepSimulator(
             }
             particles = newParticles
         }
+        if (shouldLog) {
         val currentDateTime = LocalDateTime.now()
         val formattedDateTime = currentDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        logger.info("[$formattedDateTime] Simulation finished")
+            logger.info("[$formattedDateTime] Simulation finished")
+        }
         if (closeFile) {
             fileGenerator.closeFile()
         }

@@ -11,10 +11,10 @@ Ensure you have Java 17 and Python installed on your system. If you don't, you c
 
 Make sure to set Java 17 as your default Java Development Kit.
 
-Also, ensure to have the Python dependencies installed. Navigate to the `post-processing` folder in the project and install the required Python packages with:
+Also, ensure to have the Python dependencies installed. To install execute:
 
 ```
-pip install -r requirements.txt
+pip install -r post-processing/requirements.txt
 ```
 
 ## How to Build the Project
@@ -88,6 +88,11 @@ java -jar /build/libs/ss-final.jar -dt 0.0001 -n 1500
 ```
 
 ## How to Run the post-processing
+
+To generate the necessary files execute:
+```
+python post-processing/executor.py
+```
 
 ## Authors
 

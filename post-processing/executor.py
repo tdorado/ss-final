@@ -1,12 +1,13 @@
-import tqdm
+from tqdm import tqdm
+import os
 
 
 REPETITIONS = 5
 
 def execute_variation(variation_string, variation_name):
     for i in tqdm(range(REPETITIONS)):
+        cmd = f"java -jar build/libs/ss-final-1.0.jar -o {variation_name}_rep_{i} {variation_string}"
         print(cmd)
-        cmd = f"java -jar ../build/libs/ss-final-1.0.jar -o {variation_name}_rep_{i} {variation_string}"
         os.system(cmd)
 
 def execute_dimeters_variation():
@@ -21,11 +22,12 @@ def execute_gammas_variation():
 
 def execute_nParticles_variation():
     params = [[1500, "nParticles_1500"], [3000, "nParticles_3000"], [4500, "nParticles_4500"]]
-     for nParticle in params:
+    for nParticle in params:
         execute_variation(f"-n {nParticle[0]}",  nParticle[1])
 
 def execute_angles_variation():
-    angles = [[35.0, "bAngle_35"], [40.0, "bAngle_40"], [45.0, "bAngle_45"], [50, "bAngle_50"], [55, "bAngle_55"]]
-     for angle in params:
+    params = [[35.0, "bAngle_35"], [40.0, "bAngle_40"], [45.0, "bAngle_45"], [50, "bAngle_50"], [55, "bAngle_55"]]
+    for angle in params:
         execute_variation(f"-ballAngle {angle[0]}",  angle[1])
 
+execute_gammas_variation()

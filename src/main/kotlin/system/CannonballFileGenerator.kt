@@ -10,7 +10,7 @@ import java.io.FileWriter
 import java.io.IOException
 
 
-class CannonballFileGenerator(folder: String, filename: String) : FileGenerator {
+class CannonballFileGenerator(folder: String, filename: String, shouldLog: Boolean = false) : FileGenerator {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     private val bw: BufferedWriter
@@ -25,7 +25,9 @@ class CannonballFileGenerator(folder: String, filename: String) : FileGenerator 
             var file = File("$folder$filename.xyz")
             if (file.exists()) {
                 file.renameTo(File("$folder$filename.old.xyz"))
-                logger.info("Existing file renamed to: $folder$filename.old")
+                if (shouldLog) {
+                    logger.info("Existing file renamed to: $folder$filename.old")
+                }
             }
             file = File("$folder$filename.xyz")
             fw = FileWriter(file, false)

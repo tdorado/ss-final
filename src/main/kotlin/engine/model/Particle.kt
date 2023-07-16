@@ -47,11 +47,13 @@ data class Particle(
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-        fun saveParticlesToFile(particles: Set<Particle>, fileName: String) {
+        fun saveParticlesToFile(particles: Set<Particle>, fileName: String, shouldLog: Boolean = false) {
             val file = File("$fileName.dat")
             if (file.exists()) {
                 file.renameTo(File("$fileName.old.dat"))
-                logger.info("Existing file renamed to: $fileName.old.dat")
+                if (shouldLog) {
+                    logger.info("Existing file renamed to: $fileName.old.dat")
+                }
             }
             ObjectOutputStream(FileOutputStream(file)).use { it.writeObject(particles) }
         }
