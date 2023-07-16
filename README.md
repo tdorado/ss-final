@@ -17,21 +17,6 @@ Also, ensure to have the Python dependencies installed. To install execute:
 pip install -r post-processing/requirements.txt
 ```
 
-## How to Build the Project
-
-1. Clone the repository:
-    ```
-    git clone git@github.com:tdorado/ss-final.git
-    ```
-2. Navigate into the project folder:
-    ```
-    cd ss-final
-    ```
-3. Build the project using Gradle:
-    ```
-    ./gradlew build
-    ```
-
 ## How to Build the simulator
 
 First build the project using Gradle:
