@@ -23,14 +23,14 @@ class CannonballForcesCalculator(private val gravity: Double, private val walls:
                     val normalVector = relativePosition.normalize()
 
                     val relativeVelocity = particle.velocity - otherParticle.velocity
-                    val relativeNormalVelocity = relativeVelocity.dotProduct(normalVector)
-                    val relativeTangentVelocity = relativeVelocity - normalVector * relativeNormalVelocity
+                    val normalRelativeVelocity = relativeVelocity.dotProduct(normalVector)
+                    val tangentialRelativeVelocity = relativeVelocity - normalVector * normalRelativeVelocity
 
-                    val normalForceMagnitude = particle.kn * overlapSize + particle.gamma * relativeNormalVelocity
-                    val tangentialForceMagnitude = particle.kt * overlapSize
+                    val normalForceMagnitude = -particle.kn * overlapSize - particle.gamma * normalRelativeVelocity
+                    val tangentialForceMagnitude = -particle.kt * overlapSize
 
-                    val normalForceValue = -normalVector * normalForceMagnitude
-                    val tangentialForceValue = -relativeTangentVelocity.normalize() * tangentialForceMagnitude
+                    val normalForceValue = normalVector * normalForceMagnitude
+                    val tangentialForceValue = tangentialRelativeVelocity.normalize() * tangentialForceMagnitude
 
                     interactionForce += normalForceValue + tangentialForceValue
                 }
