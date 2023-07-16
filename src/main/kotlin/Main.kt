@@ -10,7 +10,7 @@ class Main : Runnable {
     var timeDelta: Double = 0.00005
 
     @Option(names = ["-dt2"], description = ["Save time delta in seconds"], required = false)
-    var saveTimeDelta: Double = 0.005
+    var saveTimeDelta: Double = 0.001
 
     @Option(names = ["-ct"], description = ["Simulation cutoff time in seconds"], required = false)
     var cutoffTime: Double = 3.0
