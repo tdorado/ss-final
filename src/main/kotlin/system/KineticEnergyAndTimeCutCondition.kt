@@ -47,7 +47,7 @@ class KineticEnergyAndTimeCutCondition(
     private fun shouldStopByVariationOfLastKs(actualK: Double): Boolean {
         val average = lastTenKineticEnergies.sum() / averageSize
         if (shouldLog) {
-            logger.info("Average energy: $average")
+            logger.info("Average kinetic energy: $average")
         }
         return abs(average - actualK) < energyThreshold
     }

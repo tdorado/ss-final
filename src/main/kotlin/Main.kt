@@ -148,15 +148,18 @@ class Main : Runnable {
     private fun defaultOutputFile(): String {
         return "nP:$nParticles" +
                 "_pMass:$pMass" +
-                "_minDiameter:$pLowDiam" +
-                "_maxDiameter:$pUpperDiam" +
-                "_angle:$ballAngle" +
-                "_pKt:$pKt" +
+                "_pLowDiam:$pLowDiam" +
+                "_pUpperDiam:$pUpperDiam" +
+                "_pKn:$pKn" +
                 "_pGamma:$pGamma" +
+                "_wallKn:$wallKn" +
+                "_wallGamma${wallGamma}" +
+                "_ballAngle:$ballAngle" +
+                "_ballKn:$ballKn" +
+                "_ballGamma${ballGamma}" +
                 "_cutoff:$cutoffTime" +
                 "_dT:$timeDelta" +
-                "_dT2:$saveTimeDelta" +
-                "_wallGamma${wallGamma}"
+                "_dT2:$saveTimeDelta"
     }
 }
 
