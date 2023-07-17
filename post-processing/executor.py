@@ -16,7 +16,7 @@ def execute_dimeters_variation():
         execute_variation(f"-pld {diameters_range[0]} -pud {diameters_range[1]}", diameters_range[2])
 
 def execute_gammas_variation():
-    params = [ [10.0, "g_10"], [20.0, "g_20"], [30.0, "g_30"],[40.0, "g_40"],[50.0, "g_50"],[60.0, "g_60"],[70.0, "g_70"],[80.0, "g_80"],[90.0, "g_90"],[100.0, "g_100"]]
+    params = [ [50.0, "g_50"], [75.0, "g_75"], [100.0, "g_100"],[125.0, "g_125"],[150.0, "g_150"],[175.0, "g_175"],[200.0, "g_200"],[225.0, "g_225"],[250.0, "g_250"]]
     for gamma in params:
         execute_variation(f"-pGamma {gamma[0]}",  gamma[1])
 
