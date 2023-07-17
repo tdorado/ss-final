@@ -1,5 +1,3 @@
-import plotly.graph_objects as go
-import numpy as np
 import pandas as pd
 from file_to_csv import file_to_csv
 from tqdm import tqdm
