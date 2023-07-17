@@ -55,9 +55,18 @@ class CannonballSystem(
         val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("out/runs/", outputFile, shouldLog)
-        val cutCondition = KineticEnergyAndTimeCutCondition(energyThreshold, cutoffTime, 0.6, 1000, shouldLog)
+        val cutCondition =
+            KineticEnergyAndTimeCutCondition(energyThreshold, cutoffTime, 0.6, 1000, 2 * boxWidth, shouldLog)
         val simulator =
-            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles, "Cannonball")
+            TimeStepSimulator(
+                timeDelta,
+                saveTimeDelta,
+                cutCondition,
+                integrator,
+                cannonballFileGenerator,
+                particles,
+                "Cannonball"
+            )
         simulator.simulate(true, shouldLog)
     }
 
@@ -73,9 +82,18 @@ class CannonballSystem(
         val cannonballForcesCalculator = CannonballForcesCalculator(gravity, boxWalls)
         val integrator = BeemanIntegrator(cannonballForcesCalculator, timeDelta, particles)
         val cannonballFileGenerator = CannonballFileGenerator("out/particles/", "stabilization-$outputFile", shouldLog)
-        val cutCondition = KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime, 0.4, 100, shouldLog)
+        val cutCondition =
+            KineticEnergyAndTimeCutCondition(pStableEnergy, pStableTime, 0.4, 100, 2 * boxWidth, shouldLog)
         val simulator =
-            TimeStepSimulator(timeDelta, saveTimeDelta, cutCondition, integrator, cannonballFileGenerator, particles,"Stabilization")
+            TimeStepSimulator(
+                timeDelta,
+                saveTimeDelta,
+                cutCondition,
+                integrator,
+                cannonballFileGenerator,
+                particles,
+                "Stabilization"
+            )
         val stabilizedParticles = simulator.simulate(true, shouldLog)
         if (pGenSave) {
             Particle.saveParticlesToFile(particles, "out/init-particles/stable-particles-$outputFile", shouldLog)

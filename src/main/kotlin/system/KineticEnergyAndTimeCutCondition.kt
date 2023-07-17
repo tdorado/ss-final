@@ -10,6 +10,7 @@ class KineticEnergyAndTimeCutCondition(
     timeToCut: Double,
     private val minimumTime: Double,
     private val averageSize: Int,
+    private val boundsLimit: Double,
     private val shouldLog: Boolean = false,
 ) : TimeCutCondition(timeToCut) {
     private val logger = KotlinLogging.logger {}
@@ -17,6 +18,10 @@ class KineticEnergyAndTimeCutCondition(
 
     override fun isFinished(particles: Set<Particle>, time: Double): Boolean {
         if (super.isFinished(particles, time)) {
+            return true
+        }
+        val outOfBounds = shouldStopByParticleOutOfBounds(particles)
+        if (outOfBounds) {
             return true
         }
         val kineticEnergy = particles.map { it.getKineticEnergy() }.reduce { acc, kineticEnergy -> acc + kineticEnergy }
@@ -45,5 +50,15 @@ class KineticEnergyAndTimeCutCondition(
             logger.info("Average energy: $average")
         }
         return abs(average - actualK) < energyThreshold
+    }
+
+    private fun shouldStopByParticleOutOfBounds(particles: Set<Particle>): Boolean {
+        val outOfBounds = particles.any { particle ->
+            abs(particle.position.x) > boundsLimit || abs(particle.position.y) > boundsLimit
+        }
+        if (outOfBounds && shouldLog){
+            logger.info("Particle out of bounds.")
+        }
+        return outOfBounds
     }
 }

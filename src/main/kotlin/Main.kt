@@ -56,7 +56,7 @@ class Main : Runnable {
     var pKt: Double = 2 * pKn
 
     @Option(names = ["-pGamma"], description = ["Particles gamma variable"], required = false)
-    var pGamma: Double = 50.0
+    var pGamma: Double = 100.0
 
     @Option(names = ["-wallKn"], description = ["Walls Kn variable"], required = false)
     var wallKn: Double = pKn
@@ -77,7 +77,7 @@ class Main : Runnable {
     var ballKt: Double = 2 * ballKn
 
     @Option(names = ["-ballGamma"], description = ["Cannonball gamma variable"], required = false)
-    var ballGamma: Double = 10.0
+    var ballGamma: Double = 50.0
 
     @Option(names = ["-ballAngle"], description = ["Cannonball angle variable"], required = false)
     var ballAngle: Double = 90.0
@@ -101,7 +101,7 @@ class Main : Runnable {
     var gravity: Double = 9.81
 
     @Option(names = ["-logs"], description = ["True if logs are activated"], required = false)
-    var shouldLog: Boolean = true
+    var shouldLog: Boolean = false
 
     override fun run() {
         if (outputFileName == "") {
