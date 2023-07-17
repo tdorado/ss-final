@@ -11,7 +11,7 @@ def execute_variation(variation_string, variation_name):
         os.system(cmd)
 
 def execute_dimeters_variation():
-    params = [[0.008, 0.015, "d1"], [0.015, 0.03, "d2"], [0.04 , 0.06, "d3"]]
+    params = [[0.008, 0.012, "d1"], [0.012, 0.016, "d2"], [0.016 , 0.02, "d3"]]
     for diameters_range in params:
         execute_variation(f"-pld {diameters_range[0]} -pud {diameters_range[1]}", diameters_range[2])
 
@@ -21,13 +21,15 @@ def execute_gammas_variation():
         execute_variation(f"-pGamma {gamma[0]}",  gamma[1])
 
 def execute_nParticles_variation():
-    params = [[1500, "nParticles_1500"], [3000, "nParticles_3000"], [4500, "nParticles_4500"]]
+    params = [[1500, "nParticles_1500"]]
     for nParticle in params:
         execute_variation(f"-n {nParticle[0]}",  nParticle[1])
 
 def execute_angles_variation():
-    params = [[35.0, "bAngle_35"], [40.0, "bAngle_40"], [45.0, "bAngle_45"], [50, "bAngle_50"], [55, "bAngle_55"]]
+    params = [[80.0, "bAngle_80"], [85.0, "bAngle_85"], [95.0, "bAngle_95"], [100, "bAngle_100"], [105, "bAngle_105"]]
     for angle in params:
         execute_variation(f"-ballAngle {angle[0]}",  angle[1])
 
-execute_gammas_variation()
+execute_nParticles_variation()
+execute_angles_variation()
+execute_dimeters_variation()
