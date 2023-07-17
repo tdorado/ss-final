@@ -1,6 +1,7 @@
 from kinetic_energy_avg import plot_kinetic_energy_avg, get_kinetic_energy_avg, plot_all_kinetic_energies
-from particle_velocity_avg import plot_particle_velocity_avg, get_particle_velocity_avg
-from read_xyz import read_xyz_repetitions
+from particle_velocity_avg import plot_particle_velocity_avg, get_particle_velocity_avg, plot_all_velocities
+from read_xyz import read_xyz_repetitions, read_xyz
+from stabilization_time_avg import plot_avg_stabilization_times
 
 
 def plot(min_gamma, max_gamma, gamma_step, number_repetitions):
@@ -19,10 +20,26 @@ def plot(min_gamma, max_gamma, gamma_step, number_repetitions):
         all_kinetic_energies[f"gamma = {g}"] = kinetic_stats
         plot_kinetic_energy_avg(kinetic_stats, kinetic_title)
     plot_all_kinetic_energies(all_kinetic_energies)
+    plot_all_velocities(all_kinetic_energies)
+
+
+def stabilization_times(low_gamma, upper_gamma, gamma_steps, repetitions):
+    all_times = {}
+    for g in range(low_gamma, upper_gamma + 1, gamma_steps):
+        gamma_times = []
+        for rep in range(repetitions):
+            print(f"Procesando gamma = {g} rep = {rep}")
+            input_filename = f"./out/runs/g_{g}_rep_{rep}"
+            data, times = read_xyz(input_filename)
+            gamma_times.append(max(times))
+        all_times[f"gamma = {g}"] = gamma_times
+    plot_avg_stabilization_times(all_times, "Gamma", "Tiempo promedio de estabilización")
+
 
 if __name__ == "__main__":
     repetitions = 5
-    low_gamma = 300
+    low_gamma = 100
     upper_gamma = 300
     gamma_steps = 25
+    stabilization_times(low_gamma, upper_gamma, gamma_steps, repetitions)
     plot(low_gamma, upper_gamma, gamma_steps, repetitions)
