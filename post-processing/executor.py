@@ -18,7 +18,7 @@ def execute_dimeters_variation():
 
 
 def execute_gammas_variation():
-    params = [[75.0, "g_75"], [100.0, "g_100"], [125.0, "g_125"], [150.0, "g_150"], [175.0, "g_175"],
+    params = [[100.0, "g_100"], [125.0, "g_125"], [150.0, "g_150"], [175.0, "g_175"],
               [200.0, "g_200"], [225.0, "g_225"], [250.0, "g_250"], [275.0, "g_275"], [300.0, "g_300"]]
     for gamma in params:
         execute_variation(f"-pGamma {gamma[0]}", gamma[1])

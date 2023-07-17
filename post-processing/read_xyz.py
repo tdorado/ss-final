@@ -23,7 +23,7 @@ def read_xyz(filename):
             data_df.append({headers[k]: float(particle_data[k]) for k in range(len(headers))})
         times_df.append(float(particle_data[-1]))
         i += num_particles
-    return data_df, times_df
+    return pd.DataFrame(data_df), times_df
 
 
 def read_xyz_repetitions(filename_variation, num_repetitions):
@@ -32,13 +32,12 @@ def read_xyz_repetitions(filename_variation, num_repetitions):
 
     for rep in range(0, num_repetitions):
         filename_rep = f'{filename_variation}_rep_{rep}'
-        data_rep, times_rep = read_xyz(filename_rep)
-        # Convertimos los datos en un DataFrame de pandas y agregamos una columna para la repetición
-        data_df = pd.DataFrame(data_rep)
+        data_df, times = read_xyz(filename_rep)
+        # Agregamos una columna para la repetición
         data_df['repetition'] = rep
         all_data = pd.concat([all_data, data_df])
         # Actualizamos el menor tiempo, si es necesario
-        max_time_rep = max(times_rep)
+        max_time_rep = max(times)
         if max_time_rep < min_time:
             min_time = max_time_rep
 
