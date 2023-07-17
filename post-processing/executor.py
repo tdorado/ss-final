@@ -12,7 +12,7 @@ def execute_variation(variation_string, variation_name):
 
 
 def execute_diameters_variation():
-    params = [[0.008, 0.012, "d1"], [0.012, 0.015, "d2"], [0.015, 0.03, "d3"]]
+    params = [[0.008, 0.012, "d1"], [0.012, 0.016, "d2"], [0.016, 0.02, "d3"]]
     for diameters_range in params:
         execute_variation(f"-pld {diameters_range[0]} -pud {diameters_range[1]}", diameters_range[2])
 
