@@ -31,6 +31,7 @@ def read_xyz_repetitions(filename_variation, num_repetitions):
     min_time = float('inf')  # Iniciamos el menor tiempo con un valor muy alto
 
     for rep in range(0, num_repetitions):
+        print(f"Procesando repetición {rep}")
         filename_rep = f'{filename_variation}_rep_{rep}'
         data_df, times = read_xyz(filename_rep)
         # Agregamos una columna para la repetición

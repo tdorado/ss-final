@@ -7,6 +7,7 @@ def plot(min_gamma, max_gamma, gamma_step, number_repetitions):
     all_kinetic_energies = {}
     all_velocities = {}
     for g in range(min_gamma, max_gamma + 1, gamma_step):
+        print(f"Procesando gamma = {g}")
         input_filename = f"./out/runs/g_{g}"
         data, times = read_xyz_repetitions(input_filename, number_repetitions)
         velocity_title = f"Velocidad de bala con gamma: {g}"
@@ -21,7 +22,7 @@ def plot(min_gamma, max_gamma, gamma_step, number_repetitions):
 
 if __name__ == "__main__":
     repetitions = 5
-    low_gamma = 100
-    upper_gamma = 250
+    low_gamma = 300
+    upper_gamma = 300
     gamma_steps = 25
     plot(low_gamma, upper_gamma, gamma_steps, repetitions)
