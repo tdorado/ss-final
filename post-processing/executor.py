@@ -31,7 +31,7 @@ def execute_number_of_particles_variation():
 
 
 def execute_angles_variation():
-    params = [[80.0, "bAngle_80"], [85.0, "bAngle_85"], [95.0, "bAngle_95"], [100, "bAngle_100"], [105, "bAngle_105"]]
+    params = [[75.0, "bAngle_75"], [80.0, "bAngle_80"], [85.0, "bAngle_85"]]
     for angle in params:
         execute_variation(f"-ballAngle {angle[0]}", angle[1])
 
