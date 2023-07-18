@@ -45,7 +45,7 @@ def plot_all_velocities(velocity_stats_dict):
 
     ax.set_xlabel('Tiempo [s]', fontsize=16)
     ax.set_ylabel('Velocidad total [m/s]', fontsize=16)
-    ax.set_title('Comparación de diferentes gamma', fontsize=20)
+    ax.set_title('Comparación de diferentes', fontsize=20)
     ax.legend()
     plt.yscale('log')
     plt.tight_layout()

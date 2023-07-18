@@ -32,12 +32,12 @@ def stabilization_times(variations, repetitions):
             input_filename = f"./out/runs/bAngle_{variation}_rep_{rep}"
             data, times = read_xyz(input_filename)
             variation_times.append(max(times))
-        all_times[f"ángulo = {g}"] = variation_times
+        all_times[f"ángulo = {variation}"] = variation_times
     plot_avg_stabilization_times(all_times, "Ángulo de bala", "Tiempo promedio de estabilización")
 
 
 if __name__ == "__main__":
-    repetitions = 3
+    repetitions = 5
     variations = [75, 80, 85]
     stabilization_times(variations, repetitions)
     plot(variations, repetitions)

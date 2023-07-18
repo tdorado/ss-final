@@ -32,7 +32,7 @@ def stabilization_times(variations, repetitions):
             input_filename = f"./out/runs/nParticles_{variation}_rep_{rep}"
             data, times = read_xyz(input_filename)
             variation_times.append(max(times))
-        all_times[f"partículas = {g}"] = variation_times
+        all_times[f"partículas = {variation}"] = variation_times
     plot_avg_stabilization_times(all_times, "Cantidad de partículas", "Tiempo promedio de estabilización")
 
 

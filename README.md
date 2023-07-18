@@ -80,6 +80,26 @@ To generate the necessary files execute:
 python post-processing/executor.py
 ```
 
+To analyze the gamma variations:
+```
+python post-processing/gamma_variation.py
+```
+
+To analyze the angle variations:
+```
+python post-processing/angle_variation.py
+```
+
+To analyze the number of particles variations:
+```
+python post-processing/particles_variation.py
+```
+
+To analyze the diameters variations:
+```
+python post-processing/diameter_variation.py
+```
+
 ## Authors
 
 Tomás Dallas
