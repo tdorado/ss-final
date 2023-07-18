@@ -1,6 +1,6 @@
 import pandas as pd
 
-def file_to_csv(filename)
+def file_to_csv(filename):
     # Nombre del archivo a leer
     archivo = f'../out/runs/{filename}'
     csv_salida = 'salida.csv'
@@ -42,5 +42,5 @@ def file_to_csv(filename)
     # Crea un DataFrame de pandas con los datos
     df = pd.DataFrame(datos, columns=['id', 'xPosition', 'yPosition', 'zPosition', 
                                     'xVelocity', 'yVelocity', 'zVelocity', 
-                                    'radius', 'mass', 'pressure', 'time'], engine='pyarrow')
+                                    'radius', 'mass', 'pressure', 'time'])
     return df
