@@ -20,7 +20,7 @@ def plot(min_gamma, max_gamma, gamma_step, number_repetitions):
         all_kinetic_energies[f"gamma = {g}"] = kinetic_stats
         plot_kinetic_energy_avg(kinetic_stats, kinetic_title)
     plot_all_kinetic_energies(all_kinetic_energies)
-    plot_all_velocities(all_kinetic_energies)
+    plot_all_velocities(all_velocities)
 
 
 def stabilization_times(low_gamma, upper_gamma, gamma_steps, repetitions):

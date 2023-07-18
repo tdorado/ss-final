@@ -20,7 +20,7 @@ def plot(variations, number_repetitions):
         all_kinetic_energies[f"partículas = {variation}"] = kinetic_stats
         plot_kinetic_energy_avg(kinetic_stats, kinetic_title)
     plot_all_kinetic_energies(all_kinetic_energies)
-    plot_all_velocities(all_kinetic_energies)
+    plot_all_velocities(all_velocities)
 
 
 def stabilization_times(variations, repetitions):
